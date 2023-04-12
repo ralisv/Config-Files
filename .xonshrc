@@ -1,0 +1,210 @@
+from math import factorial, pi, e, gcd, log
+from wpm.commandline import main as wpm
+
+
+source ~/Code/utils.py
+
+
+$XONSH_SHOW_TRACEBACK = True
+$FOREIGN_ALIASES_SUPPRESS_SKIP_MESSAGE = 1
+$CASE_SENSITIVE_COMPLETIONS = False
+$XONSH_COLOR_STYLE = "paraiso-dark"
+$COMPLETION_QUERY_LIMIT = 10
+$AUTO_CD = True
+$COMPLETIONS_CONFIRM = False
+$DYNAMIC_CWD_WIDTH = "50%"
+$TITLE = "My lovely terminal"
+$SUBSEQUENCE_PATH_COMPLETION = True
+$COMPLETIONS_MENU_ROWS = 2
+$COMPLETION_IN_THREAD = True
+$COMPLETION_MODE = "default"
+$UPDATE_COMPLETIONS_ON_KEYPRESS = True
+
+
+
+# Important aliases
+
+my_aliases = {
+    "s": "ls --color=auto",
+    "ls": "ls --color=auto",
+    "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
+    "micro": "subl",
+    "okular": lambda args: start_in_new_session("/usr/bin/okular", args),
+    "vlc": lambda args: start_in_new_session("/snap/bin/vlc", args),
+    "rm": lambda args: remove(args),
+    "grep": "grep --color=auto",
+    "sl": "sl -e",
+    "du": "du -h",
+    "python": "python3.10",
+    "pip": "python -m pip",
+    "trans": "~/Executables/trans -j -d -t czech",
+    "cat":"batcat --pager=never --theme='Monokai Extended'",
+    "maisa": "sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' /home/ralis/aisa",
+    "aisa": "ssh 'xralis@aisa.fi.muni.cz'",
+    "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
+    "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
+    "R": "R --no-save -q",
+}
+
+aliases.update(my_aliases)
+
+
+
+# Style the terminal
+from xonsh.tools import register_custom_style
+mystyle = {
+    "Literal.String.Single": "#55ff55",
+    "Literal.String.Double": "#55ff55",
+    "Token.Operator": "#fffd00",
+    "Token.PTK.CompletionMenu": "#000000",
+    "Token.Literal.Number.Integer": "#44ffff",
+}
+register_custom_style("mystyle", mystyle, base="paraiso-dark")
+$XONSH_COLOR_STYLE="mystyle"
+
+$PROMPT = "{#ff22bb}{user}.[{#00b0ff}{cwd}{#ff22bb}] λ {#000000}"
+
+$LS_COLORS = {}
+{
+    'rs': ('RESET',),
+    'di': ('#',),
+    'ln': ('BOLD_CYAN',),
+    'mh': ('RESET',),
+    'pi': ('BACKGROUND_BLACK', 'YELLOW'),
+    'so': ('BOLD_PURPLE',),
+    'do': ('BOLD_PURPLE',),
+    'bd': ('BACKGROUND_BLACK', 'BOLD_YELLOW'),
+    'cd': ('BACKGROUND_BLACK', 'BOLD_YELLOW'),
+    'or': ('BACKGROUND_BLACK', 'BOLD_RED'),
+    'mi': ('RESET',),
+    'su': ('WHITE', 'BACKGROUND_RED'),
+    'sg': ('BLACK', 'BACKGROUND_YELLOW'),
+    'ca': ('BLACK', 'BACKGROUND_RED'),
+    'tw': ('BLACK', 'BACKGROUND_GREEN'),
+    'ow': ('BLUE', 'BACKGROUND_GREEN'),
+    'st': ('WHITE', 'BACKGROUND_BLUE'),
+    'ex': ('BOLD_GREEN',),
+    '*.tar': ('BOLD_RED',),
+    '*.tgz': ('BOLD_RED',),
+    '*.arc': ('BOLD_RED',),
+    '*.arj': ('BOLD_RED',),
+    '*.taz': ('BOLD_RED',),
+    '*.lha': ('BOLD_RED',),
+    '*.lz4': ('BOLD_RED',),
+    '*.lzh': ('BOLD_RED',),
+    '*.lzma': ('BOLD_RED',),
+    '*.tlz': ('BOLD_RED',),
+    '*.txz': ('BOLD_RED',),
+    '*.tzo': ('BOLD_RED',),
+    '*.t7z': ('BOLD_RED',),
+    '*.zip': ('BOLD_RED',),
+    '*.z': ('BOLD_RED',),
+    '*.dz': ('BOLD_RED',),
+    '*.gz': ('BOLD_RED',),
+    '*.lrz': ('BOLD_RED',),
+    '*.lz': ('BOLD_RED',),
+    '*.lzo': ('BOLD_RED',),
+    '*.xz': ('BOLD_RED',),
+    '*.zst': ('BOLD_RED',),
+    '*.tzst': ('BOLD_RED',),
+    '*.bz2': ('BOLD_RED',),
+    '*.bz': ('BOLD_RED',),
+    '*.tbz': ('BOLD_RED',),
+    '*.tbz2': ('BOLD_RED',),
+    '*.tz': ('BOLD_RED',),
+    '*.deb': ('BOLD_RED',),
+    '*.rpm': ('BOLD_RED',),
+    '*.jar': ('BOLD_RED',),
+    '*.war': ('BOLD_RED',),
+    '*.ear': ('BOLD_RED',),
+    '*.sar': ('BOLD_RED',),
+    '*.rar': ('BOLD_RED',),
+    '*.alz': ('BOLD_RED',),
+    '*.ace': ('BOLD_RED',),
+    '*.zoo': ('BOLD_RED',),
+    '*.cpio': ('BOLD_RED',),
+    '*.7z': ('BOLD_RED',),
+    '*.rz': ('BOLD_RED',),
+    '*.cab': ('BOLD_RED',),
+    '*.wim': ('BOLD_RED',),
+    '*.swm': ('BOLD_RED',),
+    '*.dwm': ('BOLD_RED',),
+    '*.esd': ('BOLD_RED',),
+    '*.jpg': ('BOLD_PURPLE',),
+    '*.jpeg': ('BOLD_PURPLE',),
+    '*.mjpg': ('BOLD_PURPLE',),
+    '*.mjpeg': ('BOLD_PURPLE',),
+    '*.gif': ('BOLD_PURPLE',),
+    '*.bmp': ('BOLD_PURPLE',),
+    '*.pbm': ('BOLD_PURPLE',),
+    '*.pgm': ('BOLD_PURPLE',),
+    '*.ppm': ('BOLD_PURPLE',),
+    '*.tga': ('BOLD_PURPLE',),
+    '*.xbm': ('BOLD_PURPLE',),
+    '*.xpm': ('BOLD_PURPLE',),
+    '*.tif': ('BOLD_PURPLE',),
+    '*.tiff': ('BOLD_PURPLE',),
+    '*.png': ('BOLD_PURPLE',),
+    '*.svg': ('BOLD_PURPLE',),
+    '*.svgz': ('BOLD_PURPLE',),
+    '*.mng': ('BOLD_PURPLE',),
+    '*.pcx': ('BOLD_PURPLE',),
+    '*.mov': ('BOLD_PURPLE',),
+    '*.mpg': ('BOLD_PURPLE',),
+    '*.mpeg': ('BOLD_PURPLE',),
+    '*.m2v': ('BOLD_PURPLE',),
+    '*.mkv': ('BOLD_PURPLE',),
+    '*.webm': ('BOLD_PURPLE',),
+    '*.ogm': ('BOLD_PURPLE',),
+    '*.mp4': ('BOLD_PURPLE',),
+    '*.m4v': ('BOLD_PURPLE',),
+    '*.mp4v': ('BOLD_PURPLE',),
+    '*.vob': ('BOLD_PURPLE',),
+    '*.qt': ('BOLD_PURPLE',),
+    '*.nuv': ('BOLD_PURPLE',),
+    '*.wmv': ('BOLD_PURPLE',),
+    '*.asf': ('BOLD_PURPLE',),
+    '*.rm': ('BOLD_PURPLE',),
+    '*.rmvb': ('BOLD_PURPLE',),
+    '*.flc': ('BOLD_PURPLE',),
+    '*.avi': ('BOLD_PURPLE',),
+    '*.fli': ('BOLD_PURPLE',),
+    '*.flv': ('BOLD_PURPLE',),
+    '*.gl': ('BOLD_PURPLE',),
+    '*.dl': ('BOLD_PURPLE',),
+    '*.xcf': ('BOLD_PURPLE',),
+    '*.xwd': ('BOLD_PURPLE',),
+    '*.yuv': ('BOLD_PURPLE',),
+    '*.cgm': ('BOLD_PURPLE',),
+    '*.emf': ('BOLD_PURPLE',),
+    '*.ogv': ('BOLD_PURPLE',),
+    '*.ogx': ('BOLD_PURPLE',),
+    '*.aac': ('CYAN',),
+    '*.au': ('CYAN',),
+    '*.flac': ('CYAN',),
+    '*.m4a': ('CYAN',),
+    '*.mid': ('CYAN',),
+    '*.midi': ('CYAN',),
+    '*.mka': ('CYAN',),
+    '*.mp3': ('CYAN',),
+    '*.mpc': ('CYAN',),
+    '*.ogg': ('CYAN',),
+    '*.ra': ('CYAN',),
+    '*.wav': ('CYAN',),
+    '*.oga': ('CYAN',),
+    '*.opus': ('CYAN',),
+    '*.spx': ('CYAN',),
+    '*.xspf': ('CYAN',),
+    '*.pdf': ('PURPLE',)
+}
+
+
+# Colored man pages
+
+$LESS_TERMCAP_mb="\x1b[1;32m"
+$LESS_TERMCAP_md="\x1b[38;2;255;180;50m"
+$LESS_TERMCAP_me="\x1b[0m"
+$LESS_TERMCAP_se="\x1b[0m"
+$LESS_TERMCAP_so="\x1b[38;2;255;255;50m"
+$LESS_TERMCAP_ue="\x1b[0m"
+$LESS_TERMCAP_us="\x1b[38;2;255;100;50m"
