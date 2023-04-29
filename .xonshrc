@@ -28,6 +28,8 @@ $UPDATE_COMPLETIONS_ON_KEYPRESS = True
 # Important aliases
 
 my_aliases = {
+    "d": "cd";
+    "c": "cd";
     "s": "ls --color=auto",
     "ls": "ls --color=auto",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
