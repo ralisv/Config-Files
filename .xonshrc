@@ -49,6 +49,7 @@ my_aliases = {
     "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
     "R": "R --no-save -q",
+    "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
 }
 
 aliases.update(my_aliases)
