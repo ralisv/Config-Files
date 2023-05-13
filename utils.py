@@ -50,23 +50,42 @@ def remove(args):
     return status
 
 
-def dump_trash():
-    """ Permanently deletes all files in .trash-bin directory that haven't been modified in more than 30 days """
-    with open(RMLOG, "a") as f:
-        for file in glob.glob(f"{TRASH}/*"):
-            try:
-                if (time.time() - os.path.getmtime(file)) // (60 * 60 * 24) > 30:
-                    if os.path.isdir(file):
-                        shutil.rmtree(file)
-                    else:
-                        os.remove(file)
+def get_size(entry):
+    """ Returns the size of the file/directory. If it's a directory, it sums up the sizes of all the files in it """
+    if entry.is_file():
+        return entry.stat().st_size
+    total = 0
+    try:
+        for sub_entry in os.scandir(entry):
+            total += get_size(sub_entry)
+    except NotADirectoryError:
+        return entry.stat().st_size
+    except PermissionError:
+        return 0
+    return total
 
-                    f.write(f"{time.strftime('%d. %m. %Y')} {file} removed permanently\n")
+
+def dump_trash():
+    """ Permanently deletes all files in .trash-bin directory that haven't been modified in more than 30 days and logs the total size of deleted files """
+    total_size = 0
+
+    with open(RMLOG, "a") as f:
+        for entry in os.scandir(TRASH):
+            try:
+                if (time.time() - entry.stat().st_mtime) // (60 * 60 * 24) > 30:
+
+                    total_size += get_size(entry)
+                    if entry.is_dir():
+                        shutil.rmtree(entry.path)
+                    else:
+                        os.remove(entry.path)
+
+                    f.write(f"{time.strftime('%d. %m. %Y')} {entry.path} removed permanently\n")
 
             except Exception as e:
                 f.write(f"{time.strftime('%d. %m. %Y')} {e}\n")
 
-
+    print(f'{Fore.GREEN}Total size of deleted files: {Fore.YELLOW}{total_size / (1024 * 1024):.2f}{Fore.GREEN} MB{Fore.RESET}')
 
 
 def start_in_new_session(process, args, quiet=True):
