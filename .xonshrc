@@ -50,6 +50,7 @@ my_aliases = {
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
     "R": "R --no-save -q",
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
+    "xaisa": "xxh 'xralis@aisa.fi.muni.cz'"
 }
 
 aliases.update(my_aliases)
@@ -57,7 +58,9 @@ aliases.update(my_aliases)
 
 
 # Style the terminal
+
 from xonsh.tools import register_custom_style
+
 mystyle = {
     "Literal.String.Single": "#55ff55",
     "Literal.String.Double": "#55ff55",
@@ -65,8 +68,16 @@ mystyle = {
     "Token.PTK.CompletionMenu": "#000000",
     "Token.Literal.Number.Integer": "#44ffff",
 }
+
 register_custom_style("mystyle", mystyle, base="paraiso-dark")
 $XONSH_COLOR_STYLE="mystyle"
+
+def customize_autocompleter():
+    import prompt_toolkit.styles.defaults as defstyle
+    defstyle.PROMPT_TOOLKIT_STYLE.append(('bottom-toolbar','noreverse'))
+    defstyle.PROMPT_TOOLKIT_STYLE.append(('completion-menu','bg:#880088 #000000'))
+
+customize_autocompleter()
 
 $PROMPT = "{#ff22bb}{user}.[{#00b0ff}{cwd}{#ff22bb}] λ {#000000}"
 
@@ -83,3 +94,4 @@ $LESS_TERMCAP_se="\x1b[0m"
 $LESS_TERMCAP_so="\x1b[38;2;255;255;50m"
 $LESS_TERMCAP_ue="\x1b[0m"
 $LESS_TERMCAP_us="\x1b[38;2;255;100;50m"
+
