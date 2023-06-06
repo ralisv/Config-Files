@@ -22,7 +22,7 @@ $COMPLETIONS_MENU_ROWS = 2
 $COMPLETION_IN_THREAD = True
 $COMPLETION_MODE = "default"
 $UPDATE_COMPLETIONS_ON_KEYPRESS = True
-
+$MULTILINE_PROMPT = " "
 
 
 # Important aliases
@@ -50,7 +50,7 @@ my_aliases = {
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
     "R": "R --no-save -q",
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
-    "xaisa": "xxh 'xralis@aisa.fi.muni.cz'"
+    "xaisa": "xxh 'xralis@aisa.fi.muni.cz'",
 }
 
 aliases.update(my_aliases)
@@ -94,4 +94,3 @@ $LESS_TERMCAP_se="\x1b[0m"
 $LESS_TERMCAP_so="\x1b[38;2;255;255;50m"
 $LESS_TERMCAP_ue="\x1b[0m"
 $LESS_TERMCAP_us="\x1b[38;2;255;100;50m"
-

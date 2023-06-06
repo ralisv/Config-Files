@@ -41,12 +41,13 @@ def remove(args, talkative=True):
 
             try:
                 shutil.move(file, os.path.join(TRASH, file_name))
-            except e:
+            except Exception as e:
 
                 if talkative:
-                    print(f"{Fore.RED}{e}{Fore.RESET}")
+                    print(f"{Fore.RED}Error while trying to remove {file}: {e}{Fore.RESET}")
 
                 status = STATUS_LITTLE_ERROR
+                continue
 
             if talkative:
                 print(f"{Fore.YELLOW}{file}{Fore.GREEN} moved into trash{Fore.RESET}")
