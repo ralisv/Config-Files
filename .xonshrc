@@ -27,11 +27,12 @@ $MULTILINE_PROMPT = " "
 
 # Important aliases
 
+
 my_aliases = {
     "d": "cd",
     "c": "cd",
-    "s": "test -d ./.git && git status -s; ls --color=auto",
     "ls": "ls --color=auto",
+    "s": "test -d .git && git status; ls --color=auto",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
     "micro": "subl",
     "okular": lambda args: start_in_new_session("/usr/bin/okular", args),
