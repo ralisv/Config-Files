@@ -3,7 +3,9 @@ import glob
 import shutil
 import sys
 import time
+
 from colorama import Fore, init
+from typing import List
 
 
 init()
@@ -16,7 +18,7 @@ TRASH = os.path.expanduser("~/.trash-bin")
 RMLOG = os.path.expanduser("~/.rmlog.txt")
 
 
-def remove(args, talkative=True) -> int:
+def remove(args: List[str], talkative: bool = True) -> int:
     """
     Moves files and directories passed as arguments into ~/.trash-bin.
     If the file/directory already exists in .trash-bin, it appends a number to its name.
@@ -74,7 +76,7 @@ def remove(args, talkative=True) -> int:
     return status
 
 
-def get_size(entry):
+def get_size(entry: os.DirEntry) -> int:
     """ Returns the size of the file/directory. If it's a directory, it sums up the sizes of all the files in it """
     if entry.is_file():
         return entry.stat().st_size
@@ -87,7 +89,7 @@ def get_size(entry):
     return total
 
 
-def dump_trash(talkative=True) -> None:
+def dump_trash(talkative: bool = True) -> None:
     """ Permanently deletes all files in .trash-bin directory that haven't been modified in more than 30 days and logs the total size of deleted files """
     total_size = 0
 
@@ -115,13 +117,13 @@ def dump_trash(talkative=True) -> None:
         print(f'{Fore.GREEN}Total size of deleted files: {Fore.YELLOW}{total_size / (1024 * 1024):.2f}{Fore.GREEN} MB{Fore.RESET}')
 
 
-def start_in_new_session(process: str, args, quiet=True) -> None:
+def start_in_new_session(process: str, args: List[str], quiet: bool = True) -> None:
     """
     Starts a process in a new session. If quiet is True, it redirects stdout and stderr to /dev/null
+
     @param process: name of the process to start
     @param args: arguments to pass to the process
     """
-    print(args)
     pid = os.fork()
     if pid == 0:
         os.setsid()

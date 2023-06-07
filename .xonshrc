@@ -34,7 +34,7 @@ my_aliases = {
     "ls": "ls --color=auto",
     "s": "test -d .git && git status; ls --color=auto",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
-    "micro": "subl",
+    "micro": "code",
     "okular": lambda args: start_in_new_session("/usr/bin/okular", args),
     "vlc": lambda args: start_in_new_session("/snap/bin/vlc", args),
     "rm": lambda args: remove(args),
