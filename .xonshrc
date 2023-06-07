@@ -32,7 +32,7 @@ my_aliases = {
     "d": "cd",
     "c": "cd",
     "ls": "ls --color=auto",
-    "s": "test -d .git && git status; ls --color=auto",
+    "s": "test -d .git && git status && echo; ls --color=auto",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
     "micro": "code",
     "okular": lambda args: start_in_new_session("/usr/bin/okular", args),
