@@ -7,7 +7,7 @@ $PATH.append("/home/ralis/.local/bin")
 sys.path.append("/home/ralis/.local/lib/python3.10/site-packages")
 
 
-source ~/Code/utils.py
+source ~/Config-Files/utils.py
 
 $FOREIGN_ALIASES_SUPPRESS_SKIP_MESSAGE = 1
 $CASE_SENSITIVE_COMPLETIONS = False
@@ -83,7 +83,7 @@ $PROMPT = "{#ff22bb}{user}.[{#00b0ff}{cwd}{#ff22bb}] λ {#000000}"
 
 # Colored ls
 
-source-bash ~/Code/ls-colors.sh
+source-bash ~/Config-Files/ls-colors.sh
 
 # Colored man pages
 
