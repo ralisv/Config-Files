@@ -30,7 +30,7 @@ $MULTILINE_PROMPT = " "
 my_aliases = {
     "d": "cd",
     "c": "cd",
-    "s": "ls --color=auto",
+    "s": "test -d ./.git && git status -s; ls --color=auto",
     "ls": "ls --color=auto",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
     "micro": "subl",
