@@ -122,6 +122,7 @@ GIT_FIELD = "{git-info}"
 
 $PROMPT = f"{PINK}{USER_FIELD}.{PATH_FIELD}{GIT_FIELD}λ " 
 
+
 # Colored man pages
 
 $LESS_TERMCAP_mb="\x1b[1;32m"
@@ -131,3 +132,8 @@ $LESS_TERMCAP_se="\x1b[0m"
 $LESS_TERMCAP_so="\x1b[38;2;255;255;50m"
 $LESS_TERMCAP_ue="\x1b[0m"
 $LESS_TERMCAP_us="\x1b[38;2;255;100;50m"
+
+
+# Ask about dumping trash
+
+ask_whether_to_dump()

@@ -19,7 +19,9 @@ STATUS_BIG_ERROR = 3
 
 TRASH = os.path.expanduser("~/.trash-bin")
 RMLOG = os.path.expanduser("~/.rmlog.txt")
+DUMPLOG = os.path.expanduser("~/.dumplog.txt")
 
+DELETED_FILE_AGE_LIMIT = 30
 
 def remove(args: List[str], talkative: bool = True) -> int:
     """
@@ -92,32 +94,65 @@ def get_size(entry: os.DirEntry) -> int:
     return total
 
 
-def dump_trash(talkative: bool = True) -> None:
-    """ Permanently deletes all files in .trash-bin directory that haven't been modified in more than 30 days and logs the total size of deleted files """
+def get_dumpable_files(age_limit: int) -> List[os.DirEntry]:
+    """
+    Returns a list of files in .trash-bin directory that haven't been modified in given time
+    @param age_limit: number of days after which the file is considered dumpable
+    """
+    return [entry for entry in os.scandir(TRASH) if (time.time() - entry.stat().st_mtime) // (60 * 60 * 24) > age_limit]
+
+
+def dump_trash(to_dump: List[os.DirEntry]) -> None:
+    """
+    Permanently deletes all files in .trash-bin directory that haven't been modified in more
+    than 30 days and returns the total size of the deleted files
+    
+    """
     total_size = 0
+    for entry in to_dump:
+        try:
+            curr_size = get_size(entry)
 
-    with open(RMLOG, "a") as f:
-        for entry in os.scandir(TRASH):
-            try:
-                if (time.time() - entry.stat().st_mtime) // (60 * 60 * 24) > 30:
+            if entry.is_dir():
+                shutil.rmtree(entry.path)
+            else:
+                os.remove(entry.path)
+            
+            total_size += curr_size
 
-                    total_size += get_size(entry)
+        except Exception as e:
+            print(f"{Fore.RED}An error occurred while attempting to delete {Fore.YELLOW}{entry.name}{Fore.RED}: {e}{Fore.RESET}")
 
-                    if entry.is_dir():
-                        shutil.rmtree(entry.path)
-                    else:
-                        os.remove(entry.path)
+            with open(DUMPLOG, "a") as f:
+                f.write(f"{time.strftime('%d. %m. %Y')} Dumping of {entry.name} failed: {e}\n")
 
-                    f.write(f"{time.strftime('%d. %m. %Y')} {entry.path} removed permanently\n")
-
-            except Exception as e:
-                if talkative:
-                    print(f"{Fore.RED}{e}{Fore.RESET}")
-                f.write(f"{time.strftime('%d. %m. %Y')} Dumping failed: {e}\n")
+    return total_size
 
 
-    if talkative:
-        print(f'{Fore.GREEN}Total size of deleted files: {Fore.YELLOW}{total_size / (1024 * 1024):.2f}{Fore.GREEN} MB{Fore.RESET}')
+def ask_whether_to_dump() -> None:
+    """
+    Asks the user whether to dump the trash or not,
+    only asks if there are files that can be dumped and if the user hasn't been asked in the last 7 days
+    """
+    if os.path.exists(DUMPLOG) and (time.time() - os.path.getmtime(DUMPLOG)) // (60 * 60 * 24) < 7 \
+            or not (dumpable := sorted(get_dumpable_files(DELETED_FILE_AGE_LIMIT), key=lambda entry: entry.name)):
+        return
+    
+    print(f"The following files have been in the trash for more than {DELETED_FILE_AGE_LIMIT} days:")
+    for entry in dumpable:
+        print(f"{Fore.YELLOW}{entry.name}{Fore.RESET}")
+
+    print("Do you want to permanently delete them? [y/n] ", end="")
+    answer = input()
+
+    if answer.lower() in ["y", "yes", "yeah", "yep, sure", "yep", "why not"]:
+        freed_memory = dump_trash(dumpable)
+        print(f"{Fore.GREEN}Successfully freed {freed_memory / 1024 / 1024:.2f} MB{Fore.RESET}")
+
+    else:
+        print(f"{Fore.GREEN}The files have not been dumped, you'll be asked again in 7 days.{Fore.RESET}")
+        with open(DUMPLOG, "a") as f:
+            f.write(f"{time.strftime('%d.%m.%Y')} User declined to dump trash\n")
 
 
 def start_in_new_session(process: str, args: List[str], quiet: bool = True, env=None) -> int:
