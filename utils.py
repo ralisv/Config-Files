@@ -3,6 +3,7 @@ import glob
 import shutil
 import sys
 import time
+import subprocess
 
 from colorama import Fore, init
 from typing import List
@@ -14,8 +15,11 @@ init()
 STATUS_GOOD = 0
 STATUS_LITTLE_ERROR = 1
 STATUS_NO_ENTRIES = 2
+
 TRASH = os.path.expanduser("~/.trash-bin")
 RMLOG = os.path.expanduser("~/.rmlog.txt")
+
+LS_COLORS = open("./ls-colors.txt").read()
 
 
 def remove(args: List[str], talkative: bool = True) -> int:
@@ -117,19 +121,34 @@ def dump_trash(talkative: bool = True) -> None:
         print(f'{Fore.GREEN}Total size of deleted files: {Fore.YELLOW}{total_size / (1024 * 1024):.2f}{Fore.GREEN} MB{Fore.RESET}')
 
 
-def start_in_new_session(process: str, args: List[str], quiet: bool = True) -> None:
+def start_in_new_session(process: str, args: List[str], quiet: bool = True, env=None) -> int:
     """
-    Starts a process in a new session. If quiet is True, it redirects stdout and stderr to /dev/null
+    Starts a process in a new session. If quiet os.execvpis True, it redirects stdout and stderr to /dev/null
 
     @param process: name of the process to start
     @param args: arguments to pass to the process
+    @param quiet: if True, redirects stdout and stderr to /dev/null
     """
-    pid = os.fork()
-    if pid == 0:
-        os.setsid()
-        if quiet:
-            with open(os.devnull, "w") as f:
-                os.dup2(f.fileno(), 1)
-                os.dup2(f.fileno(), 2)
+    stdout = subprocess.DEVNULL if quiet else None
+    stderr = subprocess.DEVNULL if quiet else None
 
-        os.execvp(process, [process] + list(args))
+    return subprocess.Popen([process] + args, stdout=stdout, stderr=stderr, start_new_session=True, env=env).wait()
+
+
+def _s(args: List[str]) -> None:
+    """
+    Executes git status when in a git repository and always executes ls after that
+    """
+    status_code = STATUS_GOOD
+
+    is_git_repo = os.path.exists(".git")
+
+    if is_git_repo:
+        status_code = STATUS_LITTLE_ERROR if start_in_new_session("git", ["status", "--short", "--branch"], quiet=False) else status_code
+    
+    if is_git_repo:
+        print()
+
+    status_code = STATUS_LITTLE_ERROR if start_in_new_session("ls", ["--color=always"] + args, quiet=False, env={"LS_COLORS": LS_COLORS}) else status_code
+
+    return status_code
