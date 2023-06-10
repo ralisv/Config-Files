@@ -1,13 +1,17 @@
-from math import factorial, pi, e, gcd, log
-from wpm.commandline import main as wpm
 import sys
 
+from math import factorial, pi, e, gcd, log
+from wpm.commandline import main as wpm
+
+sys.path.append("/home/ralis/.local/lib/python3.10/site-packages")
+sys.path.append("/home/ralis/Config-Files")
+
+$LS_COLORS = open("/home/ralis/Config-Files/ls-colors.txt").read()
+
+from utils import *
 
 $PATH.append("/home/ralis/.local/bin")
-sys.path.append("/home/ralis/.local/lib/python3.10/site-packages")
 
-
-source ~/Config-Files/utils.py
 
 $FOREIGN_ALIASES_SUPPRESS_SKIP_MESSAGE = 1
 $CASE_SENSITIVE_COMPLETIONS = False
@@ -35,7 +39,7 @@ my_aliases = {
     "okular": lambda args: start_in_new_session("/usr/bin/okular", args),
     "vlc": lambda args: start_in_new_session("/snap/bin/vlc", args),
     "rm": lambda args: remove(args),
-    "s": lambda args: _s(args),
+    "s": lambda args: super_ls(args),
     "grep": "grep --color=auto",
     "sl": "sl -e",
     "du": "du -h",
@@ -77,9 +81,8 @@ def customize_autocompleter():
 
 customize_autocompleter()
 
-# Prompt
 
-PROMPT_FIELD_SEPARATOR = " "
+# Prompt
 
 PINK = "{#ff22bb}"
 BLUE = "{#00b0ff}"
@@ -112,11 +115,6 @@ GIT_FIELD = "{git-info}"
 
 
 $PROMPT = f"{PINK}{USER_FIELD}.{PATH_FIELD} {GIT_FIELD}λ " 
-
-
-# Colored ls
-
-source-bash ~/Config-Files/ls-colors.sh
 
 # Colored man pages
 

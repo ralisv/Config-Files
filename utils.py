@@ -15,11 +15,10 @@ init()
 STATUS_GOOD = 0
 STATUS_LITTLE_ERROR = 1
 STATUS_NO_ENTRIES = 2
+STATUS_BIG_ERROR = 3
 
 TRASH = os.path.expanduser("~/.trash-bin")
 RMLOG = os.path.expanduser("~/.rmlog.txt")
-
-LS_COLORS = open("./ls-colors.txt").read()
 
 
 def remove(args: List[str], talkative: bool = True) -> int:
@@ -135,20 +134,24 @@ def start_in_new_session(process: str, args: List[str], quiet: bool = True, env=
     return subprocess.Popen([process] + args, stdout=stdout, stderr=stderr, start_new_session=True, env=env).wait()
 
 
-def _s(args: List[str]) -> None:
+def super_ls(args: List[str]) -> None:
     """
     Executes git status when in a git repository and always executes ls after that
     """
-    status_code = STATUS_GOOD
+    status = STATUS_GOOD
 
-    is_git_repo = os.path.exists(".git")
+    try:
+        is_git_repo = os.path.exists(".git")
 
-    if is_git_repo:
-        status_code = STATUS_LITTLE_ERROR if start_in_new_session("git", ["status", "--short"], quiet=False) else status_code
+        if is_git_repo:
+            status = start_in_new_session("git", ["status", "--short"], quiet=False) or status
+            start_in_new_session("echo", [], quiet=False)
+
+        status = start_in_new_session("ls", ["--color=always"] + args, quiet=False) or status
     
-    if is_git_repo:
-        print()
-
-    status_code = STATUS_LITTLE_ERROR if start_in_new_session("ls", ["--color=always"] + args, quiet=False, env={"LS_COLORS": LS_COLORS}) else status_code
-
-    return status_code
+    except Exception as e:
+        print(f"{Fore.RED}{e}{Fore.RESET}", file=sys.stderr)
+        status = STATUS_BIG_ERROR
+    
+    finally:
+        return status
