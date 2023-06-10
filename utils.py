@@ -89,8 +89,10 @@ def get_size(entry: os.DirEntry) -> int:
     try:
         for sub_entry in os.scandir(entry):
             total += get_size(sub_entry)
+
     except PermissionError:
         return 0
+    
     return total
 
 
@@ -179,10 +181,17 @@ def super_ls(args: List[str]) -> None:
         is_git_repo = os.path.exists(".git")
 
         if is_git_repo:
-            status = start_in_new_session("git", ["status", "--short"], quiet=False) or status
+            status = start_in_new_session(
+                "git", ["status", "--short"],
+                quiet=False
+            ) or status
             start_in_new_session("echo", [], quiet=False)
 
-        status = start_in_new_session("ls", ["--color=always"] + args, quiet=False) or status
+        status = start_in_new_session(
+            "ls", ["--color=always"] + args,
+            quiet=False,
+            env={"LS_COLORS":  open("/home/ralis/Config-Files/ls-colors.txt").read()}
+        ) or status
     
     except Exception as e:
         print(f"{Fore.RED}{e}{Fore.RESET}", file=sys.stderr)
