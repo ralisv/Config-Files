@@ -144,7 +144,7 @@ def _s(args: List[str]) -> None:
     is_git_repo = os.path.exists(".git")
 
     if is_git_repo:
-        status_code = STATUS_LITTLE_ERROR if start_in_new_session("git", ["status", "--short", "--branch"], quiet=False) else status_code
+        status_code = STATUS_LITTLE_ERROR if start_in_new_session("git", ["status", "--short"], quiet=False) else status_code
     
     if is_git_repo:
         print()

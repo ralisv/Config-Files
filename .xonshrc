@@ -77,7 +77,42 @@ def customize_autocompleter():
 
 customize_autocompleter()
 
-$PROMPT = "{#ff22bb}{user}.[{#00b0ff}{cwd}{#ff22bb}] λ {#000000}"
+# Prompt
+
+PROMPT_FIELD_SEPARATOR = " "
+
+PINK = "{#ff22bb}"
+BLUE = "{#00b0ff}"
+WHITE = "{#ffffff}"
+
+def enclose_in_brackets(text: str) -> str:
+    return f"{PINK}[{text}{PINK}]"
+
+def git_info() -> str:
+    if not os.path.isdir(".git"):
+        return ""
+
+    branch = subprocess.check_output(["git", "branch", "--show-current"]).decode("utf-8").strip()
+    if branch == "master":
+        branch = "main"
+    return enclose_in_brackets(f"{BLUE}{branch}") + " "
+
+HOME_DIRECTORY = os.path.expanduser("~")
+
+def path_info() -> str:
+    return enclose_in_brackets(f"{BLUE}{os.getcwd().replace(HOME_DIRECTORY, '~')}")
+
+
+$PROMPT_FIELDS["git-info"] = git_info
+$PROMPT_FIELDS["path-info"] = path_info
+
+USER_FIELD = "{user}"
+PATH_FIELD = "{path-info}"
+GIT_FIELD = "{git-info}"
+
+
+$PROMPT = f"{PINK}{USER_FIELD}.{PATH_FIELD} {GIT_FIELD}λ " 
+
 
 # Colored ls
 
