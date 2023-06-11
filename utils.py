@@ -196,6 +196,7 @@ def dump_trash(to_dump: List[os.DirEntry]) -> None:
 
         except Exception as e:
             message = f"{Fore.RED} ✘ {colorize(entry.path)}{Fore.RED}: {e}{Fore.RESET}"
+            error_messages.append(message)
 
     print(*error_messages, sep="\n", end="", file=sys.stderr)
 
@@ -207,7 +208,7 @@ def ask_whether_to_dump() -> None:
     Asks the user whether to dump the trash or not,
     only asks if there are files that can be dumped and if the user hasn't been asked in the last 7 days
     """
-    if os.path.exists(DUMPLOG) and (time.time() - os.path.getmtime(DUMPLOG)) // (60 * 60 * 24) < 0:
+    if os.path.exists(DUMPLOG) and (time.time() - os.path.getmtime(DUMPLOG)) // (60 * 60 * 24) < 7:
         return
     
     dumpable = sorted(get_dumpable_files(DELETED_FILE_AGE_LIMIT), key=lambda entry: entry.name)
