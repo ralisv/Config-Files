@@ -4,14 +4,14 @@ import os
 from math import factorial, pi, e, gcd, log
 from wpm.commandline import main as wpm
 
-sys.path.append(f"/home/{os.getlogin()}/.local/lib/python3.10/site-packages")
-sys.path.append(f"/home/{os.getlogin()}/Config-Files")
+sys.path.append(os.path.expanduser("~/.local/lib/python3.10/site-packages"))
+sys.path.append(os.path.expanduser("~/Config-Files"))
 
-$LS_COLORS = open(f"/home/{os.getlogin()}/Config-Files/ls-colors.txt").read()
+$LS_COLORS = open(os.path.expanduser("~/Config-Files/ls-colors.txt")).read()
 
 from utils import *
 
-$PATH.append(f"/home/{os.getlogin()}/.local/bin")
+$PATH.append(os.path.expanduser("~/.local/bin"))
 
 
 $AUTO_CD = True
@@ -54,7 +54,7 @@ my_aliases = {
     "pip": "python -m pip",
     "trans": "~/Executables/trans -j -d -t czech",
     "cat":"batcat --pager=never",
-    "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' /home/{os.getlogin()}/aisa",
+    "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' {os.path.expanduser('~')}/aisa",
     "aisa": "ssh 'xralis@aisa.fi.muni.cz'",
     "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
