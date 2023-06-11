@@ -198,7 +198,7 @@ def dump_trash(to_dump: List[os.DirEntry]) -> None:
             message = f"{Fore.RED} ✘ {colorize(entry.path)}{Fore.RED}: {e}{Fore.RESET}"
             error_messages.append(message)
 
-    print(*error_messages, sep="\n", end="", file=sys.stderr)
+    print(*error_messages, sep="\n", end="\n", file=sys.stderr)
 
     return total_size
 
@@ -218,7 +218,8 @@ def ask_whether_to_dump() -> None:
     print(f"{Fore.GREEN}The following files have been in the trash for more than {DELETED_FILE_AGE_LIMIT} days:{Fore.RESET}", end="\n\n")
     print(*[colorize(file.path).replace(os.path.expanduser("~/.trash-bin/"), "") for file in dumpable], sep="\n", end="\n\n")
 
-    print(f"{Fore.GREEN}Do you wish to permanently delete them? [y/n] {Fore.RESET}", end="")
+    print(f"{Fore.GREEN}Do you wish to permanently delete them?" \
+          "[{Fore.LIGHTGREEN_EX}y{Fore.GREEN}/{Fore.RED}n{Fore.GREEN}] {Fore.RESET}", end="")
     answer = input()
 
     with open(DUMPLOG, "a") as f:
