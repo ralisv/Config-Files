@@ -245,7 +245,7 @@ def super_ls(args: List[str]) -> None:
             start_in_new_session("echo", [], quiet=False)
 
         start_in_new_session(
-            "ls", ["--color=always"] + args,
+            "ls", ["--color=always", "-X"] + args,
             quiet=False,
             env={"LS_COLORS":  LS_COLORS}
         ) or status
