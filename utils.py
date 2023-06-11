@@ -4,6 +4,7 @@ import shutil
 import sys
 import time
 import subprocess
+import re
 
 from colorama import Fore, init
 from typing import List
@@ -11,6 +12,8 @@ from typing import List
 
 init()
 
+LS_COLORS = open("/home/ralis/Config-Files/ls-colors.txt").read()
+LS_COLORS_PARSED = dict(map(lambda assignment: assignment.split(sep="="), LS_COLORS.split(sep=":")))
 
 STATUS_GOOD = 0
 STATUS_LITTLE_ERROR = 1
@@ -23,7 +26,52 @@ DUMPLOG = os.path.expanduser("~/.dumplog.txt")
 
 DELETED_FILE_AGE_LIMIT = 30
 
-def remove(args: List[str], talkative: bool = True) -> int:
+
+def colorize(filename: str) -> str:
+    """ Returns the filename enclosed in the color escape sequence based on LS_COLORS """
+    # Get the file extension
+    _, ext = os.path.splitext(filename)
+    ext = '*' + ext
+
+    # Try to get a color for the file based on its extension
+    if ext in LS_COLORS_PARSED:
+        color = LS_COLORS_PARSED.get(ext)
+
+    # If the file is a directory, get the directory color
+    elif os.path.isdir(filename):
+        color = LS_COLORS_PARSED.get('di')
+
+    # If the file is a symbolic link, get the link color
+    elif os.path.islink(filename):
+        color = LS_COLORS_PARSED.get('ln')
+
+    # If the file is a regular file
+    elif os.path.isfile(filename):
+        # If the file is executable, get the executable color
+        if os.access(filename, os.X_OK):
+            color = LS_COLORS_PARSED.get('ex')
+        # Otherwise, get the regular file color
+        else:
+            color = LS_COLORS_PARSED.get('*')
+
+    # If the file type wasn't recognized, use the reset color
+    else:
+        color = LS_COLORS_PARSED.get('rs')
+
+    # If a color wasn't found in LS_COLORS, use the reset color
+    if color is None:
+        color = LS_COLORS_PARSED.get('rs')
+
+    # The color sequence in LS_COLORS is a string like "38;2;r;g;b"
+    # Convert this to an ANSI escape sequence like "\033[...m"
+    color_sequence = "\033[{}m".format(color)
+
+    # Return the filename enclosed in the color escape sequence
+    # The "\033[0m" sequence at the end resets the color back to the default
+    return "{}{}{}".format(color_sequence, filename, "\033[0m")
+
+
+def remove(args: List[str]) -> int:
     """
     Moves files and directories passed as arguments into ~/.trash-bin.
     If the file/directory already exists in .trash-bin, it appends a number to its name.
@@ -36,17 +84,20 @@ def remove(args: List[str], talkative: bool = True) -> int:
     """
     status = STATUS_GOOD
     if not args:
-        if talkative:
-            print(f"{Fore.RED}No files or directories passed{Fore.RESET}", file=sys.stderr)
+        print(f"{Fore.RED}No files or directories passed{Fore.RESET}", file=sys.stderr)
         return STATUS_NO_ENTRIES
 
     if not os.path.exists(TRASH):
         os.mkdir(TRASH)
 
+    deleted = []
+    error_messages = []
+
     for arg in args:
         arg = os.path.expanduser(arg)
         arg = os.path.abspath(arg)
         files = glob.glob(arg)
+
         for file in files:
             file_name = os.path.basename(file)
 
@@ -60,23 +111,23 @@ def remove(args: List[str], talkative: bool = True) -> int:
                 shutil.move(file, os.path.join(TRASH, file_name))
             except Exception as e:
 
-                if talkative:
-                    print(f"{Fore.RED}Error while trying to remove {file}: {e}{Fore.RESET}")
+                error_messages.append(f"{Fore.RED}Error while trying to remove {colorize(os.path.basename(file))}: {e}{Fore.RESET}")
 
                 status = STATUS_LITTLE_ERROR
                 continue
 
-            if talkative:
-                print(f"{Fore.YELLOW}{file}{Fore.GREEN} moved into trash{Fore.RESET}")
-
-            with open(RMLOG, "a") as f:
-                f.write(f"{time.strftime('%d. %m. %Y')} {file} moved to ~/.trash-bin/{file_name}\n")
+            deleted.append(f"{colorize(os.path.basename(file))}")
 
         if not files:
             status = STATUS_LITTLE_ERROR
 
-            if talkative:
-                print(f"{Fore.RED}{arg} does not match any files or directories{Fore.RESET}", file=sys.stderr)
+            error_messages.append(f"{Fore.RED}{arg} does not match any files or directories{Fore.RESET}")
+
+    if deleted:
+        print(*[f"{filename}{Fore.GREEN} was successfully deleted{Fore.RESET}" for filename in deleted], sep="\n")
+    
+    if error_messages:
+        print(*error_messages, sep="\n", file=sys.stderr)
 
     return status
 
@@ -108,9 +159,10 @@ def dump_trash(to_dump: List[os.DirEntry]) -> None:
     """
     Permanently deletes all files in .trash-bin directory that haven't been modified in more
     than 30 days and returns the total size of the deleted files
-    
     """
+    error_messages = []
     total_size = 0
+
     for entry in to_dump:
         try:
             curr_size = get_size(entry)
@@ -123,10 +175,9 @@ def dump_trash(to_dump: List[os.DirEntry]) -> None:
             total_size += curr_size
 
         except Exception as e:
-            print(f"{Fore.RED}An error occurred while attempting to delete {Fore.YELLOW}{entry.name}{Fore.RED}: {e}{Fore.RESET}")
+            error_messages.append(f"{Fore.RED}An error occurred while attempting to delete {Fore.YELLOW}{entry.name}{Fore.RED}: {e}{Fore.RESET}")
 
-            with open(DUMPLOG, "a") as f:
-                f.write(f"{time.strftime('%d. %m. %Y')} Dumping of {entry.name} failed: {e}\n")
+    print(*error_messages, sep="\n", file=sys.stderr)
 
     return total_size
 
@@ -140,20 +191,24 @@ def ask_whether_to_dump() -> None:
             or not (dumpable := sorted(get_dumpable_files(DELETED_FILE_AGE_LIMIT), key=lambda entry: entry.name)):
         return
     
-    print(f"The following files have been in the trash for more than {DELETED_FILE_AGE_LIMIT} days:")
+    print(f"{Fore.GREEN}The following files have been in the trash for more than {DELETED_FILE_AGE_LIMIT} days:{Fore.RESET}")
     for entry in dumpable:
-        print(f"{Fore.YELLOW}{entry.name}{Fore.RESET}")
+        print(f"{colorize(entry.name)}")
 
-    print("Do you want to permanently delete them? [y/n] ", end="")
+    print(f"{Fore.GREEN}Do you want to permanently delete them? [y/n] {Fore.RESET}", end="")
     answer = input()
 
-    if answer.lower() in ["y", "yes", "yeah", "yep, sure", "yep", "why not"]:
-        freed_memory = dump_trash(dumpable)
-        print(f"{Fore.GREEN}Successfully freed {freed_memory / 1024 / 1024:.2f} MB{Fore.RESET}")
+    with open(DUMPLOG, "a") as f:
 
-    else:
-        print(f"{Fore.GREEN}The files have not been dumped, you'll be asked again in 7 days.{Fore.RESET}")
-        with open(DUMPLOG, "a") as f:
+        if answer.lower() in ["y", "yes", "yeah", "yep, sure", "yep", "why not"]:
+            freed_memory = dump_trash(dumpable)
+            print(f"{Fore.GREEN}Successfully freed {Fore.CYAN}{freed_memory / 1024 / 1024:.2f}{Fore.GREEN} MB{Fore.RESET}")
+
+            f.write(f"{time.strftime('%d.%m.%Y')} User dumped trash\n")
+
+        else:
+            print(f"{Fore.GREEN}The files have not been dumped, you'll be reminded again in 7 days.{Fore.RESET}")
+
             f.write(f"{time.strftime('%d.%m.%Y')} User declined to dump trash\n")
 
 
@@ -190,7 +245,7 @@ def super_ls(args: List[str]) -> None:
         status = start_in_new_session(
             "ls", ["--color=always"] + args,
             quiet=False,
-            env={"LS_COLORS":  open("/home/ralis/Config-Files/ls-colors.txt").read()}
+            env={"LS_COLORS":  LS_COLORS}
         ) or status
     
     except Exception as e:
