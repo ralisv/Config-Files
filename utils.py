@@ -4,7 +4,6 @@ import shutil
 import sys
 import time
 import subprocess
-import re
 
 from colorama import Fore, init
 from typing import List
