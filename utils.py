@@ -213,7 +213,7 @@ def ask_whether_to_dump() -> None:
             f.write(f"{time.strftime('%d.%m.%Y')} User declined to dump trash\n")
 
 
-def start_in_new_session(process: str, args: List[str], quiet: bool = True, env=None) -> int:
+def start_in_new_session(process: str, args: List[str], quiet: bool = True, env=None) -> None:
     """
     Starts a process in a new session. If quiet os.execvpis True, it redirects stdout and stderr to /dev/null
 
@@ -224,7 +224,7 @@ def start_in_new_session(process: str, args: List[str], quiet: bool = True, env=
     stdout = subprocess.DEVNULL if quiet else None
     stderr = subprocess.DEVNULL if quiet else None
 
-    return subprocess.Popen([process] + args, stdout=stdout, stderr=stderr, start_new_session=True, env=env).wait()
+    subprocess.Popen([process] + args, stdout=stdout, stderr=stderr, start_new_session=True, env=env)
 
 
 def super_ls(args: List[str]) -> None:
@@ -237,13 +237,14 @@ def super_ls(args: List[str]) -> None:
         is_git_repo = os.path.exists(".git")
 
         if is_git_repo:
-            status = start_in_new_session(
+            start_in_new_session(
                 "git", ["status", "--short"],
                 quiet=False
             ) or status
+            time.sleep(0.005)
             start_in_new_session("echo", [], quiet=False)
 
-        status = start_in_new_session(
+        start_in_new_session(
             "ls", ["--color=always"] + args,
             quiet=False,
             env={"LS_COLORS":  LS_COLORS}
