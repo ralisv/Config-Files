@@ -12,27 +12,37 @@ from typing import List
 init()
 
 LS_COLORS = open("/home/ralis/Config-Files/ls-colors.txt").read()
+""" The contents of the LS_COLORS environment variable """
 LS_COLORS_PARSED = dict(map(lambda assignment: assignment.split(sep="="), LS_COLORS.split(sep=":")))
+""" LS_COLORS parsed into a dictionary where the keys are file types and the values are color codes """
+
 
 STATUS_GOOD = 0
 STATUS_LITTLE_ERROR = 1
 STATUS_NO_ENTRIES = 2
 STATUS_BIG_ERROR = 3
 
+
 TRASH = os.path.expanduser("~/.trash-bin")
-RMLOG = os.path.expanduser("~/.rmlog.txt")
+""" Path to the directory where the files are moved when deleted """
+
 DUMPLOG = os.path.expanduser("~/.dumplog.txt")
+""" Path to the file where the information related to dumping is stored """
 
 DELETED_FILE_AGE_LIMIT = 30
+""" Number of days after which the file is considered dumpable """
 
 
 def colorize(filename: str) -> str:
-    """ Returns the filename enclosed in the color escape sequence based on LS_COLORS """
+    """
+    Returns the filename enclosed in the color escape sequence based on LS_COLORS
+    It is required that at least rs (reset) color is defined in LS_COLORS, as it is
+    used as a fallback when color for the file type is not defined
+    """
     # Get the file extension
     _, ext = os.path.splitext(filename)
-    ext = '*' + ext
+    ext = f"*{ext}"
 
-    # Try to get a color for the file based on its extension
     if ext in LS_COLORS_PARSED:
         color = LS_COLORS_PARSED.get(ext)
 
@@ -44,30 +54,20 @@ def colorize(filename: str) -> str:
     elif os.path.islink(filename):
         color = LS_COLORS_PARSED.get('ln')
 
-    # If the file is a regular file
-    elif os.path.isfile(filename):
-        # If the file is executable, get the executable color
-        if os.access(filename, os.X_OK):
-            color = LS_COLORS_PARSED.get('ex')
-        # Otherwise, get the regular file color
-        else:
-            color = LS_COLORS_PARSED.get('*')
+    # If the file is a regular file and an executable
+    elif os.path.isfile(filename) and os.access(filename, os.X_OK):
+        color = LS_COLORS_PARSED.get('ex')
 
-    # If the file type wasn't recognized, use the reset color
     else:
-        color = LS_COLORS_PARSED.get('rs')
-
-    # If a color wasn't found in LS_COLORS, use the reset color
-    if color is None:
         color = LS_COLORS_PARSED.get('rs')
 
     # The color sequence in LS_COLORS is a string like "38;2;r;g;b"
     # Convert this to an ANSI escape sequence like "\033[...m"
-    color_sequence = "\033[{}m".format(color)
+    color_sequence = f"\033[{color}m"
 
     # Return the filename enclosed in the color escape sequence
     # The "\033[0m" sequence at the end resets the color back to the default
-    return "{}{}{}".format(color_sequence, filename, "\033[0m")
+    return f"{color_sequence}{filename}\033[0m"
 
 
 def remove(args: List[str]) -> int:
@@ -76,6 +76,8 @@ def remove(args: List[str]) -> int:
     If the file/directory already exists in .trash-bin, it appends a number to its name.
 
     Globbing is supported.
+
+    Uses colorize function to print the names of the files that were successfully deleted
 
     @param args: list of files and directories to remove
     @param talkative: if True, prints status messages to stdout
