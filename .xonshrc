@@ -111,7 +111,7 @@ def git_info() -> str:
 HOME_DIRECTORY = os.path.expanduser("~")
 
 def path_info() -> str:
-    return enclose_in_brackets(f"{BLUE}{os.getcwd().replace(HOME_DIRECTORY, '~')}")
+    return enclose_in_brackets(f"{colorize(os.getcwd()).replace(HOME_DIRECTORY, '~')}")
 
 
 $PROMPT_FIELDS["git-info"] = git_info
