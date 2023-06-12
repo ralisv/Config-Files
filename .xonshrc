@@ -2,6 +2,7 @@ import sys
 import os
 
 from math import factorial, pi, e, gcd, log
+from git import Repo
 from wpm.commandline import main as wpm
 
 sys.path.append(os.path.expanduser("~/.local/lib/python3.10/site-packages"))
@@ -34,6 +35,7 @@ $UPDATE_COMPLETIONS_ON_KEYPRESS = False
 $XONSH_AUTOPAIR = True
 $XONSH_COLOR_STYLE = "paraiso-dark"
 $XONSH_HISTORY_MATCH_ANYWHERE = True
+$XONSH_SHOW_TRACEBACK = True
 
 
 my_aliases = {
@@ -91,9 +93,10 @@ customize_autocompleter()
 
 # Prompt
 
-RED = "{#ff9999}"
-PINK = "{#ff22bb}"
 BLUE = "{#00b0ff}"
+GREEN = "{#00ff00}"
+PINK = "{#ff22bb}"
+RED = "{#ff9999}"
 WHITE = "{#ffffff}"
 
 def enclose_in_brackets(text: str) -> str:
@@ -103,10 +106,18 @@ def git_info() -> str:
     if not os.path.isdir(".git"):
         return ""
 
-    branch = subprocess.check_output(["git", "branch", "--show-current"]).decode("utf-8").strip()
+    repo = Repo('.')
+    branch = repo.active_branch.name
+
+    if repo.is_dirty(untracked_files=True):
+        color = RED
+    else:
+        color = GREEN
+
     if branch == "master":
         branch = "main"
-    return enclose_in_brackets(f"{BLUE}{branch}")
+
+    return enclose_in_brackets(f"{color}{branch}")
 
 HOME_DIRECTORY = os.path.expanduser("~")
 
