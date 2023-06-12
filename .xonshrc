@@ -2,7 +2,7 @@ import sys
 import os
 
 from math import factorial, pi, e, gcd, log
-from git import Repo
+from git import Repo, InvalidGitRepositoryError
 from wpm.commandline import main as wpm
 
 sys.path.append(os.path.expanduser("~/.local/lib/python3.10/site-packages"))
@@ -103,10 +103,11 @@ def enclose_in_brackets(text: str) -> str:
     return f"{PINK}[{text}{PINK}] "
 
 def git_info() -> str:
-    if not os.path.isdir(".git"):
+    try:
+        repo = Repo('.')
+    except InvalidGitRepositoryError:
         return ""
 
-    repo = Repo('.')
     branch = repo.active_branch.name
 
     if repo.is_dirty(untracked_files=True):
@@ -119,20 +120,23 @@ def git_info() -> str:
 
     return enclose_in_brackets(f"{color}{branch}")
 
-HOME_DIRECTORY = os.path.expanduser("~")
-
 def path_info() -> str:
-    return enclose_in_brackets(f"{colorize(os.getcwd()).replace(HOME_DIRECTORY, '~')}")
+    return enclose_in_brackets(f"{colorize(os.getcwd()).replace(os.path.expanduser('~'), '~')}")
 
+def last_exit_code_info():
+    exit_code = $LAST_RETURN_CODE
+    return enclose_in_brackets(f"{RED}{exit_code}") if exit_code != 0 else ""
 
 $PROMPT_FIELDS["git-info"] = git_info
+$PROMPT_FIELDS["last-exit-code-info"] = last_exit_code_info
 $PROMPT_FIELDS["path-info"] = path_info
 
 USER_FIELD = "{user}"
-PATH_FIELD = "{path-info}"
 GIT_FIELD = "{git-info}"
+LAST_EXIT_CODE_FIELD = "{last-exit-code-info}"
+PATH_FIELD = "{path-info}"
 
-$PROMPT = f"{PINK}{USER_FIELD}.{PATH_FIELD}{GIT_FIELD}λ " 
+$PROMPT = PINK + "{user}.{path-info}{git-info}{last-exit-code-info}λ " 
 
 
 # Colored man pages
