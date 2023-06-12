@@ -8,6 +8,7 @@ import stat
 
 from colorama import Fore, init
 from typing import List
+from git import Repo, InvalidGitRepositoryError
 
 
 init()
@@ -248,32 +249,29 @@ def start_in_new_session(process: str, args: List[str], quiet: bool = True, env=
     subprocess.Popen([process] + args, stdout=stdout, stderr=stderr, start_new_session=True, env=env)
 
 
+def super_git_status() -> None:
+    """ 
+    Executes git status --short and colors the files based on LS_COLORS 
+    """
+    git_status = subprocess.check_output(["git", "-c", "color.status=always", "status", "--short"], text=True)
+    file_states = (line.split() for line in git_status.split("\n") if line)
+    colored_git_status = "\n".join(f"{state} {colorize(file)}" for state, file in file_states)
+    subprocess.run(["echo", colored_git_status, "\n"])
+
+
 def super_ls(args: List[str]) -> None:
     """
-    Executes git status when in a git repository and always executes ls after that
+    Executes git super git status when in a git repository and always executes ls after that
     """
-    status = STATUS_GOOD
-
     try:
-        is_git_repo = os.path.exists(".git")
+        if os.path.exists(".git"):
+            super_git_status()
 
-        if is_git_repo:
-            start_in_new_session(
-                "git", ["status", "--short"],
-                quiet=False
-            ) or status
-            time.sleep(0.005)
-            start_in_new_session("echo", [], quiet=False)
-
-        start_in_new_session(
-            "ls", ["--color=always", "-X"] + args,
-            quiet=False,
-            env={"LS_COLORS":  LS_COLORS}
-        )
+        subprocess.Popen(["ls", "--color=always", "-X", *args], env={"LS_COLORS": LS_COLORS})
     
     except Exception as e:
         print(f"{Fore.RED}{e}{Fore.RESET}", file=sys.stderr)
-        status = STATUS_BIG_ERROR
+        return STATUS_BIG_ERROR
     
     finally:
-        return status
+        return STATUS_GOOD
