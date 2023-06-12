@@ -36,32 +36,32 @@ $XONSH_COLOR_STYLE = "paraiso-dark"
 $XONSH_HISTORY_MATCH_ANYWHERE = True
 
 
-# Important aliases
 my_aliases = {
-    "d": "cd",
+    "aisa": "ssh 'xralis@aisa.fi.muni.cz'",
+    "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
     "c": "cd",
-    "ls": "ls --color=auto",
+    "cat": "batcat --pager=never",
+    "d": "cd",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
+    "du": "du -h",
+    "grep": "grep --color=auto",
+    "ls": "ls --color=auto",
+    "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' {os.path.expanduser('~')}/aisa",
     "micro": "code",
     "okular": lambda args: start_in_new_session("/usr/bin/okular", args),
-    "vlc": lambda args: start_in_new_session("/snap/bin/vlc", args),
+    "pip": "python -m pip",
+    "python": "python3.10",
+    "R": "R --no-save -q",
     "rm": lambda args: remove(args),
     "s": lambda args: super_ls(args),
-    "grep": "grep --color=auto",
     "sl": "sl -e",
-    "du": "du -h",
-    "python": "python3.10",
-    "pip": "python -m pip",
-    "trans": "~/Executables/trans -j -d -t czech",
-    "cat":"batcat --pager=never",
-    "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' {os.path.expanduser('~')}/aisa",
-    "aisa": "ssh 'xralis@aisa.fi.muni.cz'",
-    "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
-    "R": "R --no-save -q",
-    "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
-    "xaisa": "xxh 'xralis@aisa.fi.muni.cz'",
+    "trans": "~/Executables/trans -j -d -t czech",
+    "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
+    "vlc": lambda args: start_in_new_session("/snap/bin/vlc", args),
+    "xaisa": "xxh 'xralis@aisa.fi.muni.cz'"
 }
+
 
 aliases.update(my_aliases)
 
