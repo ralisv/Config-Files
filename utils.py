@@ -35,8 +35,6 @@ DELETED_FILE_AGE_LIMIT = 30
 """ Number of days after which the file is considered dumpable """
 
 
-import os
-
 def colorize(filename: str) -> str:
     """
     Returns the filename enclosed in the color escape sequence based on LS_COLORS
@@ -271,7 +269,7 @@ def super_ls(args: List[str]) -> None:
             "ls", ["--color=always", "-X"] + args,
             quiet=False,
             env={"LS_COLORS":  LS_COLORS}
-        ) or status
+        )
     
     except Exception as e:
         print(f"{Fore.RED}{e}{Fore.RESET}", file=sys.stderr)
