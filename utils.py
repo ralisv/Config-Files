@@ -249,14 +249,17 @@ def start_in_new_session(process: str, args: List[str], quiet: bool = True, env=
     subprocess.Popen([process] + args, stdout=stdout, stderr=stderr, start_new_session=True, env=env)
 
 
-def super_git_status() -> None:
+def super_git_status() -> str:
     """ 
-    Executes git status --short and colors the files based on LS_COLORS 
+    Returns string representing git status --short with colored files based on LS_COLORS 
     """
     git_status = subprocess.check_output(["git", "-c", "color.status=always", "status", "--short"], text=True)
-    file_states = (line.split() for line in git_status.split("\n") if line)
+    file_states = [line.split() for line in git_status.split("\n")][:-1]
+    if not file_states:
+        return
+    
     colored_git_status = "\n".join(f"{state} {colorize(file)}" for state, file in file_states)
-    subprocess.run(["echo", colored_git_status, "\n"])
+    return colored_git_status
 
 
 def super_ls(args: List[str]) -> None:
@@ -265,7 +268,9 @@ def super_ls(args: List[str]) -> None:
     """
     try:
         if os.path.exists(".git"):
-            super_git_status()
+            git_status = super_git_status()
+            if git_status:
+                subprocess.Popen(["echo", git_status, "\n"])
 
         subprocess.Popen(["ls", "--color=always", "-X", *args], env={"LS_COLORS": LS_COLORS})
     
