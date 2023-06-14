@@ -8,10 +8,10 @@ import stat
 
 from colorama import Fore, init
 from typing import List
-from git import Repo, InvalidGitRepositoryError
 
 
 init()
+
 
 LS_COLORS = open(f"{os.path.expanduser('~')}/Config-Files/ls-colors.txt").read()
 """ The contents of the LS_COLORS environment variable """
@@ -218,8 +218,14 @@ def ask_whether_to_dump() -> None:
     print(*[colorize(file.path).replace(os.path.expanduser("~/.trash-bin/"), "") for file in dumpable], sep="\n", end="\n\n")
 
     print(f"{Fore.GREEN}Do you wish to permanently delete them?" \
-          "[{Fore.LIGHTGREEN_EX}y{Fore.GREEN}/{Fore.RED}n{Fore.GREEN}] {Fore.RESET}", end="")
-    answer = input()
+          f"[{Fore.LIGHTGREEN_EX}y{Fore.GREEN}/{Fore.RED}n{Fore.GREEN}] {Fore.RESET}", end="")
+    
+    try:
+        answer = input()
+
+    except KeyboardInterrupt:
+        print(f"\n{Fore.GREEN}The files have not been dumped.{Fore.RESET}")
+        return
 
     with open(DUMPLOG, "a") as f:
 
