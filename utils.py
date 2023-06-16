@@ -8,7 +8,7 @@ import stat
 
 from colorama import Fore, init
 from typing import List
-
+from git import Repo, InvalidGitRepositoryError
 
 init()
 
@@ -19,6 +19,39 @@ LS_COLORS = open(f"{os.path.expanduser('~')}/Config-Files/ls-colors.txt").read()
 LS_COLORS_PARSED = dict(map(lambda assignment: assignment.split(sep="="), LS_COLORS.split(sep=":")))
 """ LS_COLORS parsed into a dictionary where the keys are file types and the values are color codes """
 
+GIT_STATUS_COLORS = {
+    '??': Fore.RED,
+    'M': Fore.RED,
+    'A': Fore.GREEN,
+    'D': Fore.RED,
+    'R': Fore.GREEN,
+    'C': Fore.GREEN,
+    'U': Fore.RED,
+    'DU': Fore.RED,
+    'AU': Fore.RED,
+    'UD': Fore.RED,
+    'UA': Fore.RED,
+    'DA': Fore.RED,
+    'AA': Fore.RED,
+    'UU': Fore.RED,
+}
+
+GIT_STATUS_VERBOSE = {
+    'M': 'Modified',
+    'A': 'Added',
+    'D': 'Deleted',
+    'R': 'Renamed',
+    'C': 'Copied',
+    'U': 'Unmerged',
+    '??': 'Untracked',
+    'DU': 'Unmerged, both deleted',
+    'AU': 'Unmerged, added by us',
+    'UD': 'Unmerged, deleted by them',
+    'UA': 'Unmerged, added by them',
+    'DA': 'Unmerged, deleted by us',
+    'AA': 'Unmerged, both added',
+    'UU': 'Unmerged, both modified',
+}
 
 STATUS_GOOD = 0
 STATUS_LITTLE_ERROR = 1
@@ -35,52 +68,54 @@ DUMPLOG = os.path.expanduser("~/.dumplog.txt")
 DELETED_FILE_AGE_LIMIT = 30
 """ Number of days after which the file is considered dumpable """
 
+def colorize_state(status: str) -> str:
+    """
+    Returns colored version of git file state based on status from git status --short
+    """
+    state_color = GIT_STATUS_COLORS.get(status, "")
+    verbose_state = GIT_STATUS_VERBOSE.get(status, "")
+    return f"[{state_color}{status.ljust(2)}{Fore.RESET}] {state_color}{verbose_state}{Fore.RESET}"
 
-def colorize(filename: str) -> str:
-    """
-    Returns the filename enclosed in the color escape sequence based on LS_COLORS
-    It is required that at least rs (reset) color is defined in LS_COLORS, as it is
-    used as a fallback when color for the file type is not defined
-    """
-    # Get the file extension
-    _, ext = os.path.splitext(filename)
+
+def get_file_color(path: str) -> str:
+    _, ext = os.path.splitext(path)
     ext = f"*{ext}"
 
     color = None
 
-    if os.path.isfile(filename) and ext in LS_COLORS_PARSED:
+    if os.path.isfile(path) and ext in LS_COLORS_PARSED:
         color = LS_COLORS_PARSED[ext]
 
     # If the file is a directory, get the directory color
-    elif os.path.isdir(filename):
+    elif os.path.isdir(path):
         color = LS_COLORS_PARSED.get('di')
 
     # If the file is a symbolic link, get the link color
-    elif os.path.islink(filename):
+    elif os.path.islink(path):
         color = LS_COLORS_PARSED.get('ln')
 
     # If the file is a fifo pipe, get the pipe color
-    elif os.path.exists(filename) and stat.S_ISFIFO(os.stat(filename).st_mode):
+    elif os.path.exists(path) and stat.S_ISFIFO(os.stat(path).st_mode):
         color = LS_COLORS_PARSED.get('pi')
 
     # If the file is a socket, get the socket color
-    elif os.path.exists(filename) and stat.S_ISSOCK(os.stat(filename).st_mode):
+    elif os.path.exists(path) and stat.S_ISSOCK(os.stat(path).st_mode):
         color = LS_COLORS_PARSED.get('so')
 
     # If the file is a block (buffered) special file, get the block color
-    elif os.path.exists(filename) and stat.S_ISBLK(os.stat(filename).st_mode):
+    elif os.path.exists(path) and stat.S_ISBLK(os.stat(path).st_mode):
         color = LS_COLORS_PARSED.get('bd')
 
     # If the file is a character (unbuffered) special file, get the character color
-    elif os.path.exists(filename) and stat.S_ISCHR(os.stat(filename).st_mode):
+    elif os.path.exists(path) and stat.S_ISCHR(os.stat(path).st_mode):
         color = LS_COLORS_PARSED.get('cd')
 
     # If the file is a symbolic link and orphaned, get the orphan color
-    elif os.path.islink(filename) and not os.path.exists(os.readlink(filename)):
+    elif os.path.islink(path) and not os.path.exists(os.readlink(path)):
         color = LS_COLORS_PARSED.get('or')
 
     # If the file is a regular file and an executable
-    elif os.path.isfile(filename) and os.access(filename, os.X_OK):
+    elif os.path.isfile(path) and os.access(path, os.X_OK):
         color = LS_COLORS_PARSED.get('ex')
 
     if color is None:
@@ -88,7 +123,19 @@ def colorize(filename: str) -> str:
 
     # Return the filename enclosed in the color escape sequence
     # The "\033[0m" sequence at the end resets the color back to the default
-    return f"\033[{color}m{filename}\033[0m"
+    return f"\033[{color}m"
+
+
+def colorize(filename: str, color: str = "") -> str:
+    """
+    Returns the filename enclosed in the color escape sequence based on LS_COLORS
+    It is required that at least rs (reset) color is defined in LS_COLORS, as it is
+    used as a fallback when color for the file type is not defined
+    """
+
+    # Return the filename enclosed in the color escape sequence
+    # The "\033[0m" sequence at the end resets the color back to the default
+    return f"{get_file_color(filename) if not color else color}{filename}\033[0m"
 
 
 def remove(args: List[str]) -> int:
@@ -259,30 +306,45 @@ def super_git_status() -> str:
     """ 
     Returns string representing git status --short with colored files based on LS_COLORS 
     """
-    git_status = subprocess.check_output(["git", "-c", "color.status=always", "status", "--short"], text=True)
-    file_states = [line.split() for line in git_status.split("\n")][:-1]
-    if not file_states:
-        return
-    
-    colored_git_status = "\n".join(f"{state} {colorize(file)}" for state, file in file_states)
-    return colored_git_status
+    try:
+        repo = Repo(".", search_parent_directories=True)
+
+        git_status = repo.git.status('--short')
+
+        file_states = [line.split() for line in git_status.split("\n") if line]
+        if not file_states:
+            return ""
+
+        colored_file_states = []
+        for state, file in file_states:
+            colored_state = colorize_state(state)
+            colorized_file = colorize(file, get_file_color(os.path.join(repo.working_tree_dir, file)))
+
+            colored_file_states.append(f"{colored_state} {colorized_file}")
+
+        colored_git_status = "\n".join(colored_file_states)
+        return colored_git_status
+
+    except Exception:
+        return ""
 
 
-def super_ls(args: List[str]) -> None:
+def super_ls(args: List[str]) -> int:
     """
     Executes git super git status when in a git repository and always executes ls after that
     """
+    STATUS_GOOD = 0
+    STATUS_BIG_ERROR = 1
+
     try:
-        if os.path.exists(".git"):
-            git_status = super_git_status()
-            if git_status:
-                subprocess.Popen(["echo", git_status, "\n"])
+        git_status = super_git_status()
+        if git_status:
+            subprocess.Popen(["echo", git_status + "\n"])
 
         subprocess.Popen(["ls", "--color=always", "-X", *args], env={"LS_COLORS": LS_COLORS})
-    
-    except Exception as e:
-        print(f"{Fore.RED}{e}{Fore.RESET}", file=sys.stderr)
-        return STATUS_BIG_ERROR
-    
-    finally:
+
         return STATUS_GOOD
+
+    except Exception as e:
+        print(f"{Fore.RED}{e}{Fore.RESET}")
+        return STATUS_BIG_ERROR
