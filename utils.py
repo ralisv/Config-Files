@@ -9,6 +9,8 @@ import stat
 from colorama import Fore, init
 from typing import List
 from git import Repo
+from tabulate import tabulate
+
 
 init()
 
@@ -305,16 +307,19 @@ def super_git_status() -> str:
 
         file_states = [line.split() for line in git_status.split("\n") if line]
 
-        colored_file_states = []
+        # Initialize a list to store the rows
+        table_data = []
+
         for state, file in file_states:
             state_color = GIT_STATUS_COLORS.get(state, Fore.RESET)
             verbose_state = GIT_STATUS_VERBOSE.get(state, "")
             colorized_file = colorize(file, get_file_color(os.path.join(repo.working_tree_dir, file)))
 
-            colored_file_states.append(f"{state_color}{state}\t{verbose_state}\t{colorized_file}")
+            # Append rows to the list
+            table_data.append([f"{state_color}{state}", f"{state_color}{verbose_state}", colorized_file])
 
-        colored_git_status = "\n".join(colored_file_states)
-        return colored_git_status
+        # Tabulate data
+        return tabulate(table_data, tablefmt='plain')
 
     except Exception:
         return ""
