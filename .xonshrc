@@ -86,8 +86,8 @@ $XONSH_COLOR_STYLE="mystyle"
 
 def customize_autocompleter():
     import prompt_toolkit.styles.defaults as defstyle
-    defstyle.PROMPT_TOOLKIT_STYLE.append(('bottom-toolbar','noreverse'))
-    defstyle.PROMPT_TOOLKIT_STYLE.append(('completion-menu','bg:#880088 #000000'))
+    defstyle.PROMPT_TOOLKIT_STYLE.append(("bottom-toolbar", "noreverse"))
+    defstyle.PROMPT_TOOLKIT_STYLE.append(("completion-menu", "bg:#880088 #000000"))
 
 customize_autocompleter()
 
