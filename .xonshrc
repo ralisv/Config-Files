@@ -132,11 +132,6 @@ $PROMPT_FIELDS["git-info"] = git_info
 $PROMPT_FIELDS["last-exit-code-info"] = last_exit_code_info
 $PROMPT_FIELDS["path-info"] = path_info
 
-USER_FIELD = "{user}"
-GIT_FIELD = "{git-info}"
-LAST_EXIT_CODE_FIELD = "{last-exit-code-info}"
-PATH_FIELD = "{path-info}"
-
 $PROMPT = PINK + "{user}.{path-info}{git-info}{last-exit-code-info}λ " 
 
 

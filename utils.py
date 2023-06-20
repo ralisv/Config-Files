@@ -8,7 +8,7 @@ import stat
 
 from colorama import Fore, init
 from typing import List
-from git import Repo, InvalidGitRepositoryError
+from git import Repo
 
 init()
 
