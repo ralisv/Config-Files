@@ -22,6 +22,7 @@ LS_COLORS_PARSED = dict(map(lambda assignment: assignment.split(sep="="), LS_COL
 """ LS_COLORS parsed into a dictionary where the keys are file types and the values are color codes """
 
 GIT_STATUS_COLORS = {
+    "STAGED": Fore.LIGHTGREEN_EX,
     '??': Fore.YELLOW,
     'M': Fore.BLUE,
     'A': Fore.GREEN,
@@ -307,11 +308,14 @@ def super_git_status() -> str:
 
         file_states = [line.split() for line in git_status.split("\n") if line]
 
+        # Get staged files
+        staged_files = [item.a_path for item in repo.index.diff("HEAD")]
+
         # Initialize a list to store the rows
         table_data = []
 
         for state, file in file_states:
-            state_color = GIT_STATUS_COLORS.get(state, Fore.RESET)
+            state_color = GIT_STATUS_COLORS.get(state, Fore.RESET) if file not in staged_files else GIT_STATUS_COLORS["STAGED"]
             verbose_state = GIT_STATUS_VERBOSE.get(state, "")
             colorized_file = colorize(file, get_file_color(os.path.join(repo.working_tree_dir, file)))
 
