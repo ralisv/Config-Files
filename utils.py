@@ -20,8 +20,8 @@ LS_COLORS_PARSED = dict(map(lambda assignment: assignment.split(sep="="), LS_COL
 """ LS_COLORS parsed into a dictionary where the keys are file types and the values are color codes """
 
 GIT_STATUS_COLORS = {
-    '??': Fore.RED,
-    'M': Fore.RED,
+    '??': Fore.YELLOW,
+    'M': Fore.BLUE,
     'A': Fore.GREEN,
     'D': Fore.RED,
     'R': Fore.GREEN,
@@ -67,14 +67,6 @@ DUMPLOG = os.path.expanduser("~/.dumplog.txt")
 
 DELETED_FILE_AGE_LIMIT = 30
 """ Number of days after which the file is considered dumpable """
-
-def colorize_state(status: str) -> str:
-    """
-    Returns colored version of git file state based on status from git status --short
-    """
-    state_color = GIT_STATUS_COLORS.get(status, "")
-    verbose_state = GIT_STATUS_VERBOSE.get(status, "")
-    return f"[{state_color}{status.ljust(2)}{Fore.RESET}] {state_color}{verbose_state}{Fore.RESET}"
 
 
 def get_file_color(path: str) -> str:
@@ -312,15 +304,14 @@ def super_git_status() -> str:
         git_status = repo.git.status('--short')
 
         file_states = [line.split() for line in git_status.split("\n") if line]
-        if not file_states:
-            return ""
 
         colored_file_states = []
         for state, file in file_states:
-            colored_state = colorize_state(state)
+            state_color = GIT_STATUS_COLORS.get(state, Fore.RESET)
+            verbose_state = GIT_STATUS_VERBOSE.get(state, "")
             colorized_file = colorize(file, get_file_color(os.path.join(repo.working_tree_dir, file)))
 
-            colored_file_states.append(f"{colored_state} {colorized_file}")
+            colored_file_states.append(f"{state_color}{state}\t{verbose_state}\t{colorized_file}")
 
         colored_git_status = "\n".join(colored_file_states)
         return colored_git_status
