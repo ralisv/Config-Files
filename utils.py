@@ -277,11 +277,13 @@ def ask_whether_to_dump() -> None:
 
             f.write(f"{time.strftime('%d.%m.%Y')} User dumped trash\n")
 
-        else:
+        elif answer.lower() in ["n", "no", "nope", "nah", "no way", "nah, thanks"]:
             print(f"{Fore.GREEN}The files have not been dumped, you'll be reminded again in 7 days.{Fore.RESET}")
 
             f.write(f"{time.strftime('%d.%m.%Y')} User declined to dump trash\n")
-
+        
+        else:
+            print(f"{Fore.RED}Invalid input, the files have not been dumped.{Fore.RESET}")
 
 def start_in_new_session(process: str, args: List[str], quiet: bool = True, env=None) -> None:
     """
