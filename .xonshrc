@@ -63,6 +63,7 @@ my_aliases = {
     "vlc": lambda args: start_in_new_session("/snap/bin/vlc", args),
     "xaisa": "xxh 'xralis@aisa.fi.muni.cz'",
     "minesweeper": "python ~/Code/Minesweeper/src/game.py",
+    "snake": "python ~/Code/Snake/src/game.py",
 }
 
 
