@@ -3,7 +3,7 @@ import os
 
 from math import factorial, pi, e, gcd, log
 from git import Repo, InvalidGitRepositoryError
-from wpm.commandline import main as wpm
+# from wpm.commandline import main as wpm
 
 sys.path.append(os.path.expanduser("~/.local/lib/python3.10/site-packages"))
 sys.path.append(os.path.expanduser("~/Config-Files"))
@@ -133,7 +133,7 @@ $PROMPT_FIELDS["git-info"] = git_info
 $PROMPT_FIELDS["last-exit-code-info"] = last_exit_code_info
 $PROMPT_FIELDS["path-info"] = path_info
 
-$PROMPT = PINK + "{user}.{path-info}{git-info}{last-exit-code-info}λ " 
+$PROMPT = PINK + "{user}.{path-info}{git-info}{last-exit-code-info}λ " + WHITE
 
 
 # Colored man pages
@@ -150,3 +150,7 @@ $LESS_TERMCAP_us="\x1b[38;2;255;100;50m"
 # Ask about dumping trash
 
 ask_whether_to_dump()
+
+# Silence the deprecation warning caused by bug inside of prompt-toolkit library
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
