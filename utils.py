@@ -316,7 +316,9 @@ def super_git_status() -> str:
         # Initialize a list to store the rows
         table_data = []
 
-        for state, file in file_states:
+        for state, *rest in file_states:
+            file = rest[-1]
+
             state_color = GIT_STATUS_COLORS.get(state, Fore.RESET) if file not in staged_files else GIT_STATUS_COLORS["STAGED"]
             verbose_state = GIT_STATUS_VERBOSE.get(state, "")
             colorized_file = colorize(file, get_file_color(os.path.join(repo.working_tree_dir, file)))
