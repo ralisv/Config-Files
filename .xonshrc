@@ -10,10 +10,13 @@ sys.path.append(os.path.expanduser("~/Config-Files"))
 
 $LS_COLORS = open(os.path.expanduser("~/Config-Files/ls-colors.txt")).read()
 
-from utils import *
+from utils import super_git_status, super_ls, start_in_new_session, ask_whether_to_dump, colorize, remove
 
 $PATH.append(os.path.expanduser("~/.local/bin"))
 
+# Silence the deprecation warning caused by bug inside of prompt-toolkit library
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 $AUTO_CD = True
 $CASE_SENSITIVE_COMPLETIONS = False
@@ -58,11 +61,12 @@ my_aliases = {
     "sl": "sl -e",
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
     "trans": "~/Executables/trans -j -d -t czech",
+    "uaexpert": lambda args: start_in_new_session(f"{os.path.expanduser('~')}/Executables/UaExpert/AppRun", args),
     "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
     "vlc": lambda args: start_in_new_session("/snap/bin/vlc", args),
     "xaisa": "xxh 'xralis@aisa.fi.muni.cz'",
-    "minesweeper": "python ~/Code/Minesweeper/src/game.py",
-    "snake": "python ~/Code/Snake/src/game.py",
+    "minesweeper": "python ~/Games/minesweeper/src/game.py",
+    "snake": "python ~/Games/snake/src/game.py",
 }
 
 
@@ -124,15 +128,21 @@ def git_info() -> str:
 def path_info() -> str:
     return enclose_in_brackets(f"{colorize(os.getcwd()).replace(os.path.expanduser('~'), '~')}")
 
-def last_exit_code_info():
+def last_exit_code_info() -> str:
     exit_code = $LAST_RETURN_CODE
     return enclose_in_brackets(f"{RED}{exit_code}") if exit_code != 0 else ""
+
+def reset() -> str:
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    return WHITE
+
 
 $PROMPT_FIELDS["git-info"] = git_info
 $PROMPT_FIELDS["last-exit-code-info"] = last_exit_code_info
 $PROMPT_FIELDS["path-info"] = path_info
+$PROMPT_FIELDS["reset"] = reset
 
-$PROMPT = PINK + "{user}.{path-info}{git-info}{last-exit-code-info}λ " + WHITE
+$PROMPT = PINK + "{user}.{path-info}{git-info}{last-exit-code-info}λ {reset}"
 
 
 # Colored man pages
@@ -149,7 +159,3 @@ $LESS_TERMCAP_us="\x1b[38;2;255;100;50m"
 # Ask about dumping trash
 
 ask_whether_to_dump()
-
-# Silence the deprecation warning caused by bug inside of prompt-toolkit library
-import warnings
-warnings.filterwarnings("ignore", category=DeprecationWarning)
