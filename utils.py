@@ -144,7 +144,6 @@ def remove(args: List[str]) -> int:
 
     @param args: list of files and directories to remove
     @param talkative: if True, prints status messages to stdout
-
     """
     status = STATUS_GOOD
     if not args:
@@ -309,6 +308,10 @@ def super_git_status() -> str:
         git_status = repo.git.status('--short')
 
         file_states = [line.split() for line in git_status.split("\n") if line]
+
+        # When too many files were received from repo.git.status (tabulate handles extremely long lists slowly)
+        if len(file_states) > 1000:
+            return f"{Fore.RED}Super git status error: TooManyEntries ({len(file_states)})"
 
         # Get staged files
         staged_files = [item.a_path for item in repo.index.diff("HEAD")]

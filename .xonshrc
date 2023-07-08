@@ -113,7 +113,10 @@ def git_info() -> str:
     except InvalidGitRepositoryError:
         return ""
 
-    branch = repo.active_branch.name
+    try:
+        branch = repo.active_branch.name
+    except:
+        return enclose_in_brackets(f"{WHITE}unknown")
 
     if repo.is_dirty(untracked_files=True):
         color = RED
