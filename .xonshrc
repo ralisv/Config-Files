@@ -66,6 +66,7 @@ my_aliases = {
     "xaisa": "xxh 'xralis@aisa.fi.muni.cz'",
     "minesweeper": "python ~/Games/minesweeper/src/game.py",
     "snake": "python ~/Games/snake/src/game.py",
+    "light": "sudo light -S"
 }
 
 
