@@ -1,0 +1,20 @@
+{
+  "workbench.colorTheme": "Neon City",
+  "editor.fontFamily": "'Hack Nerd Font', 'Fira Code Nerd Font', 'Jetbrains Mono Nerd Font', 'monospace'",
+  "editor.smoothScrolling": true,
+  "terminal.integrated.fontFamily": "'Hack Nerd Font', 'Fira Code Nerd Font', 'Jetbrains Mono Nerd Font', 'monospace'",
+  "terminal.integrated.lineHeight": 1.5,
+  "editor.fontLigatures": true,
+  "editor.lineHeight": 1.5,
+  "editor.minimap.enabled": false,
+  "editor.tabSize": 2,
+  "editor.fontSize": 13,
+  "workbench.iconTheme": "material-icon-theme",
+  "terminal.integrated.profiles.linux": {
+      "xonsh": {
+          "path": "/run/current-system/sw/bin/bash",
+          "args": ["-c", "nix-shell ~/Config-Files/shell.nix --run 'exec xonsh'"]
+      }
+  },
+  "terminal.integrated.defaultProfile.linux": "xonsh"
+}
