@@ -12,6 +12,7 @@ from git import Repo
 from tabulate import tabulate
 
 
+# Initialize colorama module
 init()
 
 
@@ -348,19 +349,7 @@ def super_ls(args: List[str]) -> int:
         if git_status:
             subprocess.Popen(["echo", git_status + "\n"])
 
-        # hotfix
-        time.sleep(0.005)
-
-        colored_files = [colorize(entry.name, get_file_color(entry.path)) for entry in os.scandir(os.getcwd()) if entry.name[0] != "."]
-        colored_files.sort()
-
-        subprocess.Popen(["echo", "\n".join(colored_files)])
-
-        return STATUS_GOOD
-
-        # end of hotfix
-        
-        subprocess.Popen(["ls", "--color=always", "-X", *args], env={"LS_COLORS": LS_COLORS})
+        subprocess.Popen([shutil.which("ls"), "--color=always", "-X", *args], env={"LS_COLORS": LS_COLORS})
 
         return STATUS_GOOD
 
