@@ -38,8 +38,6 @@ alias trans="~/Executables/trans -j -d -t czech"
 alias překladač="trans"
 alias překlad="trans"
 
-alias cat="batcat --pager=never --theme='Monokai Extended'"
-
 alias maisa='sshfs "xralis@aisa.fi.muni.cz:/home/xralis" /home/ralis/aisa'
 alias aisa='ssh "xralis@aisa.fi.muni.cz"'
 alias drive='setsid rclone mount Google-Drive:Drive ~/Drive'
