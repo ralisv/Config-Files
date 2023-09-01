@@ -28,6 +28,7 @@
     vlc
     alacritty
     cmake
+    libgccjit
   ];
   
   boot.loader = {
