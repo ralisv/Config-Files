@@ -16,5 +16,6 @@
           "args": ["-c", "nix-shell ~/Config-Files/shell.nix --run 'exec xonsh'"]
       }
   },
-  "terminal.integrated.defaultProfile.linux": "xonsh"
+  "terminal.integrated.defaultProfile.linux": "xonsh",
+  "git.openRepositoryInParentFolders": "always"
 }

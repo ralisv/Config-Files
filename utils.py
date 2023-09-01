@@ -315,7 +315,7 @@ def super_git_status() -> str:
             return f"{Fore.RED}Super git status error: TooManyEntries ({len(file_states)})"
 
         # Get staged files
-        staged_files = [item.a_path for item in repo.index.diff("HEAD")]
+        staged_files = {item.a_path for item in repo.index.diff("HEAD")}
 
         # Initialize a list to store the rows
         table_data = []
