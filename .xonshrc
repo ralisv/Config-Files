@@ -1,5 +1,6 @@
 import sys
 import os
+import shutil
 
 from math import factorial, pi, e, gcd, log
 from git import Repo, InvalidGitRepositoryError
@@ -51,7 +52,7 @@ my_aliases = {
     "grep": "grep --color=auto",
     "ls": "ls --color=auto",
     "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' {os.path.expanduser('~')}/aisa",
-    "okular": lambda args: start_in_new_session("/usr/bin/okular", args),
+    "okular": lambda args: start_in_new_session(shutil.which("okular"), args),
     "pip": "python -m pip",
     "python": "python3.10",
     "R": "R --no-save -q",
@@ -62,14 +63,12 @@ my_aliases = {
     "trans": "~/Executables/trans -j -d -t czech",
     "uaexpert": lambda args: start_in_new_session(f"{os.path.expanduser('~')}/Executables/UaExpert/AppRun", args),
     "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
-    "vlc": lambda args: start_in_new_session("/snap/bin/vlc", args),
+    "vlc": lambda args: start_in_new_session(shutil.which("vlc"), args),
     "xaisa": "xxh 'xralis@aisa.fi.muni.cz'",
     "minesweeper": "python ~/Games/minesweeper/src/game.py",
     "snake": "python ~/Games/snake/src/game.py",
     "light": "sudo light -S"
 }
-
-
 aliases.update(my_aliases)
 
 
@@ -118,10 +117,7 @@ def git_info() -> str:
     except:
         return enclose_in_brackets(f"{WHITE}unknown")
 
-    if repo.is_dirty(untracked_files=True):
-        color = RED
-    else:
-        color = GREEN
+    color = RED if repo.is_dirty(untracked_files=True) else GREEN
 
     if branch == "master":
         branch = "main"

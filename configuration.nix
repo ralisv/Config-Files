@@ -13,12 +13,8 @@
     ];
 
   programs = {
-  	light = {
-  	  enable = true;
-  	};
-  	git = {
-  	  enable = true;
-  	};
+  	light.enable = true;
+  	git.enable = true;
   };
   
   environment.systemPackages = with pkgs; [
@@ -29,11 +25,11 @@
     python3Packages.tabulate
   	xonsh
     vscode
-    nixos-grub2-theme
+    vlc
+    alacritty
+    cmake
   ];
   
-  
-  # Bootloader.
   boot.loader = {
     # systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
@@ -45,7 +41,7 @@
         enable = true;
         style = "nixos";
         icon = "color";
-        resolution = "1080p";
+        resolution = "1440p";
       };
       efiSupport = true;
     };
@@ -79,16 +75,12 @@
     LC_TIME = "cs_CZ.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
   # Enable the KDE Plasma Desktop Environment.
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
-
-  # Configure keymap in X11
   services.xserver = {
-    layout = "us";
+    enable = true;
+    displayManager.sddm.enable = true;
+    desktopManager.plasma5.enable = true;
+    layout = "cz";
     xkbVariant = "";
   };
  
