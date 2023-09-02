@@ -8,12 +8,10 @@ window:
 
   
 colors:
-  # Default colors
   primary:
     background: "0x000000"
     foreground: "0xdddddd"
 
-  # Colors the cursor will use if `custom_cursor_colors` is true
 cursor:
   style:
     shape: Beam
