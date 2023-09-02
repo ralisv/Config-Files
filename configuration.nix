@@ -48,6 +48,22 @@
     };
   };
 
+  fonts = {
+    enableDefaultFonts = true;
+    fonts = with pkgs; [
+      ubuntu_font_family
+      (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+    ];
+    fontconfig = {
+      defaultFonts = {
+        serif = [ "Ubuntu" ];
+        sansSerif = [ "Ubuntu" ];
+        monospace = [ "Ubuntu" ];
+      };
+    };
+    fontDir.enable = true;
+  };
+
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 

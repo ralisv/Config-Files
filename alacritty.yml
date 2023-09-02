@@ -11,7 +11,7 @@ colors:
   # Default colors
   primary:
     background: "0x000000"
-    foreground: "0x0abdc6"
+    foreground: "0xdddddd"
 
   # Colors the cursor will use if `custom_cursor_colors` is true
   cursor:
@@ -44,9 +44,16 @@ colors:
 
 font:
   normal:
-    family: NotoSansMono
-    style: Regular
-  size: 6.3
+    family: FiraCode Nerd Font Mono
+    style: Medium
+  bold:
+    family: FiraCode Nerd Font Mono
+    style: Bold
+  italic:
+    family: FiraCode Nerd Font Mono
+    style: Italic
+
+  size: 6
 
 shell:
   program: xonsh

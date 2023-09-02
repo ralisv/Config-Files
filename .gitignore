@@ -2,3 +2,4 @@ log.txt
 .mypy_cache
 .vscode
 __pycache__
+result
