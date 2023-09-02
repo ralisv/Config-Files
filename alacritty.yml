@@ -12,11 +12,6 @@ colors:
     background: "0x000000"
     foreground: "0xdddddd"
 
-cursor:
-  style:
-    shape: Beam
-    blinking: Always
-
   # Normal colors
   normal:
     black:   "0x123e7c"
@@ -38,6 +33,11 @@ cursor:
     magenta: "0x711c91"
     cyan:    "0x0abdc6"
     white:   "0xd7d7d5"
+
+cursor:
+  style:
+    shape: Beam
+    blinking: Always
 
 font:
   normal:
