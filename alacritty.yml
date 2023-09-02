@@ -14,11 +14,10 @@ colors:
     foreground: "0xdddddd"
 
   # Colors the cursor will use if `custom_cursor_colors` is true
-  cursor:
-    text:   "0x000b1e"
-    cursor: "0x0abdc6"
-    style:
-      shape: Beam
+cursor:
+  style:
+    shape: Beam
+    blinking: Always
 
   # Normal colors
   normal:
