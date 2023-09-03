@@ -15,8 +15,21 @@
   programs = {
   	light.enable = true;
   	git.enable = true;
+    hyprland = {
+      enable = true;
+      nvidiaPatches = true;
+      xwayland.enable = true;
+    };
   };
   
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+    NIXOS_OZONE_WL = "1";
+  };
+
+  hardware.opengl.enable =  true;
+  hardware.nvidia.modesetting.enable = true;
+
   environment.systemPackages = with pkgs; [
     brave
     python3
@@ -29,7 +42,31 @@
     alacritty
     cmake
     libgccjit
+    pinta
+    flameshot
+    discord
+
+    # Hyprland utils
+    (waybar.overrideAttrs (oldAttrs: {
+    mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+    }))
+    gtk4
+    rofi-wayland
+    dunst
+    sway
+    eww
+    wlogout
+    swaybg
+    cliphist
+    xdg-desktop-portal-hyprland
+    swayidle
+    swaylock
+    waybar
+    freshfetch
   ];
+  
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   
   boot.loader = {
     # systemd-boot.enable = true;
@@ -120,7 +157,6 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ralis = {
     isNormalUser = true;
     description = "Vojtech Ralis";
