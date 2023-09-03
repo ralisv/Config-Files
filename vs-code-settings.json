@@ -5,8 +5,8 @@
   "editor.fontLigatures": true,
   "editor.lineHeight": 1.5,
   "editor.minimap.enabled": false,
-  "editor.tabSize": 2,
-  "editor.fontSize": 13,
+  "editor.tabSize": 4,
+  "editor.fontSize": 15,
   "workbench.iconTheme": "material-icon-theme",
 
   "terminal.integrated": {
@@ -22,5 +22,6 @@
       }
   },
   "terminal.integrated.defaultProfile.linux": "xonsh",
+
   "git.openRepositoryInParentFolders": "always"
 }
