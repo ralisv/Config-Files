@@ -4,7 +4,7 @@ window:
   opacity: 0.9
   dimensions:
     columns: 100
-    lines: 30
+    lines: 25
 
   
 colors:
@@ -50,7 +50,7 @@ font:
     family: FiraCode Nerd Font Mono
     style: Italic
 
-  size: 6
+  size: 10
 
 shell:
   program: xonsh
