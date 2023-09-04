@@ -45,6 +45,7 @@
     pinta
     flameshot
     discord
+    bat
 
     # Hyprland utils
     (waybar.overrideAttrs (oldAttrs: {

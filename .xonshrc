@@ -43,9 +43,10 @@ $XONSH_HISTORY_MATCH_ANYWHERE = True
 
 my_aliases = {
     "aisa": "ssh 'xralis@aisa.fi.muni.cz'",
+    "bat": "bat --theme=DarkNeon",
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
     "c": "cd",
-    # "cat": "batcat --pager=never",
+    "cat": "bat --pager=never",
     "d": "cd",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
     "du": "du -h",
@@ -154,6 +155,7 @@ $LESS_TERMCAP_so="\x1b[38;2;255;255;50m"
 $LESS_TERMCAP_ue="\x1b[0m"
 $LESS_TERMCAP_us="\x1b[38;2;255;100;50m"
 
+$MANPAGER="sh -c 'col -bx | bat -l man --plain'"
 
 # Ask about dumping trash
 
