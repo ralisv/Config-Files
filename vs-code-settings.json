@@ -1,27 +1,35 @@
 {
   "workbench.colorTheme": "Neon City",
-  "editor.fontFamily": "Fira Code Nerd Font",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.fontFamily": "FiraCode Nerd Font Ret",
   "editor.smoothScrolling": true,
   "editor.fontLigatures": true,
   "editor.lineHeight": 1.5,
   "editor.minimap.enabled": false,
   "editor.tabSize": 4,
   "editor.fontSize": 15,
+  "editor.letterSpacing": 0,
+  "editor.scrollbar.vertical": "hidden",
+  "editor.scrollBeyondLastLine": false,
   "workbench.iconTheme": "material-icon-theme",
 
   "terminal.integrated": {
-    "fontFamily": "Ubuntu Mono",
-    "fontSize":  16,
-    "lineHeight": 1.5
+    "fontFamily": "FiraCode Nerd Font Ret",
+    "fontSize": 16,
+    "lineHeight": 1.2
   },
 
   "terminal.integrated.profiles.linux": {
-      "xonsh": {
-          "path": "/run/current-system/sw/bin/bash",
-          "args": ["-c", "nix-shell ~/Config-Files/shell.nix --run 'exec xonsh'"]
-      }
+    "xonsh": {
+      "path": "/run/current-system/sw/bin/bash",
+      "args": ["-c", "nix-shell ~/Config-Files/shell.nix --run 'exec xonsh'"]
+    }
   },
   "terminal.integrated.defaultProfile.linux": "xonsh",
 
-  "git.openRepositoryInParentFolders": "always"
+  "git.openRepositoryInParentFolders": "always",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.formatting.provider": "none"
 }

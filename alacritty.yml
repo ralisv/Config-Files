@@ -41,8 +41,8 @@ cursor:
 
 font:
   normal:
-    family: FiraCode Nerd Font Mono
-    style: Medium
+    family: FiraCode Nerd Font Ret
+    style: Regular
   bold:
     family: FiraCode Nerd Font Mono
     style: Bold
@@ -50,7 +50,7 @@ font:
     family: FiraCode Nerd Font Mono
     style: Italic
 
-  size: 10
+  size: 11
 
 shell:
   program: xonsh
