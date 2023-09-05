@@ -7,7 +7,7 @@ from git import Repo, InvalidGitRepositoryError
 # from wpm.commandline import main as wpm
 
 sys.path.append(os.path.expanduser("~/.local/lib/python3.10/site-packages"))
-sys.path.append(os.path.expanduser("~/Config-Files"))
+sys.path.append(os.path.expanduser("~/Config-Files/xonsh"))
 
 $LS_COLORS = open(os.path.expanduser("~/Config-Files/ls-colors.txt")).read()
 
@@ -47,6 +47,7 @@ my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
     "c": "cd",
     "cat": "bat --pager=never",
+    "code": "env -u WAYLAND_DISPLAY code",
     "d": "cd",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
     "du": "du -h",

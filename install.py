@@ -16,11 +16,12 @@ if platform.system() == "Linux":
 
   SOURCE_TO_DESTINATION_SYMLINK_MAPPING = {
     f"{INSTALL_SCRIPT_DIRECTORY}/.bashrc": f"{USER_HOME_DIRECTORY}/.bashrc",
-    f"{INSTALL_SCRIPT_DIRECTORY}/.xonshrc": f"{USER_HOME_DIRECTORY}/.xonshrc",
+    f"{INSTALL_SCRIPT_DIRECTORY}/xonsh/.xonshrc": f"{USER_HOME_DIRECTORY}/.xonshrc",
     f"{INSTALL_SCRIPT_DIRECTORY}/.inputrc": f"{USER_HOME_DIRECTORY}/.inputrc",
-    f"{INSTALL_SCRIPT_DIRECTORY}/vs-code-settings.json": f"{USER_HOME_DIRECTORY}/.config/Code/User/settings.json",
+    f"{INSTALL_SCRIPT_DIRECTORY}/vs-code/settings.json": f"{USER_HOME_DIRECTORY}/.config/Code/User/settings.json",
+    f"{INSTALL_SCRIPT_DIRECTORY}/vs-code/keybindings.json": f"{USER_HOME_DIRECTORY}/.config/Code/User/keybindings.json",
     f"{INSTALL_SCRIPT_DIRECTORY}/alacritty.yml": f"{USER_HOME_DIRECTORY}/.config/alacritty/alacritty.yml",
-    f"{INSTALL_SCRIPT_DIRECTORY}/shell.nix": f"{USER_HOME_DIRECTORY}/default.nix",
+    f"{INSTALL_SCRIPT_DIRECTORY}/nixos/shell.nix": f"{USER_HOME_DIRECTORY}/default.nix",
   }
 
 
@@ -44,7 +45,7 @@ if platform.system() == "Linux":
   def update_nix_configuration():
     try:
       if (input("Do you wish to update configuration.nix file? ") in ("y", "")):
-        os.system(f"sudo cp {INSTALL_SCRIPT_DIRECTORY}/configuration.nix /etc/nixos/configuration.nix")
+        os.system(f"sudo cp {INSTALL_SCRIPT_DIRECTORY}/nixos/configuration.nix /etc/nixos/configuration.nix")
       else:
         return
       

@@ -21,7 +21,7 @@
       xwayland.enable = true;
     };
   };
-  
+
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
@@ -33,11 +33,8 @@
   environment.systemPackages = with pkgs; [
     brave
     python3
-    python3Packages.gitpython
-    python3Packages.colorama
-    python3Packages.tabulate
   	xonsh
-    vscode
+  	vscode
     vlc
     alacritty
     cmake
@@ -46,6 +43,8 @@
     flameshot
     discord
     bat
+    tree
+    micro
 
     # Hyprland utils
     (waybar.overrideAttrs (oldAttrs: {
@@ -162,7 +161,11 @@
     isNormalUser = true;
     description = "Vojtech Ralis";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [];
+    packages = with pkgs; [
+      python3Packages.gitpython
+      python3Packages.colorama
+      python3Packages.tabulate
+    ];
   };
 
   # Allow unfree packages
