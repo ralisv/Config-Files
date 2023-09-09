@@ -23,15 +23,16 @@ DELETED_FILE_AGE_LIMIT = 30
 # Initialize colorama module
 init()
 
+
 def get_size(entry: os.DirEntry) -> int:
     """Returns the size of the file/directory. If it's a directory, it sums up the sizes of all the files in it"""
     try:
         if entry.is_file():
             return entry.stat().st_size
-        
+
         elif entry.is_symlink():
             return 1
-        
+
         return sum(get_size(os.scandir(sub_entry)) for sub_entry in entry.path)
 
     except (PermissionError, FileNotFoundError):
@@ -90,7 +91,7 @@ def ask_whether_to_dump() -> None:
     only asks if there are files that can be dumped and if the user hasn't been asked in the last 7 days
     """
     if (
-        0 and os.path.exists(DUMPLOG)
+        os.path.exists(DUMPLOG)
         and (time.time() - os.path.getmtime(DUMPLOG)) // (60 * 60 * 24) < 7
     ):
         return
@@ -107,7 +108,7 @@ def ask_whether_to_dump() -> None:
     )
     print(
         *[
-            colorize(file.path).replace(os.path.expanduser("~/.trash-bin/"), "")
+            colorize(file.path).replace(f"{TRASH}/", "")
             for file in dumpable
         ],
         sep="\n",
