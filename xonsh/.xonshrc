@@ -6,19 +6,21 @@ from math import factorial, pi, e, gcd, log
 from git import Repo, InvalidGitRepositoryError
 # from wpm.commandline import main as wpm
 
-sys.path.append(os.path.expanduser("~/.local/lib/python3.10/site-packages"))
+
 sys.path.append(os.path.expanduser("~/Config-Files/xonsh"))
+from utils import super_git_status, super_ls, start_in_new_session, remove
+from colors import colorize
+from trash import ask_whether_to_dump
 
-$LS_COLORS = open(os.path.expanduser("~/Config-Files/ls-colors.txt")).read()
-
-from utils import super_git_status, super_ls, start_in_new_session, ask_whether_to_dump, colorize, remove
 
 $PATH.append(os.path.expanduser("~/.local/bin"))
+sys.path.append(os.path.expanduser("~/.local/lib/python3.10/site-packages"))
 
 # Silence the deprecation warning caused by bug inside of prompt-toolkit library
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+# Configure xonsh behavior via environment variables
 $AUTO_CD = True
 $CASE_SENSITIVE_COMPLETIONS = False
 $COMPLETION_IN_THREAD = True
@@ -40,6 +42,10 @@ $XONSH_AUTOPAIR = True
 $XONSH_COLOR_STYLE = "paraiso-dark"
 $XONSH_HISTORY_MATCH_ANYWHERE = True
 
+$BAT_STYLE="grid,changes,header-filename,header-filesize,numbers"
+def nice_help(args):
+    for arg in args:
+        f"{arg}" --help | bat --paging=never --language=help --style=grid
 
 my_aliases = {
     "aisa": "ssh 'xralis@aisa.fi.muni.cz'",
@@ -47,12 +53,13 @@ my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
     "c": "cd",
     "cat": "bat --pager=never",
-    "code": "env -u WAYLAND_DISPLAY code",
+    "code": "env -u WAYLAND_DISPLAY code", # because vs-code doesn't work well with wayland, make sure that XWayland or X11 server is running
     "d": "cd",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
     "du": "du -h",
     "fc-list": "fc-list --format='%{family}'\n",
     "grep": "grep --color=auto",
+    "help": lambda args: nice_help(args),
     "light": "sudo light -S",
     "ls": "ls --color=auto",
     "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' {os.path.expanduser('~')}/aisa",
@@ -156,6 +163,7 @@ $LESS_TERMCAP_ue="\x1b[0m"
 $LESS_TERMCAP_us="\x1b[38;2;255;100;50m"
 
 $MANPAGER="sh -c 'col -bx | bat -l man --plain'"
+$MANROFFOPT="-c" # Option passed to man's formatter, removes undesired characters from output
 
 # Ask about dumping trash
 
