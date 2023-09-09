@@ -17,7 +17,7 @@
   	git.enable = true;
     hyprland = {
       enable = true;
-      nvidiaPatches = true;
+      enableNvidiaPatches = true;
       xwayland.enable = true;
     };
   };
@@ -32,6 +32,7 @@
 
   environment.systemPackages = with pkgs; [
     brave
+    brightnessctl
     python3
   	xonsh
   	vscode
@@ -45,6 +46,7 @@
     bat
     tree
     micro
+    joplin
 
     # Hyprland utils
     (waybar.overrideAttrs (oldAttrs: {
@@ -68,26 +70,28 @@
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   
-  boot.loader = {
-    # systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
-    grub = {
-      enable = true;
-      device = "nodev";
-      useOSProber = true;
-      darkmatter-theme = {
+  boot = {
+    loader = {
+      # systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+      grub = {
         enable = true;
-        style = "nixos";
-        icon = "color";
-        resolution = "1440p";
+        device = "nodev";
+        useOSProber = true;
+        darkmatter-theme = {
+          enable = true;
+          style = "nixos";
+          icon = "color";
+          resolution = "1440p";
+        };
+        efiSupport = true;
       };
-      efiSupport = true;
     };
   };
 
   fonts = {
-    enableDefaultFonts = true;
-    fonts = with pkgs; [
+    enableDefaultPackages = true;
+    packages = with pkgs; [
       ubuntu_font_family
       (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
     ];
@@ -154,13 +158,17 @@
     #jack.enable = true;
   };
 
+  hardware.i2c.enable = true;
+  services.illum.enable = true;
+  hardware.acpilight.enable = true;
+
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
   users.users.ralis = {
     isNormalUser = true;
     description = "Vojtech Ralis";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "video" ];
     packages = with pkgs; [
       python3Packages.gitpython
       python3Packages.colorama
