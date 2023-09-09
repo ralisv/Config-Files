@@ -22,7 +22,7 @@
   "terminal.integrated.profiles.linux": {
     "xonsh": {
       "path": "/run/current-system/sw/bin/bash",
-      "args": ["-c", "nix-shell ~/Config-Files/shell.nix --run 'exec xonsh'"]
+      "args": ["-c", "nix-shell ~/Config-Files/nixos/shell.nix --run 'exec xonsh'"]
     }
   },
   "terminal.integrated.defaultProfile.linux": "xonsh",
