@@ -57,7 +57,7 @@ def get_dumpable_files(age_limit: int) -> List[os.DirEntry]:
     return dumpable_files
 
 
-def dump_trash(to_dump: List[os.DirEntry]) -> int:
+def dump(to_dump: List[os.DirEntry]) -> int:
     """
     Permanently deletes all files in .trash-bin directory that haven't been modified in more
     than 30 days and returns the total size of the deleted files
@@ -103,7 +103,8 @@ def ask_whether_to_dump() -> None:
         return
 
     print(
-        f"{Fore.GREEN}The following files have been in the trash for more than {DELETED_FILE_AGE_LIMIT} days:{Fore.RESET}",
+        f"{Fore.GREEN}The following files have been in the trash for more than"
+        f"{DELETED_FILE_AGE_LIMIT} days:{Fore.RESET}",
         end="\n\n",
     )
     print(
@@ -130,7 +131,7 @@ def ask_whether_to_dump() -> None:
 
     with open(DUMPLOG, "a") as f:
         if answer.lower() in ["y", "yes", "yeah", "yep, sure", "yep", "why not"]:
-            freed_memory = dump_trash(dumpable)
+            freed_memory = dump(dumpable)
             print(
                 f"{Fore.GREEN}Successfully freed {Fore.CYAN}{freed_memory / 1024 / 1024:.2f}{Fore.GREEN} MB{Fore.RESET}"
             )
