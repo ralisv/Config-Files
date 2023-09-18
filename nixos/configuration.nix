@@ -20,6 +20,7 @@
       enableNvidiaPatches = true;
       xwayland.enable = true;
     };
+    xwayland.enable = true;
   };
 
   environment.sessionVariables = {
@@ -27,12 +28,13 @@
     NIXOS_OZONE_WL = "1";
   };
 
+  hardware.bluetooth.enable = true;
+
   hardware.opengl.enable =  true;
   hardware.nvidia.modesetting.enable = true;
 
   environment.systemPackages = with pkgs; [
     brave
-    brightnessctl
     python3
   	xonsh
   	vscode
@@ -47,29 +49,43 @@
     tree
     micro
     joplin
+    
+    texlive.combined.scheme-full
+    pandoc
 
-    # Hyprland utils
-    (waybar.overrideAttrs (oldAttrs: {
-    mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
-    }))
-    gtk4
-    rofi-wayland
-    dunst
-    sway
-    eww
-    wlogout
-    swaybg
-    cliphist
-    xdg-desktop-portal-hyprland
-    swayidle
-    swaylock
-    waybar
-    freshfetch
+    brightnessctl
+    bluetooth_battery
+    bluez
+    
+    # # Hyprland utils
+    # (waybar.overrideAttrs (oldAttrs: {
+    # mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+    # }))
+    # gtk4
+    # rofi-wayland
+    # dunst
+    # sway
+    # eww
+    # wlogout
+    # swaybg
+    # cliphist
+    # xdg-desktop-portal-hyprland
+    # swayidle
+    # swaylock
+    # waybar
+    # freshfetch
   ];
   
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  services.udev.extraRules = ''
+  # Regular legions
+  SUBSYSTEM=="usb", ATTR{idVendor}=="048d", ATTR{idProduct}=="c965", MODE="0666"
+  '';
+
   boot = {
     loader = {
       # systemd-boot.enable = true;
@@ -136,27 +152,38 @@
   # Enable the KDE Plasma Desktop Environment.
   services.xserver = {
     enable = true;
+    displayManager.gdm.wayland = true;
     displayManager.sddm.enable = true;
     desktopManager.plasma5.enable = true;
     layout = "cz";
     xkbVariant = "";
   };
- 
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  # Enable sound with pipewire.
+  nixpkgs.config.pulseaudio = true;
+
   sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
+  hardware.pulseaudio = {
     enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
+    support32Bit = true;
   };
+
+  # # Enable sound with pipewire.
+  # sound.enable = true;
+  # hardware.pulseaudio.enable = false;
+  # security.rtkit.enable = true;
+  # services.pipewire = {
+  #   enable = true;
+  #   alsa.enable = true;
+  #   alsa.support32Bit = true;
+  #   audio.enable = true;
+  #   pulse.enable = true;
+  #   # If you want to use JACK applications, uncomment this
+  #   jack.enable = true;
+  #   wireplumber.enable = true;
+  # };
 
   hardware.i2c.enable = true;
   services.illum.enable = true;
@@ -168,7 +195,7 @@
   users.users.ralis = {
     isNormalUser = true;
     description = "Vojtech Ralis";
-    extraGroups = [ "networkmanager" "wheel" "video" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "audio" "jackaudio" ];
     packages = with pkgs; [
       python3Packages.gitpython
       python3Packages.colorama
