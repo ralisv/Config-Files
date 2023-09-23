@@ -1,5 +1,4 @@
 {
-  "workbench.colorTheme": "Neon City",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.fontFamily": "FiraCode Nerd Font Ret",
   "editor.smoothScrolling": true,
@@ -11,7 +10,12 @@
   "editor.letterSpacing": 0,
   "editor.scrollbar.vertical": "hidden",
   "editor.scrollBeyondLastLine": false,
+
   "workbench.iconTheme": "material-icon-theme",
+  "workbench.colorTheme": "Neon City",
+  "workbench.colorCustomizations": {
+    "terminal.ansiBlue":"#00aaff"
+  },
 
   "terminal.integrated": {
     "fontFamily": "FiraCode Nerd Font Ret",

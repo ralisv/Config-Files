@@ -13,8 +13,8 @@
     ];
 
   programs = {
-  	light.enable = true;
-  	git.enable = true;
+    light.enable = true;
+    git.enable = true;
     hyprland = {
       enable = true;
       enableNvidiaPatches = true;
@@ -34,30 +34,39 @@
   hardware.nvidia.modesetting.enable = true;
 
   environment.systemPackages = with pkgs; [
+    # Useful applications
     brave
-    python3
-  	xonsh
-  	vscode
+    xonsh
+    vscode
     vlc
     alacritty
-    cmake
-    libgccjit
     pinta
     flameshot
     discord
     bat
     tree
     micro
-    joplin
-    
+    joplin-desktop
+    libreoffice
+
+    # Runtime engines, interpreters, compilers, build automation software
+    dotnet-sdk
+    python3
+    libgccjit
+    cmake
+
+    # Utility for file type convertions
     texlive.combined.scheme-full
     pandoc
 
+    # System utilities
     brightnessctl
     bluetooth_battery
     bluez
-    
-    # # Hyprland utils
+    pipewire
+    pavucontrol
+
+    # # Hyprland utilities
     # (waybar.overrideAttrs (oldAttrs: {
     # mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
     # }))
@@ -164,26 +173,26 @@
 
   nixpkgs.config.pulseaudio = true;
 
-  sound.enable = true;
-  hardware.pulseaudio = {
-    enable = true;
-    support32Bit = true;
-  };
-
-  # # Enable sound with pipewire.
   # sound.enable = true;
-  # hardware.pulseaudio.enable = false;
-  # security.rtkit.enable = true;
-  # services.pipewire = {
+  # hardware.pulseaudio = {
   #   enable = true;
-  #   alsa.enable = true;
-  #   alsa.support32Bit = true;
-  #   audio.enable = true;
-  #   pulse.enable = true;
-  #   # If you want to use JACK applications, uncomment this
-  #   jack.enable = true;
-  #   wireplumber.enable = true;
+  #   support32Bit = true;
   # };
+
+  # Enable sound with pipewire.
+  sound.enable = true;
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    audio.enable = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    jack.enable = true;
+    wireplumber.enable = true;
+  };
 
   hardware.i2c.enable = true;
   services.illum.enable = true;
