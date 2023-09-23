@@ -113,34 +113,47 @@ def super_git_status() -> str:
             )
 
         # Tabulate data
-        return tabulate(table_data, tablefmt="plain")
+        return tabulate(table_data, tablefmt="plain") + "\n"
 
     except Exception:
         return ""
 
 
-def super_ls(args: List[str]) -> int:
+def super_ls(args: List[str]) -> str:
     """
     Executes git super git status when in a git repository and always executes ls after that
     """
-    STATUS_GOOD = 0
-    STATUS_BIG_ERROR = 1
-
     try:
-        git_status = super_git_status()
-        if git_status:
-            subprocess.Popen(["echo", git_status + "\n"])
-
-        subprocess.Popen(
+        ls_output = subprocess.check_output(
             [shutil.which("ls"), "--color=always", "-X", *args],
-            env={"LS_COLORS": LS_COLORS},
         )
+        filenames = ls_output.decode().split("\n")
+        colorized_filenames = [*map(colorize, filenames)]
 
-        return STATUS_GOOD
+        console_width = os.get_terminal_size().columns
+        max_filename_length = len(max(filenames, key=len))
+        columns_count = max(1, console_width // max_filename_length)
+
+        table_data = [
+            colorized_filenames[i : i + columns_count]
+            for i in range(0, len(filenames), columns_count)
+        ]
+
+        return tabulate(table_data, tablefmt="plain")
 
     except Exception as e:
-        print(f"{Fore.RED}{e}{Fore.RESET}")
-        return STATUS_BIG_ERROR
+        return f"{Fore.RED}{e}{Fore.RESET}"
+    
+
+def super_util(args: List[str]) -> int:
+    git_status = super_git_status()
+    ls = super_ls(args)
+
+    if git_status != "":
+        print(git_status, ls, sep="\n")
+
+    else:
+        print(ls)
 
 
 def remove(args: List[str]) -> int:

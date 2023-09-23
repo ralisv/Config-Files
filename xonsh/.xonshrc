@@ -8,7 +8,7 @@ from git import Repo, InvalidGitRepositoryError
 
 
 sys.path.append(os.path.expanduser("~/Config-Files/xonsh"))
-from utils import super_git_status, super_ls, start_in_new_session, remove
+from utils import super_util, start_in_new_session, remove
 from colors import colorize
 from trash import ask_whether_to_dump
 
@@ -68,7 +68,7 @@ my_aliases = {
     "python": "python3.10",
     "R": "R --no-save -q",
     "rm": lambda args: remove(args),
-    "s": lambda args: super_ls(args),
+    "s": lambda args: super_util(args),
     "sl": "sl -e",
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
     "trans": "~/Executables/trans -j -d -t czech",
