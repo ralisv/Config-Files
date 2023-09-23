@@ -8,4 +8,8 @@
         "key": "ctrl+z",
         "command": "undo"
     },
+    {
+        "key": "ctrl+t",
+        "command": "python.createTerminal"
+    }
 ]
