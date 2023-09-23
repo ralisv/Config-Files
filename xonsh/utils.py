@@ -10,46 +10,16 @@ from git import Repo
 from tabulate import tabulate
 
 sys.path.append(os.path.expanduser("~/Config-Files/xonsh"))
-from colors import colorize, get_file_color, LS_COLORS
+from colors import (
+    colorize,
+    get_file_color,
+    GIT_STATUS_COLORS,
+    GIT_STATUS_VERBOSE,
+    LS_COLORS,
+)
 
 # Initialize colorama module
 init()
-
-
-GIT_STATUS_COLORS = {
-    "STAGED": Fore.LIGHTGREEN_EX,
-    "??": Fore.YELLOW,
-    "M": Fore.BLUE,
-    "A": Fore.GREEN,
-    "D": Fore.RED,
-    "R": Fore.GREEN,
-    "C": Fore.GREEN,
-    "U": Fore.RED,
-    "DU": Fore.RED,
-    "AU": Fore.RED,
-    "UD": Fore.RED,
-    "UA": Fore.RED,
-    "DA": Fore.RED,
-    "AA": Fore.RED,
-    "UU": Fore.RED,
-}
-
-GIT_STATUS_VERBOSE = {
-    "M": "Modified",
-    "A": "Added",
-    "D": "Deleted",
-    "R": "Renamed",
-    "C": "Copied",
-    "U": "Unmerged",
-    "??": "Untracked",
-    "DU": "Unmerged, both deleted",
-    "AU": "Unmerged, added by us",
-    "UD": "Unmerged, deleted by them",
-    "UA": "Unmerged, added by them",
-    "DA": "Unmerged, deleted by us",
-    "AA": "Unmerged, both added",
-    "UU": "Unmerged, both modified",
-}
 
 STATUS_GOOD = 0
 STATUS_LITTLE_ERROR = 1
@@ -126,13 +96,15 @@ def super_ls(args: List[str]) -> str:
     try:
         ls_output = subprocess.check_output(
             [shutil.which("ls"), "--color=always", "-X", *args],
-        )
+            env={**os.environ, "LS_COLORS": LS_COLORS},
+        ).strip()
+
         filenames = ls_output.decode().split("\n")
         colorized_filenames = [*map(colorize, filenames)]
 
         console_width = os.get_terminal_size().columns
         max_filename_length = len(max(filenames, key=len))
-        columns_count = max(1, console_width // max_filename_length)
+        columns_count = console_width // max_filename_length + 1
 
         table_data = [
             colorized_filenames[i : i + columns_count]
@@ -143,7 +115,7 @@ def super_ls(args: List[str]) -> str:
 
     except Exception as e:
         return f"{Fore.RED}{e}{Fore.RESET}"
-    
+
 
 def super_util(args: List[str]) -> int:
     git_status = super_git_status()

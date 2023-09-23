@@ -9,7 +9,7 @@ from git import Repo, InvalidGitRepositoryError
 
 sys.path.append(os.path.expanduser("~/Config-Files/xonsh"))
 from utils import super_util, start_in_new_session, remove
-from colors import colorize
+from colors import colorize, LS_COLORS
 from trash import ask_whether_to_dump
 
 
@@ -102,6 +102,7 @@ def customize_autocompleter():
 
 customize_autocompleter()
 
+$LS_COLORS = LS_COLORS
 
 # Prompt
 
