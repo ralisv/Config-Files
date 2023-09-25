@@ -53,4 +53,7 @@ font:
   size: 11
 
 shell:
-  program: xonsh
+  program: bash
+  args:
+    - -c
+    - "nix develop path:./Config-Files/nixos --command xonsh"
