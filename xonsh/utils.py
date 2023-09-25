@@ -102,15 +102,17 @@ def super_ls(args: List[str]) -> str:
             env={**os.environ, "LS_COLORS": LS_COLORS},
         ).strip()
 
+        if not ls_output:
+            return ""
+
         filenames = ls_output.decode().split("\n")
-        colorized_filenames = [*map(colorize, filenames)]
 
         console_width = os.get_terminal_size().columns
         max_filename_length = len(max(filenames, key=len))
-        columns_count = console_width // max_filename_length + 1
+        columns_count = max(1, console_width // max_filename_length)
 
         table_data = [
-            colorized_filenames[i : i + columns_count]
+            filenames[i : i + columns_count]
             for i in range(0, len(filenames), columns_count)
         ]
 
