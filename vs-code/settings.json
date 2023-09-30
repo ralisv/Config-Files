@@ -1,5 +1,7 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  },
   "editor.fontFamily": "FiraCode Nerd Font Ret",
   "editor.smoothScrolling": true,
   "editor.fontLigatures": true,
@@ -10,31 +12,32 @@
   "editor.letterSpacing": 0,
   "editor.scrollbar.vertical": "hidden",
   "editor.scrollBeyondLastLine": false,
-
   "workbench.iconTheme": "material-icon-theme",
   "workbench.colorTheme": "Neon City",
   "workbench.colorCustomizations": {
-    "terminal.ansiBlue":"#00aaff"
+    "terminal.ansiBlue": "#00aaff"
   },
-
   "terminal.integrated": {
     "fontFamily": "FiraCode Nerd Font Ret",
     "fontSize": 16,
     "lineHeight": 1.2
   },
-
   "terminal.integrated.profiles.linux": {
     "xonsh": {
-      "path": "/run/current-system/sw/bin/bash",
-      "args": ["-c", "nix-shell ~/Config-Files/nixos/shell.nix --run 'exec xonsh'"]
+      "path": "bash",
+      "args": [
+        "-c",
+        "nix develop path:/home/ralis/Config-Files/nixos --command xonsh"
+      ]
     }
   },
   "terminal.integrated.defaultProfile.linux": "xonsh",
-
   "git.openRepositoryInParentFolders": "always",
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
-  "python.formatting.provider": "none",
-  "window.titleBarStyle": "custom"
+  "window.titleBarStyle": "custom",
+  "codium.enable": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true
 }

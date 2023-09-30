@@ -66,6 +66,8 @@
     pipewire
     pavucontrol
 
+    man-pages
+
     # # Hyprland utilities
     # (waybar.overrideAttrs (oldAttrs: {
     # mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];

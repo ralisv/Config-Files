@@ -21,7 +21,8 @@ if platform.system() == "Linux":
     f"{INSTALL_SCRIPT_DIRECTORY}/vs-code/settings.json": f"{USER_HOME_DIRECTORY}/.config/Code/User/settings.json",
     f"{INSTALL_SCRIPT_DIRECTORY}/vs-code/keybindings.json": f"{USER_HOME_DIRECTORY}/.config/Code/User/keybindings.json",
     f"{INSTALL_SCRIPT_DIRECTORY}/alacritty.yml": f"{USER_HOME_DIRECTORY}/.config/alacritty/alacritty.yml",
-    f"{INSTALL_SCRIPT_DIRECTORY}/nixos/shell.nix": f"{USER_HOME_DIRECTORY}/default.nix",
+    f"{INSTALL_SCRIPT_DIRECTORY}/nixos/shell.nix": f"{USER_HOME_DIRECTORY}/shell.nix",
+    f"{INSTALL_SCRIPT_DIRECTORY}/nixos/flake.nix": f"{USER_HOME_DIRECTORY}/flake.nix",
   }
 
 
