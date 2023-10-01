@@ -14,7 +14,6 @@ from colors import (
     colorize,
     get_file_color,
     GIT_STATUS_COLORS,
-    GIT_STATUS_VERBOSE,
     LS_COLORS,
 )
 
@@ -35,6 +34,23 @@ DUMPLOG = os.path.expanduser("~/.dumplog.txt")
 
 DELETED_FILE_AGE_LIMIT = 30
 """ Number of days after which the file is considered dumpable """
+
+GIT_STATUS_VERBOSE = {
+    "M": "Modified",
+    "A": "Added",
+    "D": "Deleted",
+    "R": "Renamed",
+    "C": "Copied",
+    "U": "Unmerged",
+    "??": "Untracked",
+    "DU": "Unmerged, both deleted",
+    "AU": "Unmerged, added by us",
+    "UD": "Unmerged, deleted by them",
+    "UA": "Unmerged, added by them",
+    "DA": "Unmerged, deleted by us",
+    "AA": "Unmerged, both added",
+    "UU": "Unmerged, both modified",
+}
 
 
 def super_git_status() -> str:
@@ -95,7 +111,7 @@ def super_ls(args):
     Executes ls with color and column options
     """
     try:
-        ls_output = (
+        return (
             subprocess.check_output(
                 [shutil.which("ls"), "--color=always", "-C", *args],
                 env={"LS_COLORS": LS_COLORS},
@@ -103,11 +119,6 @@ def super_ls(args):
             .decode()
             .strip()
         )
-
-        if not ls_output:
-            return ""
-
-        return ls_output
 
     except Exception as e:
         return f"{Fore.RED}{e}{Fore.RESET}"

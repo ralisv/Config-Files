@@ -29,23 +29,6 @@ GIT_STATUS_COLORS = {
     "UU": Fore.RED,
 }
 
-GIT_STATUS_VERBOSE = {
-    "M": "Modified",
-    "A": "Added",
-    "D": "Deleted",
-    "R": "Renamed",
-    "C": "Copied",
-    "U": "Unmerged",
-    "??": "Untracked",
-    "DU": "Unmerged, both deleted",
-    "AU": "Unmerged, added by us",
-    "UD": "Unmerged, deleted by them",
-    "UA": "Unmerged, added by them",
-    "DA": "Unmerged, deleted by us",
-    "AA": "Unmerged, both added",
-    "UU": "Unmerged, both modified",
-}
-
 
 def get_file_color(path: str) -> str:
     _, ext = os.path.splitext(path)
