@@ -60,6 +60,9 @@ def super_git_status() -> str:
     try:
         repo = Repo(".", search_parent_directories=True)
 
+        if not repo.is_dirty(untracked_files=True):
+            return ""
+
         git_status = repo.git.status("--short")
 
         file_states = [line.split() for line in git_status.split("\n") if line]
