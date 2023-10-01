@@ -63,17 +63,15 @@ def super_git_status() -> str:
         # Initialize a list to store the rows
         table_data = []
 
-        for state, *rest in file_states:
-            file = rest[-1]
+        for state, *_, file in file_states:
+            state_color = GIT_STATUS_COLORS.get(state, Fore.RESET)
+            if file in staged_files:
+                state_color = GIT_STATUS_COLORS["STAGED"]
 
-            state_color = (
-                GIT_STATUS_COLORS.get(state, Fore.RESET)
-                if file not in staged_files
-                else GIT_STATUS_COLORS["STAGED"]
-            )
             verbose_state = GIT_STATUS_VERBOSE.get(state, "")
             colorized_file = colorize(
-                file, get_file_color(os.path.join(repo.working_tree_dir, file))
+                file,
+                get_file_color(os.path.join(repo.working_tree_dir, file)),
             )
 
             # Append rows to the list
@@ -92,31 +90,24 @@ def super_git_status() -> str:
         return ""
 
 
-def super_ls(args: List[str]) -> str:
+def super_ls(args):
     """
-    Executes git super git status when in a git repository and always executes ls after that
+    Executes ls with color and column options
     """
     try:
-        ls_output = subprocess.check_output(
-            [shutil.which("ls"), "--color=always", "-X", *args],
-            env={**os.environ, "LS_COLORS": LS_COLORS},
-        ).strip()
+        ls_output = (
+            subprocess.check_output(
+                [shutil.which("ls"), "--color=always", "-C", *args],
+                env={"LS_COLORS": LS_COLORS},
+            )
+            .decode()
+            .strip()
+        )
 
         if not ls_output:
             return ""
 
-        filenames = ls_output.decode().split("\n")
-
-        console_width = os.get_terminal_size().columns
-        max_filename_length = len(max(filenames, key=len))
-        columns_count = max(1, console_width // max_filename_length)
-
-        table_data = [
-            filenames[i : i + columns_count]
-            for i in range(0, len(filenames), columns_count)
-        ]
-
-        return tabulate(table_data, tablefmt="plain")
+        return ls_output
 
     except Exception as e:
         return f"{Fore.RED}{e}{Fore.RESET}"
