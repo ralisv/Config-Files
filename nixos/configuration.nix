@@ -48,6 +48,7 @@
     micro
     joplin-desktop
     libreoffice
+    franz
 
     # Runtime engines, interpreters, compilers, build automation software
     dotnet-sdk

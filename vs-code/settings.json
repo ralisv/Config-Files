@@ -38,6 +38,5 @@
   },
   "window.titleBarStyle": "custom",
   "codium.enable": true,
-  "editor.formatOnSave": true,
   "editor.formatOnPaste": true
 }
