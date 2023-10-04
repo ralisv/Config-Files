@@ -56,4 +56,4 @@ shell:
   program: bash
   args:
     - -c
-    - "nix develop path:./Config-Files/nixos --command xonsh"
+    - "nix develop path:./Config-Files/nixos --quiet --command xonsh"
