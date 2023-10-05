@@ -5,8 +5,12 @@
 
 pkgs.mkShell {
   buildInputs = with pkgs.python3Packages; [
-	gitpython
-	colorama
-	tabulate
+		gitpython
+		colorama
+		tabulate
+		requests
+		jupyter
+		jupyter-core
+		networkx
   ];
 }
