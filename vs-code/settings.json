@@ -38,5 +38,13 @@
   },
   "window.titleBarStyle": "custom",
   "codium.enable": true,
-  "editor.formatOnPaste": true
+  "editor.formatOnPaste": true,
+  "window.zoomLevel": -1,
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
+    "csharp": false
+  }
 }

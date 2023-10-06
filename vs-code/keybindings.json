@@ -11,5 +11,9 @@
     {
         "key": "ctrl+t",
         "command": "python.createTerminal"
+    },
+    {
+        "key": "ctrl+q",
+        "command": "workbench.action.closeWindow"
     }
 ]
