@@ -37,7 +37,7 @@
     # Useful applications
     brave
     xonsh
-    vscode
+    vscode-fhs
     vlc
     alacritty
     pinta
@@ -49,9 +49,10 @@
     joplin-desktop
     libreoffice
     franz
+    coreutils
 
     # Runtime engines, interpreters, compilers, build automation software
-    dotnet-sdk
+    dotnet-sdk_8
     python3
     libgccjit
     cmake
@@ -66,6 +67,7 @@
     bluez
     pipewire
     pavucontrol
+    wayland-utils
 
     man-pages
     # # Hyprland utilities
@@ -211,6 +213,10 @@
       python3Packages.gitpython
       python3Packages.colorama
       python3Packages.tabulate
+      python3Packages.requests
+      python3Packages.jupyter
+      python3Packages.jupyter-core
+      python3Packages.networkx
     ];
   };
 
