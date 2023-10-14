@@ -8,9 +8,5 @@ pkgs.mkShell {
 		gitpython
 		colorama
 		tabulate
-		requests
-		jupyter
-		jupyter-core
-		networkx
   ];
 }

@@ -40,11 +40,10 @@
   "codium.enable": true,
   "editor.formatOnPaste": true,
   "github.copilot.enable": {
-    "*": false,
+    "*": true,
     "plaintext": false,
     "markdown": false,
     "scminput": false,
     "csharp": true
-  },
-  "window.zoomLevel": -1
+  }
 }

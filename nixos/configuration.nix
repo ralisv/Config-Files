@@ -37,7 +37,6 @@
     # Useful applications
     brave
     xonsh
-    vscode-fhs
     vlc
     alacritty
     pinta
@@ -50,12 +49,20 @@
     libreoffice
     franz
     coreutils
+    teams
+    unzip
+    zip
 
-    # Runtime engines, interpreters, compilers, build automation software
+
+    # Development
     dotnet-sdk_8
     python3
     libgccjit
     cmake
+    godot_4
+    vscode-fhs
+    man-pages
+
 
     # Utility for file type convertions
     texlive.combined.scheme-full
@@ -69,7 +76,6 @@
     pavucontrol
     wayland-utils
 
-    man-pages
     # # Hyprland utilities
     # (waybar.overrideAttrs (oldAttrs: {
     # mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
@@ -213,10 +219,8 @@
       python3Packages.gitpython
       python3Packages.colorama
       python3Packages.tabulate
-      python3Packages.requests
       python3Packages.jupyter
       python3Packages.jupyter-core
-      python3Packages.networkx
     ];
   };
 
