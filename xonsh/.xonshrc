@@ -9,9 +9,9 @@ from git import Repo, InvalidGitRepositoryError
 
 sys.path.append(os.path.expanduser("~/Config-Files/xonsh"))
 from utils import super_util, start_in_new_session, remove
-from colors import colorize, LS_COLORS
+from colors import colorize, rainbowize, LS_COLORS
 from trash import ask_whether_to_dump
-
+from getpass import getuser
 
 $PATH.append(os.path.expanduser("~/.local/bin"))
 $PATH.append(os.path.expanduser("~/.dotnet/tools"))
@@ -115,7 +115,7 @@ RED = "{#ff9999}"
 WHITE = "{#ffffff}"
 
 def enclose_in_brackets(text: str) -> str:
-    return f"{PINK}[{text}{PINK}] "
+    return f"{rainbowize('[')}{text}{rainbowize(']')}{PINK}"
 
 def git_info() -> str:
     try:
@@ -151,8 +151,11 @@ $PROMPT_FIELDS["git-info"] = git_info
 $PROMPT_FIELDS["last-exit-code-info"] = last_exit_code_info
 $PROMPT_FIELDS["path-info"] = path_info
 $PROMPT_FIELDS["reset"] = reset
+$PROMPT_FIELDS["rainbow-user"] = lambda: rainbowize(getuser()) + PINK
+$PROMPT_FIELDS["end"] = lambda: rainbowize(" λ ")
+$PROMPT_FIELDS["separator"] = lambda: rainbowize(".")
 
-$PROMPT = PINK + "{user}.{path-info}{git-info}{last-exit-code-info}λ {reset}"
+$PROMPT = PINK + "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
 
 
 # Colored man pages

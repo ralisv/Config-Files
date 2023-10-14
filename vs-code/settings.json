@@ -45,5 +45,6 @@
     "markdown": false,
     "scminput": false,
     "csharp": true
-  }
+  },
+  "python.defaultInterpreterPath": "/run/current-system/sw/bin/python"
 }

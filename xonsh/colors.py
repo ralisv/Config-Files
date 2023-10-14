@@ -2,6 +2,7 @@ import os
 import stat
 
 from colorama import Fore
+import colorsys
 
 LS_COLORS = open(f"{os.path.expanduser('~')}/Config-Files/ls-colors.txt").read()
 """ The contents of the LS_COLORS environment variable """
@@ -28,6 +29,9 @@ GIT_STATUS_COLORS = {
     "AA": Fore.RED,
     "UU": Fore.RED,
 }
+
+RAINBOW_RESOLUTION = 400
+RAINBOW_INDEX = 0
 
 
 def get_file_color(path: str) -> str:
@@ -74,8 +78,6 @@ def get_file_color(path: str) -> str:
     if color is None:
         color = LS_COLORS_PARSED.get("rs")
 
-    # Return the filename enclosed in the color escape sequence
-    # The "\033[0m" sequence at the end resets the color back to the default
     return f"\033[{color}m"
 
 
@@ -89,3 +91,46 @@ def colorize(filename: str, color: str = "") -> str:
     # Return the filename enclosed in the color escape sequence
     # The "\033[0m" sequence at the end resets the color back to the default
     return f"{get_file_color(filename) if not color else color}{filename}\033[0m"
+
+
+def generate_rainbow_colors(resolution):
+    """
+    Generates a list of colors that can be used to colorize text in a rainbow pattern
+
+    The colors are returned as a list of strings in the format "r;g;b", where r, g and b
+    are integers in the range [0, 255]
+
+    The resolution parameter determines the number of colors in the rainbow
+    """
+    colors = []
+    pink_hue = 0.9  # starting color
+    for i in range(resolution):
+        hue = (pink_hue + i / resolution) % 1
+        lightness = 0.7
+        saturation = 1.0
+        r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
+        hex_color = f"{int(r * 255)};{int(g * 255)};{int(b * 255)}"
+        colors.append(hex_color)
+    return colors
+
+
+RAINBOW_COLORS = generate_rainbow_colors(RAINBOW_RESOLUTION)
+
+
+def rainbowize(string: str) -> str:
+    """
+    Returns the string with each character enclosed in a color escape sequence
+
+    The colors are taken from the RAINBOW_COLORS list
+
+    This function is impure, as it uses the global RAINBOW_INDEX variable to keep
+    track of the current color index when iterating over the strings
+    """
+    global RAINBOW_INDEX
+    result = []
+    for char in string:
+        result.append(
+            f"\033[38;2;{RAINBOW_COLORS[RAINBOW_INDEX % len(RAINBOW_COLORS)]}m{char}\033[0m"
+        )
+        RAINBOW_INDEX += 1
+    return "".join(result)
