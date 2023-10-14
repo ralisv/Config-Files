@@ -90,14 +90,14 @@ def super_git_status() -> str:
             # Append rows to the list
             table_data.append(
                 [
-                    f"{state_color}{state}",
-                    f"{state_color}{verbose_state}",
+                    f"{state_color}{state}{Fore.RESET}",
+                    f"{state_color}{verbose_state}{Fore.RESET}",
                     colorized_file,
                 ]
             )
 
         # Tabulate data
-        return tabulate(table_data, tablefmt="plain") + "\n"
+        return tabulate(table_data, tablefmt="rounded_outline") + "\n"
 
     except Exception:
         return ""
@@ -108,14 +108,13 @@ def super_ls(args):
     Executes ls with color and column options
     """
     try:
-        return (
-            subprocess.check_output(
-                [shutil.which("ls"), "--color=always", "-C", *args],
-                env={"LS_COLORS": LS_COLORS},
-            )
-            .decode()
-            .strip()
-        )
+        out = subprocess.check_output(
+            [shutil.which("ls"), "--color=always", "-C", *args],
+            env={"LS_COLORS": LS_COLORS},
+        ).decode()
+
+        rows = [line.split() for line in out.split("\n")][:-1]
+        return tabulate(rows, tablefmt="rounded_outline").strip()
 
     except Exception as e:
         return f"{Fore.RED}{e}{Fore.RESET}"
