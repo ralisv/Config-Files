@@ -1,7 +1,7 @@
 import os
 import stat
 
-from colorama import Fore, init
+from colorama import Fore
 
 LS_COLORS = open(f"{os.path.expanduser('~')}/Config-Files/ls-colors.txt").read()
 """ The contents of the LS_COLORS environment variable """

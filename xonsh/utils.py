@@ -4,7 +4,7 @@ import shutil
 import sys
 import subprocess
 
-from colorama import Fore, init
+from colorama import Fore
 from typing import List
 from git import Repo
 from tabulate import tabulate
@@ -16,9 +16,6 @@ from colors import (
     GIT_STATUS_COLORS,
     LS_COLORS,
 )
-
-# Initialize colorama module
-init()
 
 STATUS_GOOD = 0
 STATUS_LITTLE_ERROR = 1
