@@ -9,4 +9,8 @@ pkgs.mkShell {
 		colorama
 		tabulate
   ];
+	shellHook = ''
+		xonsh
+		exit
+	'';
 }

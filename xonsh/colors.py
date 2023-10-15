@@ -103,10 +103,10 @@ def generate_rainbow_colors(resolution):
     The resolution parameter determines the number of colors in the rainbow
     """
     colors = []
-    pink_hue = 0.9  # starting color
+    purple_hue = 0.8
     for i in range(resolution):
-        hue = (pink_hue + i / resolution) % 1
-        lightness = 0.7
+        hue = (purple_hue + i / resolution) % 1
+        lightness = 0.8
         saturation = 1.0
         r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
         hex_color = f"{int(r * 255)};{int(g * 255)};{int(b * 255)}"
