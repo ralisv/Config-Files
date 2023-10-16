@@ -3,6 +3,7 @@ import stat
 
 from colorama import Fore
 import colorsys
+from random import randint
 
 LS_COLORS = open(f"{os.path.expanduser('~')}/Config-Files/ls-colors.txt").read()
 """ The contents of the LS_COLORS environment variable """
@@ -31,7 +32,7 @@ GIT_STATUS_COLORS = {
 }
 
 RAINBOW_RESOLUTION = 1000
-RAINBOW_INDEX = 0
+RAINBOW_INDEX = randint(0, RAINBOW_RESOLUTION - 1)
 
 
 def get_file_color(path: str) -> str:
@@ -103,9 +104,8 @@ def generate_rainbow_colors(resolution):
     The resolution parameter determines the number of colors in the rainbow
     """
     colors = []
-    purple_hue = 0.8
     for i in range(resolution):
-        hue = (purple_hue + i / resolution) % 1
+        hue = i / resolution
         lightness = 0.8
         saturation = 1.0
         r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
