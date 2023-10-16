@@ -1,5 +1,6 @@
 import os
 import stat
+from typing import List
 
 from colorama import Fore
 import colorsys
@@ -31,8 +32,8 @@ GIT_STATUS_COLORS = {
     "UU": Fore.RED,
 }
 
-RAINBOW_RESOLUTION = 1000
-RAINBOW_INDEX = randint(0, RAINBOW_RESOLUTION - 1)
+DEFAULT_RAINBOW_RESOLUTION = 10
+RAINBOW_INDEX = randint(0, DEFAULT_RAINBOW_RESOLUTION - 1)
 
 
 def get_file_color(path: str) -> str:
@@ -94,7 +95,7 @@ def colorize(filename: str, color: str = "") -> str:
     return f"{get_file_color(filename) if not color else color}{filename}\033[0m"
 
 
-def generate_rainbow_colors(resolution):
+def generate_rainbow_colors(resolution: int, *, lightness: float = 0.8, saturation: float = 1.0) -> List[str]:
     """
     Generates a list of colors that can be used to colorize text in a rainbow pattern
 
@@ -114,7 +115,8 @@ def generate_rainbow_colors(resolution):
     return colors
 
 
-RAINBOW_COLORS = generate_rainbow_colors(RAINBOW_RESOLUTION)
+RAINBOW_COLORS = generate_rainbow_colors(DEFAULT_RAINBOW_RESOLUTION)
+""" A list of colors that can be used to colorize text in a rainbow pattern """
 
 
 def rainbowize(string: str) -> str:

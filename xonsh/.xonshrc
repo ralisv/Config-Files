@@ -9,7 +9,7 @@ from git import Repo, InvalidGitRepositoryError
 
 sys.path.append(os.path.expanduser("~/Config-Files/xonsh"))
 from utils import super_util, start_in_new_session, remove
-from colors import colorize, rainbowize, LS_COLORS
+from colors import colorize, rainbowize, LS_COLORS, generate_rainbow_colors
 from trash import ask_whether_to_dump
 from getpass import getuser
 
@@ -113,6 +113,13 @@ GREEN = "{#00ff00}"
 PINK = "{#ff22bb}"
 RED = "{#ff9999}"
 WHITE = "{#ffffff}"
+
+# Set rainbow resolution
+import colors
+colors.RAINBOW_COLORS = generate_rainbow_colors(1024)
+
+# Set initial rainbow index to pink
+colors.RAINBOW_INDEX = 850
 
 def enclose_in_brackets(text: str) -> str:
     return f"{rainbowize('[')}{text}{rainbowize(']')}{PINK}"
