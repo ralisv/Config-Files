@@ -29,7 +29,7 @@ def get_size(entry: os.DirEntry) -> int:
         elif entry.is_symlink():
             return 1
 
-        return sum(get_size(os.scandir(sub_entry)) for sub_entry in entry.path)
+        return sum(get_size(sub_entry) for sub_entry in os.scandir(entry.path))
 
     except (PermissionError, FileNotFoundError):
         return 0
