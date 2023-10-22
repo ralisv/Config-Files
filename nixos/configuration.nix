@@ -49,7 +49,7 @@
     libreoffice
     franz
     coreutils
-    teams
+    teams-for-linux
     unzip
     zip
 
@@ -75,6 +75,7 @@
     pipewire
     pavucontrol
     wayland-utils
+    bash-completion
 
     # # Hyprland utilities
     # (waybar.overrideAttrs (oldAttrs: {
