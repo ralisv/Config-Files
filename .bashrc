@@ -94,7 +94,7 @@ function play() {
 }
 
 
-PS1="\[\e[38;2;255;180;50m\]\u.[\w] λ \[$COMMON_TEXT_COLOR\]"
+PS1="\e[38;2;255;180;50m\u.[\w] λ $COMMON_TEXT_COLOR"
 PS1="$PS1"
 
 # don't put duplicate lines or lines starting with space in the history.
