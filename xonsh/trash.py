@@ -3,7 +3,7 @@ import shutil
 import sys
 import time
 
-from colorama import init, Fore
+from colorama import Fore
 from typing import List
 
 sys.path.append(os.path.expanduser("~/Config-Files/xonsh"))
@@ -18,10 +18,6 @@ DUMPLOG = os.path.expanduser("~/.dumplog.txt")
 
 DELETED_FILE_AGE_LIMIT = 30
 """ Number of days after which the file is considered dumpable """
-
-
-# Initialize colorama module
-init()
 
 
 def get_size(entry: os.DirEntry) -> int:
