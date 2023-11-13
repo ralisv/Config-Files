@@ -70,24 +70,6 @@
     wayland-utils
     bash-completion
     man-pages
-
-    # # Hyprland utilities
-    # (waybar.overrideAttrs (oldAttrs: {
-    # mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
-    # }))
-    # gtk4
-    # rofi-wayland
-    # dunst
-    # sway
-    # eww
-    # wlogout
-    # swaybg
-    # cliphist
-    # xdg-desktop-portal-hyprland
-    # swayidle
-    # swaylock
-    # waybar
-    # freshfetch
   ];
 
   xdg.portal.enable = true;
