@@ -2,14 +2,17 @@
 
 {
   security.sudo.wheelNeedsPassword = false;
-  
+
   imports =
-    [ # Include the results of the hardware scan.
+    [
+      # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      (let rev = "main"; in import (builtins.fetchTarball {
-        url = "https://gitlab.com/VandalByte/darkmatter-grub-theme/-/archive/${rev}/darkmatter-grub-theme-${rev}.tar.gz";
-        sha256 = "1i6dwmddjh0cbrp6zgafdrji202alkz52rjisx0hs1bgjbrbwxdj";
-        }))
+      (
+        let rev = "main"; in import (builtins.fetchTarball {
+          url = "https://gitlab.com/VandalByte/darkmatter-grub-theme/-/archive/${rev}/darkmatter-grub-theme-${rev}.tar.gz";
+          sha256 = "1i6dwmddjh0cbrp6zgafdrji202alkz52rjisx0hs1bgjbrbwxdj";
+        })
+      )
     ];
 
   programs = {
@@ -25,7 +28,7 @@
 
   hardware.bluetooth.enable = true;
 
-  hardware.opengl.enable =  true;
+  hardware.opengl.enable = true;
   hardware.nvidia.modesetting.enable = true;
 
   environment.systemPackages = with pkgs; [
@@ -56,6 +59,7 @@
     cmake
     godot_4
     vscode-fhs
+    nixpkgs-fmt
 
     # Utility for file type convertions
     texlive.combined.scheme-full
@@ -74,12 +78,12 @@
 
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   services.udev.extraRules = ''
-  # Regular legions
-  SUBSYSTEM=="usb", ATTR{idVendor}=="048d", ATTR{idProduct}=="c965", MODE="0666"
+    # Regular legions
+    SUBSYSTEM=="usb", ATTR{idVendor}=="048d", ATTR{idProduct}=="c965", MODE="0666"
   '';
 
   documentation = {
@@ -214,7 +218,7 @@
   nix.gc.options = "--delete-older-than 7d";
 
   nix.optimise.automatic = true;
-  
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
