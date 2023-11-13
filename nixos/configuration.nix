@@ -136,7 +136,8 @@
 
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
-    NIXOS_OZONE_WL = "1";
+    # As of now, it's causing problems, not worth the optimization
+    NIXOS_OZONE_WL = "0";
   };
 
   # Set your time zone.
@@ -212,8 +213,8 @@
   nix.gc.dates = "weekly";
   nix.gc.options = "--delete-older-than 7d";
 
-  nix.settings.auto-optimize-store = true;
-
+  nix.optimise.automatic = true;
+  
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
