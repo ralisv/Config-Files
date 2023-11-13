@@ -23,11 +23,6 @@
     xwayland.enable = true;
   };
 
-  environment.sessionVariables = {
-    WLR_NO_HARDWARE_CURSORS = "1";
-    NIXOS_OZONE_WL = "1";
-  };
-
   hardware.bluetooth.enable = true;
 
   hardware.opengl.enable =  true;
@@ -52,17 +47,15 @@
     teams-for-linux
     unzip
     zip
-
+    timer
 
     # Development
-    dotnet-sdk_8
+    dotnet-sdk_6
     python3
     libgccjit
     cmake
     godot_4
     vscode-fhs
-    man-pages
-
 
     # Utility for file type convertions
     texlive.combined.scheme-full
@@ -76,6 +69,7 @@
     pavucontrol
     wayland-utils
     bash-completion
+    man-pages
 
     # # Hyprland utilities
     # (waybar.overrideAttrs (oldAttrs: {
@@ -105,6 +99,13 @@
   # Regular legions
   SUBSYSTEM=="usb", ATTR{idVendor}=="048d", ATTR{idProduct}=="c965", MODE="0666"
   '';
+
+  documentation = {
+    enable = true;
+    dev.enable = true;
+    man.enable = true;
+    nixos.enable = true;
+  };
 
   boot = {
     loader = {
@@ -151,6 +152,11 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+    NIXOS_OZONE_WL = "1";
+  };
+
   # Set your time zone.
   time.timeZone = "Europe/Prague";
 
@@ -172,8 +178,10 @@
   # Enable the KDE Plasma Desktop Environment.
   services.xserver = {
     enable = true;
-    displayManager.gdm.wayland = true;
-    displayManager.sddm.enable = true;
+    displayManager.sddm = {
+      enable = true;
+      # theme = "Magna-SDDM";
+    };
     desktopManager.plasma5.enable = true;
     layout = "cz";
     xkbVariant = "";
@@ -183,12 +191,6 @@
   services.printing.enable = true;
 
   nixpkgs.config.pulseaudio = true;
-
-  # sound.enable = true;
-  # hardware.pulseaudio = {
-  #   enable = true;
-  #   support32Bit = true;
-  # };
 
   # Enable sound with pipewire.
   sound.enable = true;
@@ -200,7 +202,6 @@
     alsa.support32Bit = true;
     audio.enable = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
     jack.enable = true;
     wireplumber.enable = true;
   };
@@ -224,6 +225,12 @@
       python3Packages.jupyter-core
     ];
   };
+
+  nix.gc.automatic = true;
+  nix.gc.dates = "weekly";
+  nix.gc.options = "--delete-older-than 7d";
+
+  nix.settings.auto-optimize-store = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
