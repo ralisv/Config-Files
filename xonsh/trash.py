@@ -88,7 +88,7 @@ def ask_whether_to_dump() -> None:
     """
     if (
         os.path.exists(DUMPLOG)
-        and (time.time() - os.path.getmtime(DUMPLOG)) // (60 * 60 * 24) < 7
+        and (time.time() - os.path.getmtime(DUMPLOG)) // (60 * 60 * 24) < 30
     ):
         return
 
