@@ -18,11 +18,6 @@
   programs = {
     light.enable = true;
     git.enable = true;
-    hyprland = {
-      enable = true;
-      enableNvidiaPatches = true;
-      xwayland.enable = true;
-    };
     xwayland.enable = true;
   };
 
@@ -60,6 +55,7 @@
     godot_4
     vscode-fhs
     nixpkgs-fmt
+    zulu8 # Java 8, for Digital executable
 
     # Utility for file type convertions
     texlive.combined.scheme-full
@@ -218,6 +214,7 @@
   nix.gc.options = "--delete-older-than 7d";
 
   nix.optimise.automatic = true;
+  nix.settings.auto-optimise-store = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
