@@ -12,7 +12,6 @@ from tabulate import tabulate
 
 from colors import (
     colorize,
-    get_file_color,
     GIT_STATUS_COLORS,
     LS_COLORS,
 )
@@ -63,24 +62,21 @@ def super_git_status() -> str:
         # Initialize a list to store the rows
         table_data = []
 
-        for state, *_, file in file_states:
+        for state, *_, filename in file_states:
             state_color = GIT_STATUS_COLORS.get(state, Fore.RESET)
-            if file in staged_files:
+            if filename in staged_files:
                 state_color = GIT_STATUS_COLORS["STAGED"]
 
             verbose_state = GIT_STATUS_VERBOSE.get(state, "")
-            colorized_file = colorize(
-                file,
-                get_file_color(os.path.join(repo.working_tree_dir, file)),
-            )
+            colorized_file = colorize(filename)
 
             # Append rows to the list
             table_data.append(
-                [
+                (
                     f"{state_color}{state}",
                     f"{state_color}{verbose_state}",
                     colorized_file,
-                ]
+                )
             )
 
         # Tabulate data
@@ -167,7 +163,7 @@ def remove(args: List[str]):
                 )
                 error_messages.append(message)
 
-        else:
+        if not files:
             message = f"{Fore.RED} ✘ {arg}: Does not match any files or directories{Fore.RESET}"
             error_messages.append(message)
 
