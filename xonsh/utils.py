@@ -19,12 +19,6 @@ from colors import (
 from trash import TRASH_DIR, initialize_trash_management
 
 
-STATUS_GOOD = 0
-STATUS_LITTLE_ERROR = 1
-STATUS_NO_ENTRIES = 2
-STATUS_BIG_ERROR = 3
-
-
 GIT_STATUS_VERBOSE = {
     "M": "Modified",
     "A": "Added",
@@ -125,7 +119,7 @@ def super_util(args: List[str]) -> int:
         print(ls)
 
 
-def remove(args: List[str]) -> int:
+def remove(args: List[str]):
     """
     Moves files and directories passed as arguments into ~/.trash-bin.
     If the file/directory already exists in .trash-bin, it appends a number to its name.
@@ -137,10 +131,9 @@ def remove(args: List[str]) -> int:
     @param args: list of files and directories to remove
     @param talkative: if True, prints status messages to stdout
     """
-    status = STATUS_GOOD
     if not args:
         print(f"{Fore.RED}No files or directories passed{Fore.RESET}", file=sys.stderr)
-        return STATUS_NO_ENTRIES
+        return
 
     initialize_trash_management()
 
@@ -151,9 +144,7 @@ def remove(args: List[str]) -> int:
         arg = os.path.abspath(arg)
         files = glob.glob(arg, recursive=True)
 
-        for f in files:
-            file = Path(f)
-
+        for file in map(Path, files):
             message = f"{Fore.GREEN} ✔ {colorize(file.name)}{Fore.RESET}"
 
             trashed_file = Path(TRASH_DIR) / file.name
@@ -176,17 +167,12 @@ def remove(args: List[str]) -> int:
                 )
                 error_messages.append(message)
 
-                status = STATUS_LITTLE_ERROR
-
-        if not files:
-            status = STATUS_LITTLE_ERROR
+        else:
             message = f"{Fore.RED} ✘ {arg}: Does not match any files or directories{Fore.RESET}"
             error_messages.append(message)
 
     print(*ok_messages, sep="\n", end="")
     print(*error_messages, sep="\n", end="", file=sys.stderr)
-
-    return status
 
 
 def start_in_new_session(

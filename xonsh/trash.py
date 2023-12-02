@@ -24,16 +24,16 @@ def get_days(seconds: float) -> float:
     return seconds / (60 * 60 * 24)
 
 
-def get_size(file_path: Path) -> int:
+def get_size(file: Path) -> int:
     """Returns the size of the file/directory. If it's a directory, it sums up the sizes of all the files in it"""
     try:
-        if file_path.is_file():
-            return file_path.stat().st_size
+        if file.is_file():
+            return file.stat().st_size
 
-        elif file_path.is_symlink():
+        elif file.is_symlink():
             return 1
 
-        return sum(get_size(sub_entry) for sub_entry in os.scandir(file_path.path))
+        return sum(get_size(entry) for entry in file.iterdir())
 
     except (PermissionError, FileNotFoundError):
         return 0
