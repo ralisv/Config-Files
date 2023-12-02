@@ -7,14 +7,13 @@ from pathlib import Path
 from colorama import Fore
 from typing import List
 
-sys.path.append(str(Path.home() / "Config-Files" / "xonsh"))
 from colors import colorize
 
 
 TRASH_DIR = Path.home() / ".trash-bin"
 """ Path to the directory where the files are moved when deleted """
 
-DUMPLOG = Path.home() / ".dumplog.txt"
+DUMPLOG = Path.home() / ".dump.log"
 """ Path to the file where the information related to dumping is stored """
 
 DELETED_FILE_AGE_LIMIT = 30

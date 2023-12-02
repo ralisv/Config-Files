@@ -3,34 +3,27 @@ import glob
 import shutil
 import sys
 import subprocess
+from pathlib import Path
 
 from colorama import Fore
 from typing import List
 from git import Repo
 from tabulate import tabulate
 
-sys.path.append(os.path.expanduser("~/Config-Files/xonsh"))
 from colors import (
     colorize,
     get_file_color,
     GIT_STATUS_COLORS,
     LS_COLORS,
 )
+from trash import TRASH_DIR, initialize_trash_management
+
 
 STATUS_GOOD = 0
 STATUS_LITTLE_ERROR = 1
 STATUS_NO_ENTRIES = 2
 STATUS_BIG_ERROR = 3
 
-
-TRASH = os.path.expanduser("~/.trash-bin")
-""" Path to the directory where the files are moved when deleted """
-
-DUMPLOG = os.path.expanduser("~/.dumplog.txt")
-""" Path to the file where the information related to dumping is stored """
-
-DELETED_FILE_AGE_LIMIT = 30
-""" Number of days after which the file is considered dumpable """
 
 GIT_STATUS_VERBOSE = {
     "M": "Modified",
@@ -149,35 +142,38 @@ def remove(args: List[str]) -> int:
         print(f"{Fore.RED}No files or directories passed{Fore.RESET}", file=sys.stderr)
         return STATUS_NO_ENTRIES
 
-    if not os.path.exists(TRASH):
-        os.mkdir(TRASH)
+    initialize_trash_management()
 
     ok_messages = []
     error_messages = []
-
     for arg in args:
         arg = os.path.expanduser(arg)
         arg = os.path.abspath(arg)
-        files = glob.glob(arg)
+        files = glob.glob(arg, recursive=True)
 
-        for file in files:
-            file_name = os.path.basename(file)
-            message = (
-                f"{Fore.GREEN} ✔ {colorize(os.path.basename(file_name))}{Fore.RESET}"
-            )
+        for f in files:
+            file = Path(f)
 
-            if os.path.exists(os.path.join(TRASH, file_name)):
+            message = f"{Fore.GREEN} ✔ {colorize(file.name)}{Fore.RESET}"
+
+            trashed_file = Path(TRASH_DIR) / file.name
+            if trashed_file.exists():
+                # If file with such name already exists in trash, rename it
                 i = 1
-                while os.path.exists(os.path.join(TRASH, f"{file_name}_{i}")):
+                while (TRASH_DIR / f"{file.name}_{i}").exists():
                     i += 1
-                file_name = f"{file_name}_{i}"
+
+                trashed_file = TRASH_DIR / f"{file.name}_{i}"
 
             try:
-                shutil.move(file, os.path.join(TRASH, file_name))
+                # shutil.move works across different file systems, Path.rename does not
+                shutil.move(str(file), str(trashed_file))
                 ok_messages.append(message)
 
             except Exception as e:
-                message = f"{Fore.RED} ✘ {colorize(os.path.basename(file))}{Fore.RED}: {e}{Fore.RESET}"
+                message = (
+                    f"{Fore.RED} ✘ {colorize(file.name)}{Fore.RED}: {e}{Fore.RESET}"
+                )
                 error_messages.append(message)
 
                 status = STATUS_LITTLE_ERROR
