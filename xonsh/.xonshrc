@@ -4,6 +4,7 @@ import shutil
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent))
+sys.path.append(str(Path.home() / ".local" / "lib" / "python3.10" / "site-packages"))
 
 from math import factorial, pi, e, gcd, log
 from git import Repo, InvalidGitRepositoryError
@@ -14,41 +15,43 @@ from colors import colorize, rainbowize, LS_COLORS, generate_rainbow_colors
 from trash import ask_whether_to_dump
 from getpass import getuser
 
-$PATH.append(os.path.expanduser("~/.local/bin"))
-$PATH.append(os.path.expanduser("~/.dotnet/tools"))
-sys.path.append(os.path.expanduser("~/.local/lib/python3.10/site-packages"))
+
+__xonsh__ = __xonsh__
+
+
+__xonsh__.env["PATH"].append(str(Path.home() / ".local" / "bin"))
+__xonsh__.env["PATH"].append(str(Path.home() / ".dotnet" / "tools"))
+
 
 # Silence the deprecation warning caused by bug inside of prompt-toolkit library
 import warnings
+
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Configure xonsh behavior via environment variables
-$AUTO_CD = True
-$CASE_SENSITIVE_COMPLETIONS = False
-$COMPLETION_IN_THREAD = True
-$COMPLETION_MODE = "default"
-$COMPLETION_QUERY_LIMIT = 10
-$COMPLETIONS_CONFIRM = False
-$COMPLETIONS_MENU_ROWS = 2
-$DYNAMIC_CWD_WIDTH = "50%"
-$DYNAMIC_CWD_ELISION_CHAR = "..."
-$FOREIGN_ALIASES_SUPPRESS_SKIP_MESSAGE = 1
-$INDENT = "   "
-$MULTILINE_PROMPT = " "
-$SUBSEQUENCE_PATH_COMPLETION = True
-$SUGGEST_COMMANDS = True
-$SUGGEST_MAX_NUM = 20
-$TITLE = "My lovely terminal"
-$UPDATE_COMPLETIONS_ON_KEYPRESS = True
-$XONSH_AUTOPAIR = True
-$XONSH_CACHE_DIR = "~"
-$XONSH_COLOR_STYLE = "paraiso-dark"
-$XONSH_HISTORY_MATCH_ANYWHERE = True
+__xonsh__.env["AUTO_CD"] = True
+__xonsh__.env["CASE_SENSITIVE_COMPLETIONS"] = False
+__xonsh__.env["COMPLETION_IN_THREAD"] = True
+__xonsh__.env["COMPLETION_MODE"] = "default"
+__xonsh__.env["COMPLETION_QUERY_LIMIT"] = 10
+__xonsh__.env["COMPLETIONS_CONFIRM"] = False
+__xonsh__.env["COMPLETIONS_MENU_ROWS"] = 2
+__xonsh__.env["DYNAMIC_CWD_WIDTH"] = "50%"
+__xonsh__.env["DYNAMIC_CWD_ELISION_CHAR"] = "..."
+__xonsh__.env["FOREIGN_ALIASES_SUPPRESS_SKIP_MESSAGE"] = 1
+__xonsh__.env["INDENT"] = "   "
+__xonsh__.env["MULTILINE_PROMPT"] = " "
+__xonsh__.env["SUBSEQUENCE_PATH_COMPLETION"] = True
+__xonsh__.env["SUGGEST_COMMANDS"] = True
+__xonsh__.env["SUGGEST_MAX_NUM"] = 20
+__xonsh__.env["TITLE"] = "My lovely terminal"
+__xonsh__.env["UPDATE_COMPLETIONS_ON_KEYPRESS"] = True
+__xonsh__.env["XONSH_AUTOPAIR"] = True
+__xonsh__.env["XONSH_CACHE_DIR"] = "~"
+__xonsh__.env["XONSH_COLOR_STYLE"] = "paraiso-dark"
+__xonsh__.env["XONSH_HISTORY_MATCH_ANYWHERE"] = True
 
-$BAT_STYLE="grid,changes,header-filename,header-filesize,numbers"
-def nice_help(args):
-    for arg in args:
-        f"{arg}" --help | bat --paging=never --language=help --style=grid
+__xonsh__.env["BAT_STYLE"] = "grid,changes,header-filename,header-filesize,numbers"
 
 my_aliases = {
     "aisa": "ssh 'xralis@aisa.fi.muni.cz'",
@@ -56,13 +59,12 @@ my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
     "c": "cd",
     "cat": "bat --pager=never",
-    "code": "env -u WAYLAND_DISPLAY code", # because vs-code doesn't work well with wayland, make sure that XWayland or X11 server is running
+    "code": "env -u WAYLAND_DISPLAY code",  # because vs-code doesn't work well with wayland, make sure that XWayland or X11 server is running
     "d": "cd",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
     "du": "du -h",
     "fc-list": "fc-list --format='%{family}'\n",
     "grep": "grep --color=auto",
-    "help": lambda args: nice_help(args),
     "light": "sudo light -S",
     "ls": "ls --color=auto",
     "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' {os.path.expanduser('~')}/aisa",
@@ -75,7 +77,9 @@ my_aliases = {
     "sl": "sl -e",
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
     "trans": "~/Executables/trans -j -d -t czech",
-    "uaexpert": lambda args: start_in_new_session(f"{os.path.expanduser('~')}/Executables/UaExpert/AppRun", args),
+    "uaexpert": lambda args: start_in_new_session(
+        f"{os.path.expanduser('~')}/Executables/UaExpert/AppRun", args
+    ),
     "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
     "vlc": lambda args: start_in_new_session(shutil.which("vlc"), args),
     "xaisa": "xxh 'xralis@aisa.fi.muni.cz'",
@@ -96,16 +100,19 @@ mystyle = {
 }
 
 register_custom_style("mystyle", mystyle, base="paraiso-dark")
-$XONSH_COLOR_STYLE="mystyle"
+__xonsh__.env["XONSH_COLOR_STYLE"] = "mystyle"
+
 
 def customize_autocompleter():
     import prompt_toolkit.styles.defaults as defstyle
+
     defstyle.PROMPT_TOOLKIT_STYLE.append(("bottom-toolbar", "noreverse"))
-    defstyle.PROMPT_TOOLKIT_STYLE.append(("completion-menu", "bg:#2244dd #000000"))
+    defstyle.PROMPT_TOOLKIT_STYLE.append(("completion-menu", "bg:#771977 #000000"))
+
 
 customize_autocompleter()
 
-$LS_COLORS = LS_COLORS
+__xonsh__.env["LS_COLORS"] = LS_COLORS
 
 # Prompt
 
@@ -117,17 +124,20 @@ WHITE = "{#ffffff}"
 
 # Set rainbow resolution
 import colors
+
 colors.RAINBOW_COLORS = generate_rainbow_colors(1024)
 
 # Set initial rainbow index to pink
 colors.RAINBOW_INDEX = 850
 
+
 def enclose_in_brackets(text: str) -> str:
     return f"{rainbowize('[')}{text}{rainbowize(']')}{PINK}"
 
+
 def git_info() -> str:
     try:
-        repo = Repo('.', search_parent_directories=True)
+        repo = Repo(".", search_parent_directories=True)
     except InvalidGitRepositoryError:
         return ""
 
@@ -143,42 +153,50 @@ def git_info() -> str:
 
     return enclose_in_brackets(f"{color}{branch}")
 
+
 def path_info() -> str:
-    return enclose_in_brackets(f"{colorize(os.getcwd()).replace(os.path.expanduser('~'), '~')}")
+    return enclose_in_brackets(
+        f"{colorize(os.getcwd()).replace(os.path.expanduser('~'), '~')}"
+    )
+
 
 def last_exit_code_info() -> str:
-    exit_code = $LAST_RETURN_CODE
+    exit_code = __xonsh__.env["LAST_RETURN_CODE"]
     return enclose_in_brackets(f"{RED}{exit_code}") if exit_code != 0 else ""
+
 
 def reset() -> str:
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     return WHITE
 
 
-$PROMPT_FIELDS["git-info"] = git_info
-$PROMPT_FIELDS["last-exit-code-info"] = last_exit_code_info
-$PROMPT_FIELDS["path-info"] = path_info
-$PROMPT_FIELDS["reset"] = reset
-$PROMPT_FIELDS["rainbow-user"] = lambda: rainbowize(getuser()) + PINK
-$PROMPT_FIELDS["end"] = lambda: rainbowize(" λ ")
-$PROMPT_FIELDS["separator"] = lambda: rainbowize(".")
+__xonsh__.env["PROMPT_FIELDS"]["git-info"] = git_info
+__xonsh__.env["PROMPT_FIELDS"]["last-exit-code-info"] = last_exit_code_info
+__xonsh__.env["PROMPT_FIELDS"]["path-info"] = path_info
+__xonsh__.env["PROMPT_FIELDS"]["reset"] = reset
+__xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: rainbowize(getuser()) + PINK
+__xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: rainbowize(" λ ")
+__xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: rainbowize(".")
 
-$PROMPT = PINK + "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
+__xonsh__.env["PROMPT"] = (
+    PINK
+    + "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
+)
 
 
 # Colored man pages
 
-$LESS_TERMCAP_mb="\x1b[1;32m"
-$LESS_TERMCAP_md="\x1b[38;2;255;180;50m"
-$LESS_TERMCAP_me="\x1b[0m"
-$LESS_TERMCAP_se="\x1b[0m"
-$LESS_TERMCAP_so="\x1b[38;2;255;255;50m"
-$LESS_TERMCAP_ue="\x1b[0m"
-$LESS_TERMCAP_us="\x1b[38;2;255;100;50m"
+__xonsh__.env["LESS_TERMCAP_mb"] = "\x1b[1;32m"
+__xonsh__.env["LESS_TERMCAP_md"] = "\x1b[38;2;255;180;50m"
+__xonsh__.env["LESS_TERMCAP_me"] = "\x1b[0m"
+__xonsh__.env["LESS_TERMCAP_se"] = "\x1b[0m"
+__xonsh__.env["LESS_TERMCAP_so"] = "\x1b[38;2;255;255;50m"
+__xonsh__.env["LESS_TERMCAP_ue"] = "\x1b[0m"
+__xonsh__.env["LESS_TERMCAP_us"] = "\x1b[38;2;255;100;50m"
 
-$MANPAGER="sh -c 'col -bx | bat -l man --plain'"
-$MANROFFOPT="-c" # Option passed to man's formatter, removes undesired characters from output
+__xonsh__.env["MANPAGER"] = "sh -c 'col -bx | bat -l man --plain'"
+# Option passed to man's formatter, removes undesired characters from output
+__xonsh__.env["MANROFFOPT"] = "-c"
 
 # Ask about dumping trash
-
 ask_whether_to_dump()
