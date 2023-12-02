@@ -1,7 +1,7 @@
 import os
-import stat
+from stat import S_IXUSR
 from typing import List
-
+from pathlib import Path
 from colorama import Fore
 import colorsys
 from random import randint
@@ -36,45 +36,44 @@ DEFAULT_RAINBOW_RESOLUTION = 10
 RAINBOW_INDEX = randint(0, DEFAULT_RAINBOW_RESOLUTION - 1)
 
 
-def get_file_color(path: str) -> str:
-    _, ext = os.path.splitext(path)
-    ext = f"*{ext}"
+def get_file_color(path: Path) -> str:
+    ext = f"*{path.suffix}"
 
     color = None
 
-    if os.path.isfile(path) and ext in LS_COLORS_PARSED:
+    if path.is_file() and ext in LS_COLORS_PARSED:
         color = LS_COLORS_PARSED[ext]
 
     # If the file is a directory, get the directory color
-    if os.path.isdir(path):
+    if path.is_dir():
         color = LS_COLORS_PARSED.get("di")
 
     # If the file is a symbolic link, get the link color
-    elif os.path.islink(path):
+    elif path.is_symlink():
         color = LS_COLORS_PARSED.get("ln")
 
     # If the file is a fifo pipe, get the pipe color
-    elif os.path.exists(path) and stat.S_ISFIFO(os.stat(path).st_mode):
+    elif path.exists() and path.is_fifo():
         color = LS_COLORS_PARSED.get("pi")
 
     # If the file is a socket, get the socket color
-    elif os.path.exists(path) and stat.S_ISSOCK(os.stat(path).st_mode):
+    elif path.exists() and path.is_socket():
         color = LS_COLORS_PARSED.get("so")
 
     # If the file is a block (buffered) special file, get the block color
-    elif os.path.exists(path) and stat.S_ISBLK(os.stat(path).st_mode):
+    elif path.exists() and path.is_block_device():
         color = LS_COLORS_PARSED.get("bd")
 
     # If the file is a character (unbuffered) special file, get the character color
-    elif os.path.exists(path) and stat.S_ISCHR(os.stat(path).st_mode):
+    elif path.exists() and path.is_char_device():
         color = LS_COLORS_PARSED.get("cd")
 
     # If the file is a symbolic link and orphaned, get the orphan color
-    elif os.path.islink(path) and not os.path.exists(os.readlink(path)):
+    elif path.is_symlink() and not path.resolve() == path:
         color = LS_COLORS_PARSED.get("or")
 
     # If the file is a regular file and an executable
-    elif os.path.isfile(path) and os.access(path, os.X_OK):
+    elif path.is_file() and path.stat().st_mode & S_IXUSR:
         color = LS_COLORS_PARSED.get("ex")
 
     if color is None:
@@ -92,10 +91,12 @@ def colorize(filename: str, color: str = "") -> str:
 
     # Return the filename enclosed in the color escape sequence
     # The "\033[0m" sequence at the end resets the color back to the default
-    return f"{get_file_color(filename) if not color else color}{filename}\033[0m"
+    return f"{get_file_color(Path(filename)) if not color else color}{filename}\033[0m"
 
 
-def generate_rainbow_colors(resolution: int, *, lightness: float = 0.8, saturation: float = 1.0) -> List[str]:
+def generate_rainbow_colors(
+    resolution: int, *, lightness: float = 0.8, saturation: float = 1.0
+) -> List[str]:
     """
     Generates a list of colors that can be used to colorize text in a rainbow pattern
 
