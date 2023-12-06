@@ -1,8 +1,8 @@
+from enum import Enum
 import os
 from stat import S_IXUSR
 from typing import List
 from pathlib import Path
-from colorama import Fore
 import colorsys
 from random import randint
 
@@ -14,22 +14,47 @@ LS_COLORS_PARSED = dict(
 )
 """ LS_COLORS parsed into a dictionary where the keys are file types and the values are color codes """
 
+
+class Color:
+    DEFAULT = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINED = "\033[4m"
+    FLASHING_TEXT = "\033[5m"
+    REVERSE_FIELD = "\033[7m"
+    RED = "\033[31m"
+    GREEN = "\033[32m"
+    ORANGE = "\033[33m"
+    YELLOW = "\033[33m"
+    BLUE = "\033[34m"
+    PURPLE = "\033[35m"
+    CYAN = "\033[36m"
+    GREY = "\033[37m"
+    BLACK = "\033[40m"
+    LIGHT_RED = "\033[91m"
+    LIGHT_GREEN = "\033[92m"
+    LIGHT_YELLOW = "\033[93m"
+    LIGHT_BLUE = "\033[94m"
+    LIGHT_MAGENTA = "\033[95m"
+    LIGHT_CYAN = "\033[96m"
+    LIGHT_WHITE = "\033[97m"
+
+
 GIT_STATUS_COLORS = {
-    "STAGED": Fore.LIGHTGREEN_EX,
-    "??": Fore.YELLOW,
-    "M": Fore.BLUE,
-    "A": Fore.GREEN,
-    "D": Fore.RED,
-    "R": Fore.GREEN,
-    "C": Fore.GREEN,
-    "U": Fore.RED,
-    "DU": Fore.RED,
-    "AU": Fore.RED,
-    "UD": Fore.RED,
-    "UA": Fore.RED,
-    "DA": Fore.RED,
-    "AA": Fore.RED,
-    "UU": Fore.RED,
+    "STAGED": Color.LIGHT_GREEN,
+    "??": Color.YELLOW,
+    "M": Color.BLUE,
+    "A": Color.GREEN,
+    "D": Color.RED,
+    "R": Color.GREEN,
+    "C": Color.GREEN,
+    "U": Color.RED,
+    "DU": Color.RED,
+    "AU": Color.RED,
+    "UD": Color.RED,
+    "UA": Color.RED,
+    "DA": Color.RED,
+    "AA": Color.RED,
+    "UU": Color.RED,
 }
 
 DEFAULT_RAINBOW_RESOLUTION = 10
@@ -111,7 +136,7 @@ def generate_rainbow_colors(
         lightness = 0.8
         saturation = 1.0
         r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
-        hex_color = f"{int(r * 255)};{int(g * 255)};{int(b * 255)}"
+        hex_color = f"\033[38;2;{int(r * 255)};{int(g * 255)};{int(b * 255)}m"
         colors.append(hex_color)
     return colors
 
@@ -133,7 +158,7 @@ def rainbowize(string: str) -> str:
     result = []
     for char in string:
         result.append(
-            f"\033[38;2;{RAINBOW_COLORS[RAINBOW_INDEX % len(RAINBOW_COLORS)]}m{char}\033[0m"
+            f"{RAINBOW_COLORS[RAINBOW_INDEX % len(RAINBOW_COLORS)]}{char}"
         )
         RAINBOW_INDEX += 1
     return "".join(result)
