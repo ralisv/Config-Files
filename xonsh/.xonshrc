@@ -15,7 +15,7 @@ from colors import colorize, rainbowize, LS_COLORS, generate_rainbow_colors
 from trash import ask_whether_to_dump
 from getpass import getuser
 
-
+# To silence IDE for further complains about nonexistence of this variable
 __xonsh__ = __xonsh__
 
 
@@ -114,88 +114,104 @@ customize_autocompleter()
 
 __xonsh__.env["LS_COLORS"] = LS_COLORS
 
+
 # Prompt
-
-BLUE = "{#00b0ff}"
-GREEN = "{#00ff00}"
-PINK = "{#ff22bb}"
-RED = "{#ff9999}"
-WHITE = "{#ffffff}"
-
-# Set rainbow resolution
-import colors
-
-colors.RAINBOW_COLORS = generate_rainbow_colors(1024)
-
-# Set initial rainbow index to pink
-colors.RAINBOW_INDEX = 850
+class XonshColors:
+    BLUE = "{#00b0ff}"
+    GREEN = "{#00ff00}"
+    PINK = "{#ff22bb}"
+    RED = "{#ff9999}"
+    WHITE = "{#ffffff}"
 
 
-def enclose_in_brackets(text: str) -> str:
-    return f"{rainbowize('[')}{text}{rainbowize(']')}{PINK}"
+def set_rainbow(resolution: int, index: int) -> None:
+    """Modify the rainbow coloring"""
+    import colors
+
+    colors.RAINBOW_COLORS = generate_rainbow_colors(resolution)
+    # Set initial rainbow index to XonshColors.PINK
+    colors.RAINBOW_INDEX = index
+
+set_rainbow(1024, 850)
 
 
-def git_info() -> str:
-    try:
-        repo = Repo(".", search_parent_directories=True)
-    except InvalidGitRepositoryError:
-        return ""
+class XonshPrompt:
+    @staticmethod
+    def enclose_in_brackets(text: str) -> str:
+        return f"{rainbowize('[')}{text}{rainbowize(']')}{XonshColors.PINK}"
 
-    try:
-        branch = repo.active_branch.name
-    except:
-        return enclose_in_brackets(f"{WHITE}unknown")
+    @staticmethod
+    def git_info() -> str:
+        try:
+            repo = Repo(".", search_parent_directories=True)
+        except InvalidGitRepositoryError:
+            return ""
 
-    color = RED if repo.is_dirty(untracked_files=True) else GREEN
+        try:
+            branch = repo.active_branch.name
+        except:
+            return XonshPrompt.enclose_in_brackets(f"{XonshColors.WHITE}unknown")
 
-    if branch == "master":
-        branch = "main"
+        color = (
+            XonshColors.RED
+            if repo.is_dirty(untracked_files=True)
+            else XonshColors.GREEN
+        )
 
-    return enclose_in_brackets(f"{color}{branch}")
+        if branch == "master":
+            branch = "main"
+
+        return XonshPrompt.enclose_in_brackets(f"{color}{branch}")
+
+    @staticmethod
+    def path_info() -> str:
+        return XonshPrompt.enclose_in_brackets(
+            f"{colorize(os.getcwd()).replace(os.path.expanduser('~'), '~')}"
+        )
+
+    @staticmethod
+    def last_exit_code_info() -> str:
+        exit_code = __xonsh__.env["LAST_RETURN_CODE"]
+        return (
+            XonshPrompt.enclose_in_brackets(f"{XonshColors.RED}{exit_code}")
+            if exit_code != 0
+            else ""
+        )
+
+    @staticmethod
+    def reset() -> str:
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        return XonshColors.WHITE
 
 
-def path_info() -> str:
-    return enclose_in_brackets(
-        f"{colorize(os.getcwd()).replace(os.path.expanduser('~'), '~')}"
-    )
-
-
-def last_exit_code_info() -> str:
-    exit_code = __xonsh__.env["LAST_RETURN_CODE"]
-    return enclose_in_brackets(f"{RED}{exit_code}") if exit_code != 0 else ""
-
-
-def reset() -> str:
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
-    return WHITE
-
-
-__xonsh__.env["PROMPT_FIELDS"]["git-info"] = git_info
-__xonsh__.env["PROMPT_FIELDS"]["last-exit-code-info"] = last_exit_code_info
-__xonsh__.env["PROMPT_FIELDS"]["path-info"] = path_info
-__xonsh__.env["PROMPT_FIELDS"]["reset"] = reset
-__xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: rainbowize(getuser()) + PINK
+__xonsh__.env["PROMPT_FIELDS"]["git-info"] = XonshPrompt.git_info
+__xonsh__.env["PROMPT_FIELDS"]["last-exit-code-info"] = XonshPrompt.last_exit_code_info
+__xonsh__.env["PROMPT_FIELDS"]["path-info"] = XonshPrompt.path_info
+__xonsh__.env["PROMPT_FIELDS"]["reset"] = XonshPrompt.reset
+__xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = (
+    lambda: rainbowize(getuser()) + XonshColors.PINK
+)
 __xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: rainbowize(" λ ")
 __xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: rainbowize(".")
 
 __xonsh__.env["PROMPT"] = (
-    PINK
+    XonshColors.PINK
     + "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
 )
 
 
-# Colored man pages
+# ColoXonshColors.RED man pages
 
-__xonsh__.env["LESS_TERMCAP_mb"] = "\x1b[1;32m"
-__xonsh__.env["LESS_TERMCAP_md"] = "\x1b[38;2;255;180;50m"
-__xonsh__.env["LESS_TERMCAP_me"] = "\x1b[0m"
-__xonsh__.env["LESS_TERMCAP_se"] = "\x1b[0m"
-__xonsh__.env["LESS_TERMCAP_so"] = "\x1b[38;2;255;255;50m"
-__xonsh__.env["LESS_TERMCAP_ue"] = "\x1b[0m"
-__xonsh__.env["LESS_TERMCAP_us"] = "\x1b[38;2;255;100;50m"
+__xonsh__.env["LESS_TERMCAP_mb"] = "\033[1;32m"
+__xonsh__.env["LESS_TERMCAP_md"] = "\033[38;2;255;180;50m"
+__xonsh__.env["LESS_TERMCAP_me"] = "\033[0m"
+__xonsh__.env["LESS_TERMCAP_se"] = "\033[0m"
+__xonsh__.env["LESS_TERMCAP_so"] = "\033[38;2;255;255;50m"
+__xonsh__.env["LESS_TERMCAP_ue"] = "\033[0m"
+__xonsh__.env["LESS_TERMCAP_us"] = "\033[38;2;255;100;50m"
 
 __xonsh__.env["MANPAGER"] = "sh -c 'col -bx | bat -l man --plain'"
-# Option passed to man's formatter, removes undesired characters from output
+# Option passed to man's formatter, removes undesiXonshColors.RED characters from output
 __xonsh__.env["MANROFFOPT"] = "-c"
 
 # Ask about dumping trash
