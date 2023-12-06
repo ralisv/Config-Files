@@ -15,5 +15,9 @@
     {
         "key": "ctrl+q",
         "command": "workbench.action.closeWindow"
+    },
+    {
+        "key": "ctrl+shift+u",
+        "command": "workbench.action.openQuickChat.copilot"
     }
 ]
