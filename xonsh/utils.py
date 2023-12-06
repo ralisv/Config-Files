@@ -5,12 +5,12 @@ import sys
 import subprocess
 from pathlib import Path
 
-from colorama import Fore
 from typing import List
 from git import Repo
 from tabulate import tabulate
 
 from colors import (
+    Color,
     colorize,
     GIT_STATUS_COLORS,
     LS_COLORS,
@@ -53,7 +53,7 @@ def super_git_status() -> str:
         # When too many files were received from repo.git.status (tabulate handles extremely long lists slowly)
         if len(file_states) > 1000:
             return (
-                f"{Fore.RED}Super git status error: TooManyEntries ({len(file_states)})"
+                f"{Color.RED}Super git status error: TooManyEntries ({len(file_states)})"
             )
 
         # Get staged files
@@ -63,7 +63,7 @@ def super_git_status() -> str:
         table_data = []
 
         for state, *_, filename in file_states:
-            state_color = GIT_STATUS_COLORS.get(state, Fore.RESET)
+            state_color = GIT_STATUS_COLORS.get(state, Color.DEFAULT)
             if filename in staged_files:
                 state_color = GIT_STATUS_COLORS["STAGED"]
 
@@ -101,7 +101,7 @@ def super_ls(args):
         )
 
     except Exception as e:
-        return f"{Fore.RED}{e}{Fore.RESET}"
+        return f"{Color.RED}{e}{Color.DEFAULT}"
 
 
 def super_util(args: List[str]) -> int:
@@ -128,7 +128,7 @@ def remove(args: List[str]):
     @param talkative: if True, prints status messages to stdout
     """
     if not args:
-        print(f"{Fore.RED}No files or directories passed{Fore.RESET}", file=sys.stderr)
+        print(f"{Color.RED}No files or directories passed{Color.DEFAULT}", file=sys.stderr)
         return
 
     initialize_trash_management()
@@ -141,7 +141,7 @@ def remove(args: List[str]):
         files = glob.glob(arg, recursive=True)
 
         for file in map(Path, files):
-            message = f"{Fore.GREEN} ✔ {colorize(file.name)}{Fore.RESET}"
+            message = f"{Color.GREEN} ✔ {colorize(file.name)}{Color.DEFAULT}"
 
             trashed_file = Path(TRASH_DIR) / file.name
             if trashed_file.exists():
@@ -159,12 +159,12 @@ def remove(args: List[str]):
 
             except Exception as e:
                 message = (
-                    f"{Fore.RED} ✘ {colorize(file.name)}{Fore.RED}: {e}{Fore.RESET}"
+                    f"{Color.RED} ✘ {colorize(file.name)}{Color.RED}: {e}{Color.DEFAULT}"
                 )
                 error_messages.append(message)
 
         if not files:
-            message = f"{Fore.RED} ✘ {arg}: Does not match any files or directories{Fore.RESET}"
+            message = f"{Color.RED} ✘ {arg}: Does not match any files or directories{Color.DEFAULT}"
             error_messages.append(message)
 
     print(*ok_messages, sep="\n", end="")
