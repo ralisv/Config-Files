@@ -24,19 +24,20 @@ def get_days(seconds: float) -> float:
     return seconds / (60 * 60 * 24)
 
 
-def get_size(file: Path) -> int:
+def get_size(path: Path) -> int:
     """Returns the size of the file/directory. If it's a directory, it sums up the sizes of all the files in it"""
+    total = 0
+
     try:
-        if file.is_file():
-            return file.stat().st_size
-
-        elif file.is_symlink():
-            return 1
-
-        return sum(get_size(entry) for entry in file.iterdir())
-
-    except (PermissionError, FileNotFoundError):
+        for dirpath, _, filenames in os.walk(path, followlinks=False):
+            for f in filenames:
+                fp = Path(dirpath) / f
+                
+                if not fp.is_symlink():
+                    total += fp.stat().st_size
+    except (PermissionError, FileNotFoundError) as e:
         return 0
+    return total
 
 
 def get_dumpable_files(age_limit: int) -> List[Path]:
@@ -77,7 +78,9 @@ def dump(files: List[Path]) -> int:
             total_size += curr_size
 
         except Exception as e:
-            message = f"{Fore.RED} ✘ {colorize(file_to_dump.path)}{Fore.RED}: {e}{Fore.RESET}"
+            message = (
+                f"{Fore.RED} ✘ {colorize(file_to_dump.path)}{Fore.RED}: {e}{Fore.RESET}"
+            )
             error_messages.append(message)
 
     print(*error_messages, sep="\n", end="\n", file=sys.stderr)
@@ -135,7 +138,7 @@ def ask_whether_to_dump() -> None:
     )
 
     try:
-        answer = input()
+        answer = input().strip()
 
     except KeyboardInterrupt:
         print(f"\n{Fore.GREEN}The files have not been dumped.{Fore.RESET}")
