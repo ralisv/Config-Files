@@ -4,10 +4,9 @@ import sys
 import time
 from pathlib import Path
 
-from colorama import Fore
 from typing import List
 
-from colors import colorize
+from colors import colorize, Color
 
 
 TRASH_DIR = Path.home() / ".trash-bin"
@@ -79,7 +78,7 @@ def dump(files: List[Path]) -> int:
 
         except Exception as e:
             message = (
-                f"{Fore.RED} ✘ {colorize(file_to_dump.path)}{Fore.RED}: {e}{Fore.RESET}"
+                f"{Color.RED} ✘ {colorize(file_to_dump.path)}{Color.RED}: {e}{Color.DEFAULT}"
             )
             error_messages.append(message)
 
@@ -94,11 +93,11 @@ def initialize_trash_management() -> None:
     does nothing if those files already exist.
     """
     if not TRASH_DIR.exists():
-        print(f"{Fore.GREEN}Creating {TRASH_DIR} file for trash management")
+        print(f"{Color.GREEN}Creating {TRASH_DIR} file for trash management")
         TRASH_DIR.mkdir()
 
     if not DUMPLOG.exists():
-        print(f"{Fore.GREEN}Creating {DUMPLOG} file for trash management")
+        print(f"{Color.GREEN}Creating {DUMPLOG} file for trash management")
         DUMPLOG.touch(mode=777)
 
 
@@ -121,8 +120,8 @@ def ask_whether_to_dump() -> None:
         return
 
     print(
-        f"{Fore.GREEN}The following files have been in the trash for more than"
-        f"{DELETED_FILE_AGE_LIMIT} days:{Fore.RESET}",
+        f"{Color.GREEN}The following files have been in the trash for more than"
+        f"{DELETED_FILE_AGE_LIMIT} days:{Color.DEFAULT}",
         end="\n\n",
     )
     print(
@@ -132,8 +131,8 @@ def ask_whether_to_dump() -> None:
     )
 
     print(
-        f"{Fore.GREEN}Do you wish to permanently delete them?"
-        f"[{Fore.LIGHTGREEN_EX}y{Fore.GREEN}/{Fore.RED}n{Fore.GREEN}] {Fore.RESET}",
+        f"{Color.GREEN}Do you wish to permanently delete them?"
+        f"[{Color.LIGHTGREEN_EX}y{Color.GREEN}/{Color.RED}n{Color.GREEN}] {Color.DEFAULT}",
         end="",
     )
 
@@ -141,26 +140,26 @@ def ask_whether_to_dump() -> None:
         answer = input().strip()
 
     except KeyboardInterrupt:
-        print(f"\n{Fore.GREEN}The files have not been dumped.{Fore.RESET}")
+        print(f"\n{Color.GREEN}The files have not been dumped.{Color.DEFAULT}")
         return
 
     with DUMPLOG.open("a") as dumplog:
         if answer.lower() in ["y", "yes", "yeah", "yep, sure", "yep", "why not"]:
             freed_memory = dump(dumpable)
             print(
-                f"{Fore.GREEN}Successfully freed {Fore.CYAN}{freed_memory / 1024 / 1024:.2f}{Fore.GREEN} MB{Fore.RESET}"
+                f"{Color.GREEN}Successfully freed {Color.CYAN}{freed_memory / 1024 / 1024:.2f}{Color.GREEN} MB{Color.DEFAULT}"
             )
 
             dumplog.write(f"{time.strftime('%d.%m.%Y')} User dumped trash\n")
 
         elif answer.lower() in ["n", "no", "nope", "nah", "no way", "nah, thanks"]:
             print(
-                f"{Fore.GREEN}The files have not been dumped, you'll be reminded again in 7 days.{Fore.RESET}"
+                f"{Color.GREEN}The files have not been dumped, you'll be reminded again in 7 days.{Color.DEFAULT}"
             )
 
             dumplog.write(f"{time.strftime('%d.%m.%Y')} User declined to dump trash\n")
 
         else:
             print(
-                f"{Fore.RED}Invalid input, the files have not been dumped.{Fore.RESET}"
+                f"{Color.RED}Invalid input, the files have not been dumped.{Color.DEFAULT}"
             )
