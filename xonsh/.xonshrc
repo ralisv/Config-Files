@@ -200,8 +200,7 @@ __xonsh__.env["PROMPT"] = (
 )
 
 
-# ColoXonshColors.RED man pages
-
+# Colorful manpages if using less as MANPAGER
 __xonsh__.env["LESS_TERMCAP_mb"] = "\033[1;32m"
 __xonsh__.env["LESS_TERMCAP_md"] = "\033[38;2;255;180;50m"
 __xonsh__.env["LESS_TERMCAP_me"] = "\033[0m"
@@ -210,7 +209,9 @@ __xonsh__.env["LESS_TERMCAP_so"] = "\033[38;2;255;255;50m"
 __xonsh__.env["LESS_TERMCAP_ue"] = "\033[0m"
 __xonsh__.env["LESS_TERMCAP_us"] = "\033[38;2;255;100;50m"
 
+# Use bat as manpager
 __xonsh__.env["MANPAGER"] = "sh -c 'col -bx | bat -l man --plain'"
+
 # Option passed to man's formatter, removes undesiXonshColors.RED characters from output
 __xonsh__.env["MANROFFOPT"] = "-c"
 
