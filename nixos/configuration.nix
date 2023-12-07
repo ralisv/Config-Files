@@ -46,6 +46,7 @@
     unzip
     zip
     timer
+    gnome.cheese
 
     # Development
     dotnet-sdk_6
