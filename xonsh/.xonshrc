@@ -1,23 +1,24 @@
+# type: ignore
 import sys
 import os
 import shutil
 from pathlib import Path
+from typing import Dict
 
 sys.path.append(str(Path(__file__).resolve().parent))
 sys.path.append(str(Path.home() / ".local" / "lib" / "python3.10" / "site-packages"))
 
-from math import factorial, pi, e, gcd, log
 from git import Repo, InvalidGitRepositoryError
 
 
-from utils import super_util, start_in_new_session, remove
+from utils import super_util, remove, start_in_new_session
 from colors import colorize, rainbowize, LS_COLORS, generate_rainbow_colors, Color
 from trash import ask_whether_to_dump
 from getpass import getuser
 
 # To silence IDE for further complains about nonexistence of this variable
 __xonsh__ = __xonsh__
-
+__xonsh__.env: Dict[str, any] = __xonsh__.env
 
 __xonsh__.env["PATH"].append(str(Path.home() / ".local" / "bin"))
 __xonsh__.env["PATH"].append(str(Path.home() / ".dotnet" / "tools"))
@@ -89,21 +90,25 @@ aliases.update(my_aliases)
 
 # Style the terminal
 
-from xonsh.tools import register_custom_style
+def set_style() -> None:
+    from xonsh.tools import register_custom_style
 
-mystyle = {
-    "Literal.String.Single": "#55ff55",
-    "Literal.String.Double": "#55ff55",
-    "Token.Operator": "#fffd00",
-    "Token.PTK.CompletionMenu": "#000000",
-    "Token.Literal.Number.Integer": "#44ffff",
-}
+    mystyle = {
+        "Literal.String.Single": "#55ff55",
+        "Literal.String.Double": "#55ff55",
+        "Token.Operator": "#fffd00",
+        "Token.PTK.CompletionMenu": "#000000",
+        "Token.Literal.Number.Integer": "#44ffff",
+    }
 
-register_custom_style("mystyle", mystyle, base="paraiso-dark")
-__xonsh__.env["XONSH_COLOR_STYLE"] = "mystyle"
+    register_custom_style("mystyle", mystyle, base="paraiso-dark")
+    __xonsh__.env["XONSH_COLOR_STYLE"] = "mystyle"
 
 
-def customize_autocompleter():
+set_style()
+
+
+def customize_autocompleter() -> None:
     import prompt_toolkit.styles.defaults as defstyle
 
     defstyle.PROMPT_TOOLKIT_STYLE.append(("bottom-toolbar", "noreverse"))
@@ -154,7 +159,7 @@ class XonshPrompt:
     @staticmethod
     def path_info() -> str:
         return XonshPrompt.enclose_in_brackets(
-            f"{colorize(str(Path.cwd()).replace(str(Path.home()), '~'))}"
+            f"{colorize(str(Path.cwd())).replace(str(Path.home()), '~')}"
         )
 
     @staticmethod
@@ -168,7 +173,7 @@ class XonshPrompt:
 
     @staticmethod
     def reset() -> str:
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        # warnings.filterwarnings("ignore", category=DeprecationWarning)
         return Color.WHITE
 
 

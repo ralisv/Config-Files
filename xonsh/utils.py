@@ -5,7 +5,7 @@ import sys
 import subprocess
 from pathlib import Path
 
-from typing import List
+from typing import Dict, List, Optional, Set, Tuple
 from git import Repo
 from tabulate import tabulate
 
@@ -57,10 +57,10 @@ def super_git_status() -> str:
             )
 
         # Get staged files
-        staged_files = {item.a_path for item in repo.index.diff("HEAD")}
+        staged_files: Set[str] = {item.a_path for item in repo.index.diff("HEAD")} # type: ignore
 
         # Initialize a list to store the rows
-        table_data = []
+        table_data: List[Tuple[str, str, str]] = []
 
         for state, *_, filename in file_states:
             state_color = GIT_STATUS_COLORS.get(state, Color.DEFAULT)
@@ -86,14 +86,14 @@ def super_git_status() -> str:
         return ""
 
 
-def super_ls(args):
+def super_ls(args: List[str]) -> str:
     """
     Executes ls with color and column options
     """
     try:
         return (
             subprocess.check_output(
-                [shutil.which("ls"), "--color=always", "-C", *args],
+                [shutil.which("ls"), "--color=always", "-C", *args], # type: ignore
                 env={"LS_COLORS": LS_COLORS},
             )
             .decode()
@@ -104,7 +104,7 @@ def super_ls(args):
         return f"{Color.RED}{e}{Color.DEFAULT}"
 
 
-def super_util(args: List[str]) -> int:
+def super_util(args: List[str]) -> None:
     git_status = super_git_status()
     ls = super_ls(args)
 
@@ -133,8 +133,8 @@ def remove(args: List[str]):
 
     initialize_trash_management()
 
-    ok_messages = []
-    error_messages = []
+    ok_messages: List[str] = []
+    error_messages: List[str] = []
     for arg in args:
         arg = os.path.expanduser(arg)
         arg = os.path.abspath(arg)
@@ -175,7 +175,7 @@ def start_in_new_session(
     process: str,
     args: List[str],
     quiet: bool = True,
-    env=None,
+    env: Optional[Dict[str, str]]=None,
 ) -> None:
     """
     Starts a process in a new session. If quiet os.execvpis True, it redirects stdout and stderr to /dev/null

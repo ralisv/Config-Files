@@ -34,7 +34,7 @@ def get_size(path: Path) -> int:
                 
                 if not fp.is_symlink():
                     total += fp.stat().st_size
-    except (PermissionError, FileNotFoundError) as e:
+    except (PermissionError, FileNotFoundError):
         return 0
     return total
 
@@ -62,7 +62,7 @@ def dump(files: List[Path]) -> int:
     Permanently deletes all files in .trash-bin directory that haven't been modified in more
     than 30 days and returns the total size of the deleted files
     """
-    error_messages = []
+    error_messages: List[str] = []
     total_size = 0
 
     for file_to_dump in files:
@@ -70,7 +70,7 @@ def dump(files: List[Path]) -> int:
             curr_size = get_size(file_to_dump)
 
             if file_to_dump.is_dir():
-                shutil.rmtree(file_to_dump.path)
+                shutil.rmtree(file_to_dump) 
             else:
                 file_to_dump.unlink()
 
@@ -78,7 +78,7 @@ def dump(files: List[Path]) -> int:
 
         except Exception as e:
             message = (
-                f"{Color.RED} ✘ {colorize(file_to_dump.path)}{Color.RED}: {e}{Color.DEFAULT}"
+                f"{Color.RED} ✘ {colorize(str(file_to_dump))}{Color.RED}: {e}{Color.DEFAULT}"
             )
             error_messages.append(message)
 
@@ -125,14 +125,14 @@ def ask_whether_to_dump() -> None:
         end="\n\n",
     )
     print(
-        *[colorize(file).replace(str(TRASH_DIR) + "/", "") for file in dumpable],
+        *[colorize(str(file)).replace(str(TRASH_DIR) + "/", "") for file in dumpable],
         sep="\n",
         end="\n\n",
     )
 
     print(
         f"{Color.GREEN}Do you wish to permanently delete them?"
-        f"[{Color.LIGHTGREEN_EX}y{Color.GREEN}/{Color.RED}n{Color.GREEN}] {Color.DEFAULT}",
+        f"[{Color.LIGHT_GREEN}y{Color.GREEN}/{Color.RED}n{Color.GREEN}] {Color.DEFAULT}",
         end="",
     )
 

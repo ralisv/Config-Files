@@ -1,4 +1,3 @@
-from enum import Enum
 import os
 from stat import S_IXUSR
 from typing import List
@@ -60,7 +59,7 @@ GIT_STATUS_COLORS = {
 }
 
 DEFAULT_RAINBOW_RESOLUTION = 10
-RAINBOW_INDEX = randint(0, DEFAULT_RAINBOW_RESOLUTION - 1)
+rainbow_index = randint(0, DEFAULT_RAINBOW_RESOLUTION - 1)
 
 
 def get_file_color(path: Path) -> str:
@@ -132,7 +131,7 @@ def generate_rainbow_colors(
 
     The resolution parameter determines the number of colors in the rainbow
     """
-    colors = []
+    colors: List[str] = []
     for i in range(resolution):
         hue = i / resolution
         lightness = 0.8
@@ -156,11 +155,21 @@ def rainbowize(string: str) -> str:
     This function is impure, as it uses the global RAINBOW_INDEX variable to keep
     track of the current color index when iterating over the strings
     """
-    global RAINBOW_INDEX
-    result = []
+    global rainbow_index
+    result: List[str] = []
     for char in string:
         result.append(
-            f"{RAINBOW_COLORS[RAINBOW_INDEX % len(RAINBOW_COLORS)]}{char}"
+            f"{RAINBOW_COLORS[rainbow_index % len(RAINBOW_COLORS)]}{char}"
         )
-        RAINBOW_INDEX += 1
+        rainbow_index += 1
     return "".join(result)
+
+
+type x[T] = T
+
+def foo() -> x[int]:
+    return 5
+
+y = foo()
+
+print(type(y))
