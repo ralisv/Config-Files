@@ -1,7 +1,5 @@
 import os
-import glob
 import shutil
-import sys
 import subprocess
 from pathlib import Path
 
@@ -14,7 +12,6 @@ from colors import (
     GIT_STATUS_COLORS,
     LS_COLORS,
 )
-from trash import TRASH_DIR, initialize_trash_management
 
 
 GIT_STATUS_VERBOSE: dict[str, str] = {
@@ -128,57 +125,6 @@ def super_util(args: list[str]) -> None:
         print(ls)
 
 
-def remove(args: list[str]) -> None:
-    """
-    Moves files to trash directory
-
-    Args:
-        args (list[str]): files to remove
-    """
-    if not args:
-        print(
-            f"{Color.RED}No files or directories passed{Color.DEFAULT}", file=sys.stderr
-        )
-        return
-
-    initialize_trash_management()
-
-    ok_messages: list[str] = []
-    error_messages: list[str] = []
-    for arg in args:
-        arg = os.path.expanduser(arg)
-        arg = os.path.abspath(arg)
-        files: list[str] = glob.glob(arg, recursive=True)
-
-        for file in map(Path, files):
-            message = f"{Color.GREEN} ✔ {colorize(file.name)}{Color.DEFAULT}"
-
-            trashed_file = Path(TRASH_DIR) / file.name
-            if trashed_file.exists():
-                # If file with such name already exists in trash, rename it
-                i = 1
-                while (TRASH_DIR / f"{file.name}_{i}").exists():
-                    i += 1
-
-                trashed_file = TRASH_DIR / f"{file.name}_{i}"
-
-            try:
-                # shutil.move works across different file systems, Path.rename does not
-                shutil.move(str(file), str(trashed_file))
-                ok_messages.append(message)
-
-            except Exception as e:
-                message = f"{Color.RED} ✘ {colorize(file.name)}{Color.RED}: {e}{Color.DEFAULT}"
-                error_messages.append(message)
-
-        if not files:
-            message = f"{Color.RED} ✘ {arg}: Does not match any files or directories{Color.DEFAULT}"
-            error_messages.append(message)
-
-    print(*ok_messages, sep="\n", end="")
-    print(*error_messages, sep="\n", end="", file=sys.stderr)
-
-
 def start_in_new_session(
     process: str,
     args: list[str],
@@ -204,3 +150,53 @@ def start_in_new_session(
         start_new_session=True,
         env=env,
     )
+
+
+def get_size(path: Path) -> int:
+    """
+    Returns the size of the given file or directory in bytes
+
+    Args:
+        path (Path): The path to the file or directory
+
+    Returns:
+        int: The size of the file or directory in bytes
+    """
+    total = 0
+
+    try:
+        for dirpath, _, filenames in os.walk(path, followlinks=False):
+            for f in filenames:
+                fp = Path(dirpath) / f
+
+                if not fp.is_symlink():
+                    total += fp.stat().st_size
+    except (PermissionError, FileNotFoundError):
+        return 0
+
+    return total
+
+
+def seconds_to_days(seconds: float) -> float:
+    """
+    Converts seconds to days
+    Args:
+        seconds (float): The number of seconds to convert
+
+    Returns:
+        float: The number of days
+    """
+    return seconds / (60 * 60 * 24)
+
+
+def bytes_to_megabytes(size_in_bytes: int) -> float:
+    """
+    Converts bytes to megabytes
+
+    Args:
+        size_in_bytes (int): The number of bytes to convert
+
+    Returns:
+        float: The number of megabytes
+    """
+    return size_in_bytes / 1024 / 1024

@@ -10,9 +10,9 @@ sys.path.append(str(Path.home() / ".local" / "lib" / "python3.10" / "site-packag
 from git import Repo, InvalidGitRepositoryError
 
 
-from utils import super_util, remove, start_in_new_session
+from utils import super_util, start_in_new_session
 from colors import colorize, LS_COLORS, Color, Rainbowizer
-from trash import ask_whether_to_dump
+from trash import ask_whether_to_dump, remove
 from getpass import getuser
 
 # To silence IDE for further complains about nonexistence of this variable

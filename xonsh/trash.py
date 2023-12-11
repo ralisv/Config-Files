@@ -1,4 +1,5 @@
 import os
+import glob
 import shutil
 import sys
 import time
@@ -7,7 +8,7 @@ from pathlib import Path
 from typing import List
 
 from colors import colorize, Color
-
+from utils import get_size, seconds_to_days, bytes_to_megabytes
 
 TRASH_DIR = Path.home() / ".trash-bin"
 """ Path to the directory where the files are moved when deleted """
@@ -19,41 +20,57 @@ DELETED_FILE_AGE_LIMIT = 30
 """ Number of days after which the file is considered dumpable """
 
 
-def get_days(seconds: float) -> float:
-    """
-    Converts seconds to days
-    Args:
-        seconds (float): The number of seconds to convert
 
-    Returns:
-        float: The number of days
+def remove(args: list[str]) -> None:
     """
-    return seconds / (60 * 60 * 24)
-
-
-def get_size(path: Path) -> int:
-    """
-    Returns the size of the given file or directory in bytes
+    Moves files to trash directory
 
     Args:
-        path (Path): The path to the file or directory
-
-    Returns:
-        int: The size of the file or directory in bytes
+        args (list[str]): files to remove
     """
-    total = 0
+    if not args:
+        print(
+            f"{Color.RED}No files or directories passed{Color.DEFAULT}", file=sys.stderr
+        )
+        return
 
-    try:
-        for dirpath, _, filenames in os.walk(path, followlinks=False):
-            for f in filenames:
-                fp = Path(dirpath) / f
-                
-                if not fp.is_symlink():
-                    total += fp.stat().st_size
-    except (PermissionError, FileNotFoundError):
-        return 0
+    initialize_trash_management()
 
-    return total
+    ok_messages: list[str] = []
+    error_messages: list[str] = []
+    for arg in args:
+        arg = os.path.expanduser(arg)
+        arg = os.path.abspath(arg)
+        files: list[str] = glob.glob(arg, recursive=True)
+
+        for file in map(Path, files):
+            trashed_file = Path(TRASH_DIR) / file.name
+            if trashed_file.exists():
+                # If file with such name already exists in trash, rename it
+                i = 1
+                while (TRASH_DIR / f"{file.name}_{i}").exists():
+                    i += 1
+
+                trashed_file = TRASH_DIR / f"{file.name}_{i}"
+
+            try:
+                file_size = bytes_to_megabytes(get_size(file))
+                message = f"{Color.GREEN} ✔ {colorize(file.name)} ({Color.CYAN}{file_size:.2f} MB{Color.DEFAULT}){Color.DEFAULT}"
+
+                # shutil.move works across different file systems, Path.rename does not
+                shutil.move(str(file), str(trashed_file))
+                ok_messages.append(message)
+
+            except Exception as e:
+                message = f"{Color.RED} ✘ {colorize(file.name)}{Color.RED}: {e}{Color.DEFAULT}"
+                error_messages.append(message)
+
+        if not files:
+            message = f"{Color.RED} ✘ {arg}: Does not match any files or directories{Color.DEFAULT}"
+            error_messages.append(message)
+
+    print(*ok_messages, sep="\n", end="")
+    print(*error_messages, sep="\n", end="", file=sys.stderr)
 
 
 def get_dumpable_files(age_limit: int) -> List[Path]:
@@ -71,7 +88,7 @@ def get_dumpable_files(age_limit: int) -> List[Path]:
     for trashed_file in TRASH_DIR.iterdir():
         try:
             last_modification_time = trashed_file.stat().st_mtime
-            if (time.time() - get_days(last_modification_time)) > age_limit:
+            if (time.time() - seconds_to_days(last_modification_time)) > age_limit:
                 dumpable_files.append(trashed_file)
         except FileNotFoundError:
             # In case of a broken symbolic link
@@ -137,7 +154,7 @@ def ask_whether_to_dump() -> None:
     """
     initialize_trash_management()
 
-    if DUMPLOG.exists() and get_days(time.time() - DUMPLOG.stat().st_mtime) < 30:
+    if DUMPLOG.exists() and seconds_to_days(time.time() - DUMPLOG.stat().st_mtime) < 30:
         return
 
     dumpable = sorted(
@@ -174,7 +191,7 @@ def ask_whether_to_dump() -> None:
         if answer.lower() in ["y", "yes", "yeah", "yep, sure", "yep", "why not"]:
             freed_memory = dump(dumpable)
             print(
-                f"{Color.GREEN}Successfully freed {Color.CYAN}{freed_memory / 1024 / 1024:.2f}{Color.GREEN} MB{Color.DEFAULT}"
+                f"{Color.GREEN}Successfully freed {Color.CYAN}{bytes_to_megabytes(freed_memory):.2f}{Color.GREEN} MB{Color.DEFAULT}"
             )
 
             dumplog.write(f"{time.strftime("%d.%m.%Y")} User dumped trash\n")
