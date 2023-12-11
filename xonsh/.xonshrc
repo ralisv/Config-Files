@@ -123,6 +123,7 @@ def set_rainbow(resolution: int, index: int) -> None:
     # Set initial rainbow index to Color.PINK
     colors.RAINBOW_INDEX = index
 
+
 set_rainbow(1024, 850)
 
 
@@ -143,11 +144,7 @@ class XonshPrompt:
         except:
             return XonshPrompt.enclose_in_brackets(f"{Color.WHITE}unknown")
 
-        color = (
-            Color.RED
-            if repo.is_dirty(untracked_files=True)
-            else Color.GREEN
-        )
+        color = Color.RED if repo.is_dirty(untracked_files=True) else Color.GREEN
 
         if branch == "master":
             branch = "main"
@@ -157,7 +154,7 @@ class XonshPrompt:
     @staticmethod
     def path_info() -> str:
         return XonshPrompt.enclose_in_brackets(
-            f"{colorize(os.getcwd()).replace(os.path.expanduser('~'), '~')}"
+            f"{colorize(str(Path.cwd()).replace(str(Path.home()), '~'))}"
         )
 
     @staticmethod
@@ -179,9 +176,7 @@ __xonsh__.env["PROMPT_FIELDS"]["git-info"] = XonshPrompt.git_info
 __xonsh__.env["PROMPT_FIELDS"]["last-exit-code-info"] = XonshPrompt.last_exit_code_info
 __xonsh__.env["PROMPT_FIELDS"]["path-info"] = XonshPrompt.path_info
 __xonsh__.env["PROMPT_FIELDS"]["reset"] = XonshPrompt.reset
-__xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = (
-    lambda: rainbowize(getuser()) + Color.PINK
-)
+__xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: rainbowize(getuser())
 __xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: rainbowize(" λ ")
 __xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: rainbowize(".")
 
