@@ -17,6 +17,7 @@ LS_COLORS_PARSED = dict(
 
 class Color:
     DEFAULT = "\033[0m"
+    WHITE = "\033[37m"
     BOLD = "\033[1m"
     UNDERLINED = "\033[4m"
     FLASHING_TEXT = "\033[5m"
@@ -30,6 +31,7 @@ class Color:
     CYAN = "\033[36m"
     GREY = "\033[37m"
     BLACK = "\033[40m"
+    PINK = "\033[1;38;255;34;187m"
     LIGHT_RED = "\033[91m"
     LIGHT_GREEN = "\033[92m"
     LIGHT_YELLOW = "\033[93m"
