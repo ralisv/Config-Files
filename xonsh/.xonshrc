@@ -11,7 +11,7 @@ from git import Repo, InvalidGitRepositoryError
 
 
 from utils import super_util, start_in_new_session, remove
-from colors import colorize, rainbowize, LS_COLORS, generate_rainbow_colors
+from colors import colorize, rainbowize, LS_COLORS, generate_rainbow_colors, Color
 from trash import ask_whether_to_dump
 from getpass import getuser
 
@@ -115,21 +115,12 @@ customize_autocompleter()
 __xonsh__.env["LS_COLORS"] = LS_COLORS
 
 
-# Prompt
-class XonshColors:
-    BLUE = "{#00b0ff}"
-    GREEN = "{#00ff00}"
-    PINK = "{#ff22bb}"
-    RED = "{#ff9999}"
-    WHITE = "{#ffffff}"
-
-
 def set_rainbow(resolution: int, index: int) -> None:
     """Modify the rainbow coloring"""
     import colors
 
     colors.RAINBOW_COLORS = generate_rainbow_colors(resolution)
-    # Set initial rainbow index to XonshColors.PINK
+    # Set initial rainbow index to Color.PINK
     colors.RAINBOW_INDEX = index
 
 set_rainbow(1024, 850)
@@ -138,7 +129,7 @@ set_rainbow(1024, 850)
 class XonshPrompt:
     @staticmethod
     def enclose_in_brackets(text: str) -> str:
-        return f"{rainbowize('[')}{text}{rainbowize(']')}{XonshColors.PINK}"
+        return f"{rainbowize('[')}{text}{rainbowize(']')}{Color.PINK}"
 
     @staticmethod
     def git_info() -> str:
@@ -150,12 +141,12 @@ class XonshPrompt:
         try:
             branch = repo.active_branch.name
         except:
-            return XonshPrompt.enclose_in_brackets(f"{XonshColors.WHITE}unknown")
+            return XonshPrompt.enclose_in_brackets(f"{Color.WHITE}unknown")
 
         color = (
-            XonshColors.RED
+            Color.RED
             if repo.is_dirty(untracked_files=True)
-            else XonshColors.GREEN
+            else Color.GREEN
         )
 
         if branch == "master":
@@ -173,7 +164,7 @@ class XonshPrompt:
     def last_exit_code_info() -> str:
         exit_code = __xonsh__.env["LAST_RETURN_CODE"]
         return (
-            XonshPrompt.enclose_in_brackets(f"{XonshColors.RED}{exit_code}")
+            XonshPrompt.enclose_in_brackets(f"{Color.RED}{exit_code}")
             if exit_code != 0
             else ""
         )
@@ -181,7 +172,7 @@ class XonshPrompt:
     @staticmethod
     def reset() -> str:
         warnings.filterwarnings("ignore", category=DeprecationWarning)
-        return XonshColors.WHITE
+        return Color.WHITE
 
 
 __xonsh__.env["PROMPT_FIELDS"]["git-info"] = XonshPrompt.git_info
@@ -189,13 +180,13 @@ __xonsh__.env["PROMPT_FIELDS"]["last-exit-code-info"] = XonshPrompt.last_exit_co
 __xonsh__.env["PROMPT_FIELDS"]["path-info"] = XonshPrompt.path_info
 __xonsh__.env["PROMPT_FIELDS"]["reset"] = XonshPrompt.reset
 __xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = (
-    lambda: rainbowize(getuser()) + XonshColors.PINK
+    lambda: rainbowize(getuser()) + Color.PINK
 )
 __xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: rainbowize(" λ ")
 __xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: rainbowize(".")
 
 __xonsh__.env["PROMPT"] = (
-    XonshColors.PINK
+    Color.PINK
     + "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
 )
 
@@ -212,7 +203,7 @@ __xonsh__.env["LESS_TERMCAP_us"] = "\033[38;2;255;100;50m"
 # Use bat as manpager
 __xonsh__.env["MANPAGER"] = "sh -c 'col -bx | bat -l man --plain'"
 
-# Option passed to man's formatter, removes undesiXonshColors.RED characters from output
+# Option passed to man's formatter, removes undesiColor.RED characters from output
 __xonsh__.env["MANROFFOPT"] = "-c"
 
 # Ask about dumping trash
