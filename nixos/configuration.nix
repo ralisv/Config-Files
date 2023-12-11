@@ -51,6 +51,7 @@
     # Development
     dotnet-sdk_6
     python311Full
+    python312Full
     libgccjit
     cmake
     godot_4
