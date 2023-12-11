@@ -53,6 +53,9 @@ if platform.system() == "Linux":
       if (input("Do you wish to test new nixos configuration? ") in ("y", "")):
         os.system("sudo nixos-rebuild test")
 
+      if (input("Do you wish to switch to new nixos configuration? ") in ("y", "")):
+        os.system("sudo nixos-rebuild test")
+
     except KeyboardInterrupt:
       print()
 
