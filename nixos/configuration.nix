@@ -50,7 +50,6 @@
 
     # Development
     dotnet-sdk_6
-    python311Full
     python312Full
     libgccjit
     cmake
@@ -80,6 +79,7 @@
     python311Packages.jupyter-core
     python311Packages.scipy
     python311Packages.numpy
+    python311Packages.wheel
   ];
 
   xdg.portal.enable = true;
