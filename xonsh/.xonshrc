@@ -18,7 +18,6 @@ from getpass import getuser
 
 # To silence IDE for further complains about nonexistence of this variable
 __xonsh__ = __xonsh__
-__xonsh__.env: Dict[str, any] = __xonsh__.env
 
 __xonsh__.env["PATH"].append(str(Path.home() / ".local" / "bin"))
 __xonsh__.env["PATH"].append(str(Path.home() / ".dotnet" / "tools"))

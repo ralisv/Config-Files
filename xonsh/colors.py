@@ -163,13 +163,3 @@ def rainbowize(string: str) -> str:
         )
         rainbow_index += 1
     return "".join(result)
-
-
-type x[T] = T
-
-def foo() -> x[int]:
-    return 5
-
-y = foo()
-
-print(type(y))
