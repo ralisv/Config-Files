@@ -3,7 +3,6 @@ import sys
 import os
 import shutil
 from pathlib import Path
-from typing import Dict
 
 sys.path.append(str(Path(__file__).resolve().parent))
 sys.path.append(str(Path.home() / ".local" / "lib" / "python3.10" / "site-packages"))
@@ -12,7 +11,7 @@ from git import Repo, InvalidGitRepositoryError
 
 
 from utils import super_util, remove, start_in_new_session
-from colors import colorize, rainbowize, LS_COLORS, generate_rainbow_colors, Color
+from colors import colorize, LS_COLORS, Color, Rainbowizer
 from trash import ask_whether_to_dump
 from getpass import getuser
 
@@ -24,9 +23,16 @@ __xonsh__.env["PATH"].append(str(Path.home() / ".dotnet" / "tools"))
 
 
 # Silence the deprecation warning caused by bug inside of prompt-toolkit library
-import warnings
+def filter_warnings() -> None:
+    """
+    Filters out the deprecation warnings
+    """
+    import warnings
 
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+
+filter_warnings()
 
 # Configure xonsh behavior via environment variables
 __xonsh__.env["AUTO_CD"] = True
@@ -89,7 +95,11 @@ aliases.update(my_aliases)
 
 # Style the terminal
 
+
 def set_style() -> None:
+    """
+    Sets the color style of the terminal
+    """
     from xonsh.tools import register_custom_style
 
     mystyle = {
@@ -108,6 +118,9 @@ set_style()
 
 
 def customize_autocompleter() -> None:
+    """
+    Customize the autocompleter
+    """
     import prompt_toolkit.styles.defaults as defstyle
 
     defstyle.PROMPT_TOOLKIT_STYLE.append(("bottom-toolbar", "noreverse"))
@@ -119,22 +132,16 @@ customize_autocompleter()
 __xonsh__.env["LS_COLORS"] = LS_COLORS
 
 
-def set_rainbow(resolution: int, index: int) -> None:
-    """Modify the rainbow coloring"""
-    import colors
-
-    colors.RAINBOW_COLORS = generate_rainbow_colors(resolution)
-    # Set initial rainbow index to Color.PINK
-    colors.RAINBOW_INDEX = index
-
-
-set_rainbow(1024, 850)
-
-
 class XonshPrompt:
+    """
+    A class that encapsulates the logic for customizing the xonsh prompt
+    """
+    rainbowizer = Rainbowizer(1024, 850)
+    rainbowize = rainbowizer.rainbowize
+
     @staticmethod
     def enclose_in_brackets(text: str) -> str:
-        return f"{rainbowize('[')}{text}{rainbowize(']')}{Color.PINK}"
+        return f"{XonshPrompt.rainbowize('[')}{text}{XonshPrompt.rainbowize(']')}{Color.PINK}"
 
     @staticmethod
     def git_info() -> str:
@@ -180,9 +187,11 @@ __xonsh__.env["PROMPT_FIELDS"]["git-info"] = XonshPrompt.git_info
 __xonsh__.env["PROMPT_FIELDS"]["last-exit-code-info"] = XonshPrompt.last_exit_code_info
 __xonsh__.env["PROMPT_FIELDS"]["path-info"] = XonshPrompt.path_info
 __xonsh__.env["PROMPT_FIELDS"]["reset"] = XonshPrompt.reset
-__xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: rainbowize(getuser())
-__xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: rainbowize(" λ ")
-__xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: rainbowize(".")
+__xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: XonshPrompt.rainbowize(
+    getuser()
+)
+__xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.rainbowize(" λ ")
+__xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.rainbowize(".")
 
 __xonsh__.env["PROMPT"] = (
     Color.PINK

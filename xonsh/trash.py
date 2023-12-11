@@ -20,11 +20,27 @@ DELETED_FILE_AGE_LIMIT = 30
 
 
 def get_days(seconds: float) -> float:
+    """
+    Converts seconds to days
+    Args:
+        seconds (float): The number of seconds to convert
+
+    Returns:
+        float: The number of days
+    """
     return seconds / (60 * 60 * 24)
 
 
 def get_size(path: Path) -> int:
-    """Returns the size of the file/directory. If it's a directory, it sums up the sizes of all the files in it"""
+    """
+    Returns the size of the given file or directory in bytes
+
+    Args:
+        path (Path): The path to the file or directory
+
+    Returns:
+        int: The size of the file or directory in bytes
+    """
     total = 0
 
     try:
@@ -36,13 +52,20 @@ def get_size(path: Path) -> int:
                     total += fp.stat().st_size
     except (PermissionError, FileNotFoundError):
         return 0
+
     return total
 
 
 def get_dumpable_files(age_limit: int) -> List[Path]:
     """
-    Returns a list of files in .trash-bin directory that haven't been modified in given time
-    @param age_limit: number of days after which the file is considered dumpable
+    Returns a list of files in .trash-bin directory that haven't been modified
+    in more than 30 days
+
+    Args:
+        age_limit (int): The number of days after which the file is considered dumpable
+
+    Returns:
+        List[Path]: A list of files that can be dumped
     """
     dumpable_files: List[Path] = []
     for trashed_file in TRASH_DIR.iterdir():
@@ -59,8 +82,13 @@ def get_dumpable_files(age_limit: int) -> List[Path]:
 
 def dump(files: List[Path]) -> int:
     """
-    Permanently deletes all files in .trash-bin directory that haven't been modified in more
-    than 30 days and returns the total size of the deleted files
+    Permanently deletes the given files and returns the amount of memory freed
+
+    Args:
+        files (List[Path]): The files to delete
+
+    Returns:
+        int: The amount of memory freed in bytes
     """
     error_messages: List[str] = []
     total_size = 0
@@ -89,8 +117,7 @@ def dump(files: List[Path]) -> int:
 
 def initialize_trash_management() -> None:
     """
-    Creates the necessary files for trash management in the home directory,
-    does nothing if those files already exist.
+    Verifies that trash management is functional.
     """
     if not TRASH_DIR.exists():
         print(f"{Color.GREEN}Creating {TRASH_DIR} file for trash management")
@@ -150,14 +177,14 @@ def ask_whether_to_dump() -> None:
                 f"{Color.GREEN}Successfully freed {Color.CYAN}{freed_memory / 1024 / 1024:.2f}{Color.GREEN} MB{Color.DEFAULT}"
             )
 
-            dumplog.write(f"{time.strftime('%d.%m.%Y')} User dumped trash\n")
+            dumplog.write(f"{time.strftime("%d.%m.%Y")} User dumped trash\n")
 
         elif answer.lower() in ["n", "no", "nope", "nah", "no way", "nah, thanks"]:
             print(
                 f"{Color.GREEN}The files have not been dumped, you'll be reminded again in 7 days.{Color.DEFAULT}"
             )
 
-            dumplog.write(f"{time.strftime('%d.%m.%Y')} User declined to dump trash\n")
+            dumplog.write(f"{time.strftime("%d.%m.%Y")} User declined to dump trash\n")
 
         else:
             print(

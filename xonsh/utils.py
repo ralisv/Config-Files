@@ -5,7 +5,6 @@ import sys
 import subprocess
 from pathlib import Path
 
-from typing import Dict, List, Optional, Set, Tuple
 from git import Repo
 from tabulate import tabulate
 
@@ -18,7 +17,7 @@ from colors import (
 from trash import TRASH_DIR, initialize_trash_management
 
 
-GIT_STATUS_VERBOSE = {
+GIT_STATUS_VERBOSE: dict[str, str] = {
     "M": "Modified",
     "A": "Added",
     "D": "Deleted",
@@ -34,11 +33,15 @@ GIT_STATUS_VERBOSE = {
     "AA": "Unmerged, both added",
     "UU": "Unmerged, both modified",
 }
+""" A dictionary mapping git status codes to verbose descriptions """
 
 
 def super_git_status() -> str:
     """
-    Returns string representing git status --short with colored files based on LS_COLORS
+    Returns a string containing git status in super colorful format
+
+    Returns:
+        str: git status
     """
     try:
         repo = Repo(".", search_parent_directories=True)
@@ -52,15 +55,13 @@ def super_git_status() -> str:
 
         # When too many files were received from repo.git.status (tabulate handles extremely long lists slowly)
         if len(file_states) > 1000:
-            return (
-                f"{Color.RED}Super git status error: TooManyEntries ({len(file_states)})"
-            )
+            return f"{Color.RED}Super git status error: TooManyEntries ({len(file_states)})"
 
         # Get staged files
-        staged_files: Set[str] = {item.a_path for item in repo.index.diff("HEAD")} # type: ignore
+        staged_files: set[str] = {item.a_path for item in repo.index.diff("HEAD")}  # type: ignore
 
         # Initialize a list to store the rows
-        table_data: List[Tuple[str, str, str]] = []
+        table_data: list[tuple[str, str, str]] = []
 
         for state, *_, filename in file_states:
             state_color = GIT_STATUS_COLORS.get(state, Color.DEFAULT)
@@ -86,14 +87,20 @@ def super_git_status() -> str:
         return ""
 
 
-def super_ls(args: List[str]) -> str:
+def super_ls(args: list[str]) -> str:
     """
-    Executes ls with color and column options
+    Returns a string containing ls in super colorful format
+
+    Args:
+        args (list[str]): arguments to pass to ls
+
+    Returns:
+        str: ls
     """
     try:
         return (
             subprocess.check_output(
-                [shutil.which("ls"), "--color=always", "-C", *args], # type: ignore
+                [shutil.which("ls"), "--color=always", "-C", *args],  # type: ignore
                 env={"LS_COLORS": LS_COLORS},
             )
             .decode()
@@ -104,7 +111,13 @@ def super_ls(args: List[str]) -> str:
         return f"{Color.RED}{e}{Color.DEFAULT}"
 
 
-def super_util(args: List[str]) -> None:
+def super_util(args: list[str]) -> None:
+    """
+    Executes super git status and super ls
+
+    Args:
+        args (list[str]): arguments to pass to ls
+    """
     git_status = super_git_status()
     ls = super_ls(args)
 
@@ -115,30 +128,27 @@ def super_util(args: List[str]) -> None:
         print(ls)
 
 
-def remove(args: List[str]):
+def remove(args: list[str]) -> None:
     """
-    Moves files and directories passed as arguments into ~/.trash-bin.
-    If the file/directory already exists in .trash-bin, it appends a number to its name.
+    Moves files to trash directory
 
-    Globbing is supported.
-
-    Uses colorize function to print the names of the files that were successfully deleted
-
-    @param args: list of files and directories to remove
-    @param talkative: if True, prints status messages to stdout
+    Args:
+        args (list[str]): files to remove
     """
     if not args:
-        print(f"{Color.RED}No files or directories passed{Color.DEFAULT}", file=sys.stderr)
+        print(
+            f"{Color.RED}No files or directories passed{Color.DEFAULT}", file=sys.stderr
+        )
         return
 
     initialize_trash_management()
 
-    ok_messages: List[str] = []
-    error_messages: List[str] = []
+    ok_messages: list[str] = []
+    error_messages: list[str] = []
     for arg in args:
         arg = os.path.expanduser(arg)
         arg = os.path.abspath(arg)
-        files = glob.glob(arg, recursive=True)
+        files: list[str] = glob.glob(arg, recursive=True)
 
         for file in map(Path, files):
             message = f"{Color.GREEN} ✔ {colorize(file.name)}{Color.DEFAULT}"
@@ -158,9 +168,7 @@ def remove(args: List[str]):
                 ok_messages.append(message)
 
             except Exception as e:
-                message = (
-                    f"{Color.RED} ✘ {colorize(file.name)}{Color.RED}: {e}{Color.DEFAULT}"
-                )
+                message = f"{Color.RED} ✘ {colorize(file.name)}{Color.RED}: {e}{Color.DEFAULT}"
                 error_messages.append(message)
 
         if not files:
@@ -173,20 +181,26 @@ def remove(args: List[str]):
 
 def start_in_new_session(
     process: str,
-    args: List[str],
+    args: list[str],
     quiet: bool = True,
-    env: Optional[Dict[str, str]]=None,
+    env: dict[str, str] | None = None,
 ) -> None:
     """
-    Starts a process in a new session. If quiet os.execvpis True, it redirects stdout and stderr to /dev/null
+    Starts a process in a new session
 
-    @param process: name of the process to start
-    @param args: arguments to pass to the process
-    @param quiet: if True, redirects stdout and stderr to /dev/null
+    Args:
+        process (str): name of the process to start
+        args (list[str]): arguments to pass to the process
+        quiet (bool, optional): Whether to print the process' logs into console. Defaults to True.
+        env (Optional[dict[str, str]], optional): Environment. Defaults to None.
     """
-    stdout = subprocess.DEVNULL if quiet else None
-    stderr = subprocess.DEVNULL if quiet else None
+    stdout: int | None = subprocess.DEVNULL if quiet else None
+    stderr: int | None = subprocess.DEVNULL if quiet else None
 
     subprocess.Popen(
-        [process] + args, stdout=stdout, stderr=stderr, start_new_session=True, env=env
+        args=[process] + args,
+        stdout=stdout,
+        stderr=stderr,
+        start_new_session=True,
+        env=env,
     )

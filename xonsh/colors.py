@@ -1,20 +1,25 @@
-import os
 from stat import S_IXUSR
 from typing import List
 from pathlib import Path
 import colorsys
-from random import randint
 
-LS_COLORS = open(f"{os.path.expanduser('~')}/Config-Files/ls-colors.txt").read()
+
+LS_COLORS = (Path.home() / "Config-Files" / "ls-colors.txt").open().read()
 """ The contents of the LS_COLORS environment variable """
 
 LS_COLORS_PARSED = dict(
     map(lambda assignment: assignment.split(sep="="), LS_COLORS.split(sep=":"))
 )
-""" LS_COLORS parsed into a dictionary where the keys are file types and the values are color codes """
+"""
+LS_COLORS parsed into a dictionary where the keys are file types and the values are color codes
+"""
 
 
 class Color:
+    """
+    A static class containing ANSI escape sequences for various colors and text effects
+    """
+
     DEFAULT = "\033[0m"
     WHITE = "\033[37m"
     BOLD = "\033[1m"
@@ -57,12 +62,18 @@ GIT_STATUS_COLORS = {
     "AA": Color.RED,
     "UU": Color.RED,
 }
-
-DEFAULT_RAINBOW_RESOLUTION = 10
-rainbow_index = randint(0, DEFAULT_RAINBOW_RESOLUTION - 1)
+""" A dictionary mapping git status codes to colors """
 
 
 def get_file_color(path: Path) -> str:
+    """Returns the color escape sequence for the given file based on LS_COLORS variable
+
+    Args:
+        path (Path): The path to the file
+
+    Returns:
+        str: The color escape sequence for the given file
+    """
     ext = f"*{path.suffix}"
 
     color = None
@@ -108,58 +119,99 @@ def get_file_color(path: Path) -> str:
     return f"\033[{color}m"
 
 
-def colorize(filename: str, color: str = "") -> str:
+def colorize(filename: str, color: str | None = None) -> str:
     """
-    Returns the filename enclosed in the color escape sequence based on LS_COLORS
-    It is required that at least rs (reset) color is defined in LS_COLORS, as it is
-    used as a fallback when color for the file type is not defined
+    Returns the given filename enclosed in the color escape sequence
+
+    Args:
+        filename (str): The filename to colorize
+        color (str, optional): Color in which the filename will be enclosed.
+            If None, the color will be determined based on the file type. Defaults to None.
+
+    Returns:
+        str: The colorized filename
     """
 
     # Return the filename enclosed in the color escape sequence
     # The "\033[0m" sequence at the end resets the color back to the default
-    return f"{get_file_color(Path(filename)) if not color else color}{filename}\033[0m"
+    return (
+        f"{get_file_color(Path(filename)) if color is None else color}{filename}\033[0m"
+    )
 
 
-def generate_rainbow_colors(
-    resolution: int, *, lightness: float = 0.8, saturation: float = 1.0
-) -> List[str]:
+class Rainbowizer:
     """
-    Generates a list of colors that can be used to colorize text in a rainbow pattern
+    A class that can be used to colorize text in a rainbow pattern
 
-    The colors are returned as a list of strings in the format "r;g;b", where r, g and b
-    are integers in the range [0, 255]
-
-    The resolution parameter determines the number of colors in the rainbow
+    Consecutive calls to the rainbowize method will return the same string with each character
+    enclosed in a different color escape sequence
     """
-    colors: List[str] = []
-    for i in range(resolution):
-        hue = i / resolution
-        lightness = 0.8
-        saturation = 1.0
-        r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
-        hex_color = f"\033[38;2;{int(r * 255)};{int(g * 255)};{int(b * 255)}m"
-        colors.append(hex_color)
-    return colors
 
+    DEFAULT_RAINBOW_RESOLUTION = 256
+    """ The default number of colors in the rainbow """
 
-RAINBOW_COLORS = generate_rainbow_colors(DEFAULT_RAINBOW_RESOLUTION)
-""" A list of colors that can be used to colorize text in a rainbow pattern """
+    rainbow_colors: List[str]
+    """ A list of colors in the rainbow """
 
+    rainbow_index: int
+    """ The index of the current color in the rainbow """
 
-def rainbowize(string: str) -> str:
-    """
-    Returns the string with each character enclosed in a color escape sequence
+    def __init__(
+        self,
+        resolution: int = DEFAULT_RAINBOW_RESOLUTION,
+        initial_index: int = 0,
+    ) -> None:
+        """
+        Initializes the Rainbowizer object with the given resolution
 
-    The colors are taken from the RAINBOW_COLORS list
+        Args:
+            resolution (int, optional): The number of colors in the rainbow. Defaults to DEFAULT_RAINBOW_RESOLUTION.
+        """
+        self.rainbow_colors = self.generate_rainbow_colors(resolution)
+        self.rainbow_index = initial_index
 
-    This function is impure, as it uses the global RAINBOW_INDEX variable to keep
-    track of the current color index when iterating over the strings
-    """
-    global rainbow_index
-    result: List[str] = []
-    for char in string:
-        result.append(
-            f"{RAINBOW_COLORS[rainbow_index % len(RAINBOW_COLORS)]}{char}"
-        )
-        rainbow_index += 1
-    return "".join(result)
+    def rainbowize(self, string: str) -> str:
+        """
+        Returns the given string with each character enclosed in a different color escape sequence
+
+        Args:
+            string (str): The string to colorize
+
+        Returns:
+            str: The colorized string
+        """
+        result: List[str] = []
+        for char in string:
+            result.append(
+                f"{self.rainbow_colors[self.rainbow_index % len(self.rainbow_colors)]}{char}"
+            )
+            self.rainbow_index += 1
+        return "".join(result)
+
+    @staticmethod
+    def generate_rainbow_colors(
+        resolution: int,
+        *,
+        lightness: float = 0.8,
+        saturation: float = 1.0,
+    ) -> List[str]:
+        """
+        Generates a list of colors in the rainbow
+
+        Args:
+            resolution (int): The number of colors in the rainbow
+            lightness (float, optional): How light the colors should be. Defaults to 0.8.
+            saturation (float, optional): How saturated the colors should be. Defaults to 1.0.
+
+        Returns:
+            List[str]: A list of colors in the rainbow
+        """
+        colors: List[str] = []
+        for i in range(resolution):
+            hue = i / resolution
+            lightness = 0.8
+            saturation = 1.0
+            r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
+            hex_color = f"\033[38;2;{int(r * 255)};{int(g * 255)};{int(b * 255)}m"
+            colors.append(hex_color)
+        return colors
