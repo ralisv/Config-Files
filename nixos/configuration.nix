@@ -50,7 +50,7 @@
 
     # Development
     dotnet-sdk_6
-    python3
+    python311Full
     libgccjit
     cmake
     godot_4
@@ -71,6 +71,14 @@
     wayland-utils
     bash-completion
     man-pages
+
+    # Python packages
+    python311Packages.gitpython
+    python311Packages.tabulate
+    python311Packages.jupyter
+    python311Packages.jupyter-core
+    python311Packages.scipy
+    python311Packages.numpy
   ];
 
   xdg.portal.enable = true;
@@ -201,13 +209,6 @@
     isNormalUser = true;
     description = "Vojtech Ralis";
     extraGroups = [ "networkmanager" "wheel" "video" "audio" "jackaudio" ];
-    packages = with pkgs; [
-      python3Packages.gitpython
-      python3Packages.colorama
-      python3Packages.tabulate
-      python3Packages.jupyter
-      python3Packages.jupyter-core
-    ];
   };
 
   nix.gc.automatic = true;
