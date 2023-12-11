@@ -2,6 +2,11 @@
   "[csharp]": {
     "editor.defaultFormatter": "ms-dotnettools.csharp"
   },
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": "off",
+    "strings": "off"
+  },
   "editor.fontFamily": "FiraCode Nerd Font Ret",
   "editor.smoothScrolling": true,
   "editor.fontLigatures": true,
@@ -46,7 +51,6 @@
     "scminput": false,
     "csharp": true
   },
-  "python.defaultInterpreterPath": "/run/current-system/sw/bin/python",
   "nix.serverSettings": {
     // settings for 'nil' LSP
     "nil": {
@@ -62,5 +66,7 @@
         ]
       }
     }
-  }
+  },
+  "python.defaultInterpreterPath": "/run/current-system/sw/bin/python",
+  "python.analysis.typeCheckingMode": "strict"
 }
