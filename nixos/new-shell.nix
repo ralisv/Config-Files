@@ -20,14 +20,13 @@ let
 in
 pkgs.mkShell {
   nativeBuildInputs = [
-    (pkgs.python312.withPackages my-python-packages)
+    (pkgs.python3.withPackages my-python-packages)
   ];
   buildInputs = with pkgs; [
     python3Packages.gitpython
     python3Packages.tabulate
     python3Packages.wheel
     python3Packages.prompt-toolkit
-    python3Packages.pygments
   ];
   shellHook = ''
     python3.12 -m xonsh
