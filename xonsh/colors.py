@@ -33,7 +33,7 @@ class Color:
     """
 
     @staticmethod
-    def bit24(r: int, g: int, b: int, style: Style = Style.NORMAL) -> str:
+    def bit24(red: int, green: int, blue: int, /, style: Style = Style.NORMAL) -> str:
         """
         Returns the ANSI escape sequence for the given 24-bit color and text style
 
@@ -46,7 +46,7 @@ class Color:
         Returns:
             str: The ANSI escape sequence for the given 24-bit color and text style
         """
-        return f"\033[{style.value};38;2;{r};{g};{b}m"
+        return f"\033[{style.value};38;2;{red};{green};{blue}m"
 
     DEFAULT = "\033[0m"
     WHITE = bit24(255, 255, 255)
