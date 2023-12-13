@@ -172,7 +172,9 @@ class XonshPrompt:
         except:
             return XonshPrompt.enclose_in_brackets(f"{Color.WHITE}unknown")
 
-        color = Color.RED if repo.is_dirty(untracked_files=True) else Color.GREEN
+        color = (
+            Color.ORANGE if repo.is_dirty(untracked_files=True) else Color.LIME_GREEN
+        )
 
         if branch == "master":
             branch = "main"
