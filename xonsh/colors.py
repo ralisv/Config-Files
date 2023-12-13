@@ -1,4 +1,5 @@
 import colorsys
+from enum import Enum
 from pathlib import Path
 from stat import S_IXUSR
 from typing import List
@@ -14,54 +15,142 @@ LS_COLORS parsed into a dictionary where the keys are file types and the values 
 """
 
 
+class Style(Enum):
+    """
+    An enumeration of text styles
+    """
+
+    NORMAL = 0
+    BOLD = 1
+    UNDERLINED = 4
+    FLASHING_TEXT = 5
+    REVERSE_FIELD = 7
+
+
 class Color:
     """
     A static class containing ANSI escape sequences for various colors and text effects
     """
 
+    @staticmethod
+    def bit24(r: int, g: int, b: int, style: Style = Style.NORMAL) -> str:
+        """
+        Returns the ANSI escape sequence for the given 24-bit color and text style
+
+        Args:
+            r (int): Red component of the color
+            g (int): Green component of the color
+            b (int): Blue component of the color
+            style (Style): Text style
+
+        Returns:
+            str: The ANSI escape sequence for the given 24-bit color and text style
+        """
+        return f"\033[{style.value};38;2;{r};{g};{b}m"
+
     DEFAULT = "\033[0m"
-    WHITE = "\033[37m"
-    BOLD = "\033[1m"
-    UNDERLINED = "\033[4m"
-    FLASHING_TEXT = "\033[5m"
-    REVERSE_FIELD = "\033[7m"
-    RED = "\033[31m"
-    GREEN = "\033[32m"
-    ORANGE = "\033[33m"
-    YELLOW = "\033[33m"
-    BLUE = "\033[34m"
-    PURPLE = "\033[35m"
-    CYAN = "\033[36m"
-    GREY = "\033[37m"
-    BLACK = "\033[40m"
-    PINK = "\033[1;38;255;34;187m"
-    LIGHT_RED = "\033[91m"
-    LIGHT_GREEN = "\033[92m"
-    LIGHT_YELLOW = "\033[93m"
-    LIGHT_BLUE = "\033[94m"
-    LIGHT_MAGENTA = "\033[95m"
-    LIGHT_CYAN = "\033[96m"
-    LIGHT_WHITE = "\033[97m"
+    WHITE = bit24(255, 255, 255)
+    BLACK = bit24(0, 0, 0)
+    PINK = bit24(255, 0, 255)
+    ORANGE = bit24(255, 165, 0)
+    MAROON = bit24(128, 0, 0)
+    RED = bit24(255, 0, 0)
+    YELLOW = bit24(255, 255, 0)
+    LIME_GREEN = bit24(50, 205, 50)
+    SALMON = bit24(250, 128, 114)
+    GREEN = bit24(0, 128, 0)
+    SKY_BLUE = bit24(135, 206, 235)
+    CRIMSON = bit24(220, 20, 60)
+    AQUA = bit24(0, 255, 255)
+    GREY = bit24(128, 128, 128)
+    PURPLE = bit24(128, 0, 128)
+    MUSTARD = bit24(227, 179, 50)
+    PEACH = bit24(255, 218, 185)
+    VIOLET = bit24(238, 130, 238)
+    MAGENTA = bit24(255, 0, 255)
+    CORAL = bit24(255, 127, 80)
+    SAFFRON = bit24(244, 196, 48)
+    BROWN = bit24(165, 42, 42)
+    TAN = bit24(210, 180, 140)
+    TEAL = bit24(0, 128, 128)
+    NAVY_BLUE = bit24(0, 0, 128)
+    TURQUOISE = bit24(64, 224, 208)
+    LAVENDER = bit24(230, 230, 250)
+    BEIGE = bit24(245, 245, 220)
+    LEMON_YELLOW = bit24(255, 250, 205)
+    GRAPE_VINE = bit24(111, 45, 168)
+    INDIGO = bit24(75, 0, 130)
+    FUCHSIA = bit24(255, 0, 255)
+    AMBER = bit24(255, 191, 0)
+    SEA_GREEN = bit24(46, 139, 87)
+    DARK_GREEN = bit24(0, 100, 0)
+    BURGUNDY = bit24(128, 0, 32)
+    CHARCOAL = bit24(54, 69, 79)
+    BRONZE = bit24(205, 127, 50)
+    CREAM = bit24(255, 253, 208)
+    MAUVE = bit24(224, 176, 255)
+    OLIVE = bit24(128, 128, 0)
+    CYAN = bit24(0, 255, 255)
+    SILVER = bit24(192, 192, 192)
+    RUST = bit24(183, 65, 14)
+    RUBY = bit24(224, 17, 95)
+    AZURE = bit24(0, 127, 255)
+    MINT = bit24(170, 240, 209)
+    PEARL = bit24(234, 224, 200)
+    IVORY = bit24(255, 255, 240)
+    TANGERINE = bit24(255, 140, 0)
+    CHERRY_RED = bit24(247, 50, 50)
+    GARNET = bit24(165, 11, 94)
+    EMERALD = bit24(80, 200, 120)
+    SAPPHIRE = bit24(15, 82, 186)
+    ROSEWOOD = bit24(101, 0, 11)
+    LILAC = bit24(200, 162, 200)
+    ARCTIC_BLUE = bit24(138, 180, 248)
+    PISTA_GREEN = bit24(136, 200, 162)
+    COFFEE_BROWN = bit24(111, 78, 55)
+    UMBER = bit24(99, 81, 71)
+    BRUNETTE = bit24(101, 67, 33)
+    MOCHA = bit24(192, 141, 111)
+    ASH = bit24(178, 190, 181)
+    JET_BLACK = bit24(52, 52, 52)
 
 
 GIT_STATUS_COLORS = {
-    "STAGED": Color.LIGHT_GREEN,
     "??": Color.YELLOW,
-    "M": Color.BLUE,
+    "M": Color.ARCTIC_BLUE,
     "A": Color.GREEN,
     "D": Color.RED,
-    "R": Color.GREEN,
-    "C": Color.GREEN,
-    "U": Color.RED,
-    "DU": Color.RED,
-    "AU": Color.RED,
-    "UD": Color.RED,
-    "UA": Color.RED,
-    "DA": Color.RED,
-    "AA": Color.RED,
-    "UU": Color.RED,
+    "R": Color.ORANGE,
+    "C": Color.PURPLE,
+    "U": Color.MAROON,
+    "DU": Color.CORAL,
+    "AU": Color.SAFFRON,
+    "UD": Color.BROWN,
+    "UA": Color.TEAL,
+    "DA": Color.TURQUOISE,
+    "AA": Color.LAVENDER,
+    "UU": Color.GRAPE_VINE,
 }
 """ A dictionary mapping git status codes to colors """
+
+GIT_STATUS_COLORS_STAGED = {
+    "??": Color.LEMON_YELLOW,
+    "M": Color.SKY_BLUE,
+    "MM": Color.VIOLET,
+    "A": Color.LIME_GREEN,
+    "D": Color.SALMON,
+    "R": Color.ORANGE,
+    "C": Color.PEACH,
+    "U": Color.PINK,
+    "DU": Color.CORAL,
+    "AU": Color.SAFFRON,
+    "UD": Color.TAN,
+    "UA": Color.AQUA,
+    "DA": Color.TURQUOISE,
+    "AA": Color.VIOLET,
+    "UU": Color.LAVENDER,
+}
+""" A dictionary mapping git status codes to colors for staged files """
 
 
 def get_file_color(path: Path) -> str:

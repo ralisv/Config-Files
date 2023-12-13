@@ -177,7 +177,7 @@ def ask_whether_to_dump() -> None:
 
     print(
         f"{Color.GREEN}Do you wish to permanently delete them?"
-        f"[{Color.LIGHT_GREEN}y{Color.GREEN}/{Color.RED}n{Color.GREEN}] {Color.DEFAULT}",
+        f"[{Color.LIME_GREEN}y{Color.GREEN}/{Color.RED}n{Color.GREEN}] {Color.DEFAULT}",
         end="",
     )
 

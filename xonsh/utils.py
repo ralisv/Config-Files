@@ -6,10 +6,17 @@ from pathlib import Path
 from git import Repo
 from tabulate import tabulate
 
-from colors import GIT_STATUS_COLORS, LS_COLORS, Color, colorize
+from colors import (
+    GIT_STATUS_COLORS,
+    GIT_STATUS_COLORS_STAGED,
+    LS_COLORS,
+    Color,
+    colorize,
+)
 
 GIT_STATUS_VERBOSE: dict[str, str] = {
     "M": "Modified",
+    "MM": "Modified after staged",
     "A": "Added",
     "D": "Deleted",
     "R": "Renamed",
@@ -55,9 +62,11 @@ def super_git_status() -> str:
         table_data: list[tuple[str, str, str]] = []
 
         for state, *_, filename in file_states:
-            state_color = GIT_STATUS_COLORS.get(state, Color.DEFAULT)
-            if filename in staged_files:
-                state_color = GIT_STATUS_COLORS["STAGED"]
+            state_color = (
+                GIT_STATUS_COLORS
+                if filename not in staged_files
+                else GIT_STATUS_COLORS_STAGED
+            ).get(state, Color.DEFAULT)
 
             verbose_state = GIT_STATUS_VERBOSE.get(state, "")
             colorized_file = colorize(filename)
