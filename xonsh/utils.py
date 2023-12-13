@@ -6,13 +6,7 @@ from pathlib import Path
 from git import Repo
 from tabulate import tabulate
 
-from colors import (
-    Color,
-    colorize,
-    GIT_STATUS_COLORS,
-    LS_COLORS,
-)
-
+from colors import GIT_STATUS_COLORS, LS_COLORS, Color, colorize
 
 GIT_STATUS_VERBOSE: dict[str, str] = {
     "M": "Modified",
@@ -50,11 +44,11 @@ def super_git_status() -> str:
 
         file_states = [line.split() for line in git_status.split("\n") if line]
 
-        # When too many files were received from repo.git.status (tabulate handles extremely long lists slowly)
+        # When too many files were received from repo.git.status (tabulate
+        # handles extremely long lists slowly)
         if len(file_states) > 1000:
             return f"{Color.RED}Super git status error: TooManyEntries ({len(file_states)})"
 
-        # Get staged files
         staged_files: set[str] = {item.a_path for item in repo.index.diff("HEAD")}  # type: ignore
 
         # Initialize a list to store the rows
@@ -97,12 +91,21 @@ def super_ls(args: list[str]) -> str:
     try:
         return (
             subprocess.check_output(
-                [shutil.which("ls"), "--color=always", "-C", *args],  # type: ignore
+                [
+                    str(shutil.which("ls")),
+                    "--color=always",
+                    "-C",
+                    *args,
+                ],  # type: ignore
                 env={"LS_COLORS": LS_COLORS},
+                stderr=subprocess.PIPE,
             )
             .decode()
             .strip()
         )
+
+    except subprocess.CalledProcessError as e:
+        return f"{Color.RED}Command '{e.cmd}' returned status {e.returncode}. Output: {e.output}, Error: {e.stderr}{Color.DEFAULT}"
 
     except Exception as e:
         return f"{Color.RED}{e}{Color.DEFAULT}"

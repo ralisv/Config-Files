@@ -1,14 +1,13 @@
-import os
 import glob
+import os
 import shutil
 import sys
 import time
 from pathlib import Path
-
 from typing import List
 
-from colors import colorize, Color
-from utils import get_size, seconds_to_days, bytes_to_megabytes
+from colors import Color, colorize
+from utils import bytes_to_megabytes, get_size, seconds_to_days
 
 TRASH_DIR = Path.home() / ".trash-bin"
 """ Path to the directory where the files are moved when deleted """
@@ -18,7 +17,6 @@ DUMPLOG = Path.home() / ".dump.log"
 
 DELETED_FILE_AGE_LIMIT = 30
 """ Number of days after which the file is considered dumpable """
-
 
 
 def remove(args: list[str]) -> None:
@@ -57,7 +55,8 @@ def remove(args: list[str]) -> None:
                 file_size = bytes_to_megabytes(get_size(file))
                 message = f"{Color.GREEN} ✔ {colorize(file.name)} ({Color.CYAN}{file_size:.2f} MB{Color.DEFAULT}){Color.DEFAULT}"
 
-                # shutil.move works across different file systems, Path.rename does not
+                # shutil.move works across different file systems, Path.rename
+                # does not
                 shutil.move(str(file), str(trashed_file))
                 ok_messages.append(message)
 
@@ -115,7 +114,7 @@ def dump(files: List[Path]) -> int:
             curr_size = get_size(file_to_dump)
 
             if file_to_dump.is_dir():
-                shutil.rmtree(file_to_dump) 
+                shutil.rmtree(file_to_dump)
             else:
                 file_to_dump.unlink()
 
@@ -154,7 +153,8 @@ def ask_whether_to_dump() -> None:
     """
     initialize_trash_management()
 
-    if DUMPLOG.exists() and seconds_to_days(time.time() - DUMPLOG.stat().st_mtime) < 30:
+    if DUMPLOG.exists() and seconds_to_days(
+            time.time() - DUMPLOG.stat().st_mtime) < 30:
         return
 
     dumpable = sorted(
@@ -169,7 +169,8 @@ def ask_whether_to_dump() -> None:
         end="\n\n",
     )
     print(
-        *[colorize(str(file)).replace(str(TRASH_DIR) + "/", "") for file in dumpable],
+        *[colorize(str(file)).replace(str(TRASH_DIR) + "/", "")
+            for file in dumpable],
         sep="\n",
         end="\n\n",
     )
@@ -194,14 +195,14 @@ def ask_whether_to_dump() -> None:
                 f"{Color.GREEN}Successfully freed {Color.CYAN}{bytes_to_megabytes(freed_memory):.2f}{Color.GREEN} MB{Color.DEFAULT}"
             )
 
-            dumplog.write(f"{time.strftime("%d.%m.%Y")} User dumped trash\n")
+            dumplog.write(f"{time.strftime(" % d. % m. % Y")} User dumped trash\n")
 
         elif answer.lower() in ["n", "no", "nope", "nah", "no way", "nah, thanks"]:
             print(
                 f"{Color.GREEN}The files have not been dumped, you'll be reminded again in 7 days.{Color.DEFAULT}"
             )
 
-            dumplog.write(f"{time.strftime("%d.%m.%Y")} User declined to dump trash\n")
+            dumplog.write(f"{time.strftime(" % d. % m. % Y")} User declined to dump trash\n")
 
         else:
             print(

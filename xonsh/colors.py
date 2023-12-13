@@ -1,8 +1,7 @@
+import colorsys
+from pathlib import Path
 from stat import S_IXUSR
 from typing import List
-from pathlib import Path
-import colorsys
-
 
 LS_COLORS = (Path.home() / "Config-Files" / "ls-colors.txt").open().read()
 """ The contents of the LS_COLORS environment variable """
@@ -66,7 +65,8 @@ GIT_STATUS_COLORS = {
 
 
 def get_file_color(path: Path) -> str:
-    """Returns the color escape sequence for the given file based on LS_COLORS variable
+    """
+    Returns the color escape sequence for the given file based on LS_COLORS variable
 
     Args:
         path (Path): The path to the file
@@ -101,7 +101,8 @@ def get_file_color(path: Path) -> str:
     elif path.exists() and path.is_block_device():
         color = LS_COLORS_PARSED.get("bd")
 
-    # If the file is a character (unbuffered) special file, get the character color
+    # If the file is a character (unbuffered) special file, get the character
+    # color
     elif path.exists() and path.is_char_device():
         color = LS_COLORS_PARSED.get("cd")
 

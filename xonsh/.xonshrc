@@ -1,19 +1,20 @@
 # type: ignore
-import sys
 import os
 import shutil
+import sys
 from pathlib import Path
 
+# Include the directory where this file is located in the search path
 sys.path.append(str(Path(__file__).resolve().parent))
 sys.path.append(str(Path.home() / ".local" / "lib" / "python3.10" / "site-packages"))
 
-from git import Repo, InvalidGitRepositoryError
-
-
-from utils import super_util, start_in_new_session
-from colors import colorize, LS_COLORS, Color, Rainbowizer
-from trash import ask_whether_to_dump, remove
 from getpass import getuser
+
+from git import InvalidGitRepositoryError, Repo
+
+from colors import LS_COLORS, Color, Rainbowizer, colorize
+from trash import ask_whether_to_dump, remove
+from utils import start_in_new_session, super_util
 
 # To silence IDE for further complains about nonexistence of this variable
 __xonsh__ = __xonsh__
@@ -136,6 +137,7 @@ class XonshPrompt:
     """
     A class that encapsulates the logic for customizing the xonsh prompt
     """
+
     rainbowizer = Rainbowizer(1024, 850)
     rainbowize = rainbowizer.rainbowize
 
