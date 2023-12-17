@@ -1,5 +1,5 @@
 import colorsys
-from enum import Enum
+from dataclasses import dataclass
 from pathlib import Path
 from stat import S_IXUSR
 from typing import List
@@ -15,104 +15,117 @@ LS_COLORS parsed into a dictionary where the keys are file types and the values 
 """
 
 
-class Style(Enum):
+class Style:
     """
-    An enumeration of text styles
+    An enumeration of text styles using ANSI escape sequences.
+
+    The usage can be as follows:
+    print(f"{Style.BOLD}Hello, world!{Style.DEFAULT}")
     """
 
-    NORMAL = 0
-    BOLD = 1
-    UNDERLINED = 4
-    FLASHING_TEXT = 5
-    REVERSE_FIELD = 7
+    DEFAULT = "\033[0m"
+    BOLD = "\033[1m"
+    FAINT = "\033[2m"
+    ITALIC = "\033[3m"
+    UNDERLINE = "\033[4m"
+    SLOW_BLINK = "\033[5m"
+    RAPID_BLINK = "\033[6m"
+    REVERSE = "\033[7m"
+    CONCEAL = "\033[8m"
+    STRIKE_THROUGH = "\033[9m"
+
+
+@dataclass(frozen=True)
+class AnsiColorCode:
+    """
+    A class representing an ANSI color code
+    """
+
+    rgb_red: int
+    rgb_green: int
+    rgb_blue: int
+    bg: bool = False
+
+    def __str__(self) -> str:
+        return f"\033[{48 if self.bg else 38};2;{self.rgb_red};{self.rgb_green};{self.rgb_blue}m"
+
+    @property
+    def background(self) -> "AnsiColorCode":
+        return AnsiColorCode(self.rgb_red, self.rgb_green, self.rgb_blue, True)
 
 
 class Color:
     """
     A static class containing ANSI escape sequences for various colors and text effects
+
+    Recommended usage is to wrap colors provided by this class inside f strings like this:
+    print(f"{Color.RED}Hello, world!{Style.DEFAULT}")
     """
 
-    @staticmethod
-    def bit24(red: int, green: int, blue: int, /, style: Style = Style.NORMAL) -> str:
-        """
-        Returns the ANSI escape sequence for the given 24-bit color and text style
-
-        Args:
-            r (int): Red component of the color
-            g (int): Green component of the color
-            b (int): Blue component of the color
-            style (Style): Text style
-
-        Returns:
-            str: The ANSI escape sequence for the given 24-bit color and text style
-        """
-        return f"\033[{style.value};38;2;{red};{green};{blue}m"
-
-    AMBER = bit24(255, 191, 0)
-    AQUA = bit24(0, 255, 255)
-    ARCTIC_BLUE = bit24(138, 180, 248)
-    ASH = bit24(178, 190, 181)
-    AZURE = bit24(0, 127, 255)
-    BEIGE = bit24(245, 245, 220)
-    BLACK = bit24(0, 0, 0)
-    BRONZE = bit24(205, 127, 50)
-    BROWN = bit24(165, 42, 42)
-    BRUNETTE = bit24(101, 67, 33)
-    BURGUNDY = bit24(128, 0, 32)
-    CHARCOAL = bit24(54, 69, 79)
-    CHERRY_RED = bit24(247, 50, 50)
-    COFFEE_BROWN = bit24(111, 78, 55)
-    CORAL = bit24(255, 127, 80)
-    CREAM = bit24(255, 253, 208)
-    CRIMSON = bit24(220, 20, 60)
-    CYAN = bit24(0, 255, 255)
-    DARK_GREEN = bit24(0, 100, 0)
-    DEFAULT = "\033[0m"
-    EMERALD = bit24(80, 200, 120)
-    FUCHSIA = bit24(255, 0, 255)
-    GARNET = bit24(165, 11, 94)
-    GRAPE_VINE = bit24(111, 45, 168)
-    GREEN = bit24(0, 128, 0)
-    GREY = bit24(128, 128, 128)
-    INDIGO = bit24(75, 0, 130)
-    IVORY = bit24(255, 255, 240)
-    JET_BLACK = bit24(52, 52, 52)
-    LAVENDER = bit24(230, 230, 250)
-    LEMON_YELLOW = bit24(255, 250, 205)
-    LILAC = bit24(200, 162, 200)
-    LIME_GREEN = bit24(50, 205, 50)
-    MAGENTA = bit24(255, 0, 255)
-    MAROON = bit24(128, 0, 0)
-    MAUVE = bit24(224, 176, 255)
-    MINT = bit24(170, 240, 209)
-    MOCHA = bit24(192, 141, 111)
-    MUSTARD = bit24(227, 179, 50)
-    NAVY_BLUE = bit24(0, 0, 128)
-    OLIVE = bit24(128, 128, 0)
-    ORANGE = bit24(255, 165, 0)
-    PEACH = bit24(255, 218, 185)
-    PEARL = bit24(234, 224, 200)
-    PINK = bit24(255, 0, 255)
-    PISTA_GREEN = bit24(136, 200, 162)
-    PURPLE = bit24(128, 0, 128)
-    RED = bit24(255, 0, 0)
-    ROSEWOOD = bit24(101, 0, 11)
-    RUBY = bit24(224, 17, 95)
-    RUST = bit24(183, 65, 14)
-    SAFFRON = bit24(244, 196, 48)
-    SALMON = bit24(250, 128, 114)
-    SAPPHIRE = bit24(15, 82, 186)
-    SEA_GREEN = bit24(46, 139, 87)
-    SILVER = bit24(192, 192, 192)
-    SKY_BLUE = bit24(135, 206, 235)
-    TAN = bit24(210, 180, 140)
-    TANGERINE = bit24(255, 140, 0)
-    TEAL = bit24(0, 128, 128)
-    TURQUOISE = bit24(64, 224, 208)
-    UMBER = bit24(99, 81, 71)
-    VIOLET = bit24(238, 130, 238)
-    WHITE = bit24(255, 255, 255)
-    YELLOW = bit24(255, 255, 0)
+    AMBER = AnsiColorCode(255, 191, 0)
+    AQUA = AnsiColorCode(0, 255, 255)
+    ARCTIC_BLUE = AnsiColorCode(138, 180, 248)
+    ASH = AnsiColorCode(178, 190, 181)
+    AZURE = AnsiColorCode(0, 127, 255)
+    BEIGE = AnsiColorCode(245, 245, 220)
+    BLACK = AnsiColorCode(0, 0, 0)
+    BRONZE = AnsiColorCode(205, 127, 50)
+    BROWN = AnsiColorCode(165, 42, 42)
+    BRUNETTE = AnsiColorCode(101, 67, 33)
+    BURGUNDY = AnsiColorCode(128, 0, 32)
+    CHARCOAL = AnsiColorCode(54, 69, 79)
+    CHERRY_RED = AnsiColorCode(247, 50, 50)
+    COFFEE_BROWN = AnsiColorCode(111, 78, 55)
+    CORAL = AnsiColorCode(255, 127, 80)
+    CREAM = AnsiColorCode(255, 253, 208)
+    CRIMSON = AnsiColorCode(220, 20, 60)
+    CYAN = AnsiColorCode(0, 255, 255)
+    DARK_GREEN = AnsiColorCode(0, 100, 0)
+    EMERALD = AnsiColorCode(80, 200, 120)
+    FUCHSIA = AnsiColorCode(255, 0, 255)
+    GARNET = AnsiColorCode(165, 11, 94)
+    GRAPE_VINE = AnsiColorCode(111, 45, 168)
+    GREEN = AnsiColorCode(0, 128, 0)
+    GREY = AnsiColorCode(128, 128, 128)
+    INDIGO = AnsiColorCode(75, 0, 130)
+    IVORY = AnsiColorCode(255, 255, 240)
+    JET_BLACK = AnsiColorCode(52, 52, 52)
+    LAVENDER = AnsiColorCode(230, 230, 250)
+    LEMON_YELLOW = AnsiColorCode(255, 250, 205)
+    LILAC = AnsiColorCode(200, 162, 200)
+    LIME_GREEN = AnsiColorCode(50, 205, 50)
+    MAGENTA = AnsiColorCode(255, 0, 255)
+    MAROON = AnsiColorCode(128, 0, 0)
+    MAUVE = AnsiColorCode(224, 176, 255)
+    MINT = AnsiColorCode(170, 240, 209)
+    MOCHA = AnsiColorCode(192, 141, 111)
+    MUSTARD = AnsiColorCode(227, 179, 50)
+    NAVY_BLUE = AnsiColorCode(0, 0, 128)
+    OLIVE = AnsiColorCode(128, 128, 0)
+    ORANGE = AnsiColorCode(255, 165, 0)
+    PEACH = AnsiColorCode(255, 218, 185)
+    PEARL = AnsiColorCode(234, 224, 200)
+    PINK = AnsiColorCode(255, 0, 255)
+    PISTA_GREEN = AnsiColorCode(136, 200, 162)
+    PURPLE = AnsiColorCode(128, 0, 128)
+    RED = AnsiColorCode(255, 0, 0)
+    ROSEWOOD = AnsiColorCode(101, 0, 11)
+    RUBY = AnsiColorCode(224, 17, 95)
+    RUST = AnsiColorCode(183, 65, 14)
+    SAFFRON = AnsiColorCode(244, 196, 48)
+    SALMON = AnsiColorCode(250, 128, 114)
+    SAPPHIRE = AnsiColorCode(15, 82, 186)
+    SEA_GREEN = AnsiColorCode(46, 139, 87)
+    SILVER = AnsiColorCode(192, 192, 192)
+    SKY_BLUE = AnsiColorCode(135, 206, 235)
+    TAN = AnsiColorCode(210, 180, 140)
+    TANGERINE = AnsiColorCode(255, 140, 0)
+    TEAL = AnsiColorCode(0, 128, 128)
+    TURQUOISE = AnsiColorCode(64, 224, 208)
+    UMBER = AnsiColorCode(99, 81, 71)
+    VIOLET = AnsiColorCode(238, 130, 238)
+    WHITE = AnsiColorCode(255, 255, 255)
+    YELLOW = AnsiColorCode(255, 255, 0)
 
 
 GIT_STATUS_COLORS = {

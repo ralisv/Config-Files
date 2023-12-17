@@ -11,6 +11,7 @@ from colors import (
     GIT_STATUS_COLORS_STAGED,
     LS_COLORS,
     Color,
+    Style,
     colorize,
 )
 
@@ -66,7 +67,7 @@ def super_git_status() -> str:
                 GIT_STATUS_COLORS
                 if filename not in staged_files
                 else GIT_STATUS_COLORS_STAGED
-            ).get(state, Color.DEFAULT)
+            ).get(state, Style.DEFAULT)
 
             verbose_state = GIT_STATUS_VERBOSE.get(state, "")
             colorized_file = colorize(filename)
@@ -80,7 +81,7 @@ def super_git_status() -> str:
                 )
             )
 
-        # Tabulate data
+        # type: ignore
         return tabulate(table_data, tablefmt="plain") + "\n"
 
     except Exception:
@@ -114,10 +115,10 @@ def super_ls(args: list[str]) -> str:
         )
 
     except subprocess.CalledProcessError as e:
-        return f"{Color.RED}Command '{e.cmd}' returned status {e.returncode}. Output: {e.output}, Error: {e.stderr}{Color.DEFAULT}"
+        return f"{Color.RED}Command '{e.cmd}' returned status {e.returncode}. Output: {e.output}, Error: {e.stderr}{Style.DEFAULT}"
 
     except Exception as e:
-        return f"{Color.RED}{e}{Color.DEFAULT}"
+        return f"{Color.RED}{e}{Style.DEFAULT}"
 
 
 def super_util(args: list[str]) -> None:

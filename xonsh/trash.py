@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 from typing import List
 
-from colors import Color, colorize
+from colors import Color, Style, colorize
 from utils import bytes_to_megabytes, get_size, seconds_to_days
 
 TRASH_DIR = Path.home() / ".trash-bin"
@@ -28,7 +28,7 @@ def remove(args: list[str]) -> None:
     """
     if not args:
         print(
-            f"{Color.RED}No files or directories passed{Color.DEFAULT}", file=sys.stderr
+            f"{Color.RED}No files or directories passed{Style.DEFAULT}", file=sys.stderr
         )
         return
 
@@ -53,7 +53,7 @@ def remove(args: list[str]) -> None:
 
             try:
                 file_size = bytes_to_megabytes(get_size(file))
-                message = f"{Color.GREEN} ✔ {colorize(file.name)} ({Color.CYAN}{file_size:.2f} MB{Color.DEFAULT}){Color.DEFAULT}"
+                message = f"{Color.GREEN} ✔ {colorize(file.name)} ({Color.CYAN}{file_size:.2f} MB{Style.DEFAULT}){Style.DEFAULT}"
 
                 # shutil.move works across different file systems, Path.rename
                 # does not
@@ -61,11 +61,11 @@ def remove(args: list[str]) -> None:
                 ok_messages.append(message)
 
             except Exception as e:
-                message = f"{Color.RED} ✘ {colorize(file.name)}{Color.RED}: {e}{Color.DEFAULT}"
+                message = f"{Color.RED} ✘ {colorize(file.name)}{Color.RED}: {e}{Style.DEFAULT}"
                 error_messages.append(message)
 
         if not files:
-            message = f"{Color.RED} ✘ {arg}: Does not match any files or directories{Color.DEFAULT}"
+            message = f"{Color.RED} ✘ {arg}: Does not match any files or directories{Style.DEFAULT}"
             error_messages.append(message)
 
     print(*ok_messages, sep="\n", end="")
@@ -122,7 +122,7 @@ def dump(files: List[Path]) -> int:
 
         except Exception as e:
             message = (
-                f"{Color.RED} ✘ {colorize(str(file_to_dump))}{Color.RED}: {e}{Color.DEFAULT}"
+                f"{Color.RED} ✘ {colorize(str(file_to_dump))}{Color.RED}: {e}{Style.DEFAULT}"
             )
             error_messages.append(message)
 
@@ -165,7 +165,7 @@ def ask_whether_to_dump() -> None:
 
     print(
         f"{Color.GREEN}The following files have been in the trash for more than"
-        f"{DELETED_FILE_AGE_LIMIT} days:{Color.DEFAULT}",
+        f"{DELETED_FILE_AGE_LIMIT} days:{Style.DEFAULT}",
         end="\n\n",
     )
     print(
@@ -177,7 +177,7 @@ def ask_whether_to_dump() -> None:
 
     print(
         f"{Color.GREEN}Do you wish to permanently delete them?"
-        f"[{Color.LIME_GREEN}y{Color.GREEN}/{Color.RED}n{Color.GREEN}] {Color.DEFAULT}",
+        f"[{Color.LIME_GREEN}y{Color.GREEN}/{Color.RED}n{Color.GREEN}] {Style.DEFAULT}",
         end="",
     )
 
@@ -185,26 +185,26 @@ def ask_whether_to_dump() -> None:
         answer = input().strip()
 
     except KeyboardInterrupt:
-        print(f"\n{Color.GREEN}The files have not been dumped.{Color.DEFAULT}")
+        print(f"\n{Color.GREEN}The files have not been dumped.{Style.DEFAULT}")
         return
 
     with DUMPLOG.open("a") as dumplog:
         if answer.lower() in ["y", "yes", "yeah", "yep, sure", "yep", "why not"]:
             freed_memory = dump(dumpable)
             print(
-                f"{Color.GREEN}Successfully freed {Color.CYAN}{bytes_to_megabytes(freed_memory):.2f}{Color.GREEN} MB{Color.DEFAULT}"
+                f"{Color.GREEN}Successfully freed {Color.CYAN}{bytes_to_megabytes(freed_memory):.2f}{Color.GREEN} MB{Style.DEFAULT}"
             )
 
             dumplog.write(f"{time.strftime(" % d. % m. % Y")} User dumped trash\n")
 
         elif answer.lower() in ["n", "no", "nope", "nah", "no way", "nah, thanks"]:
             print(
-                f"{Color.GREEN}The files have not been dumped, you'll be reminded again in 7 days.{Color.DEFAULT}"
+                f"{Color.GREEN}The files have not been dumped, you'll be reminded again in 7 days.{Style.DEFAULT}"
             )
 
             dumplog.write(f"{time.strftime(" % d. % m. % Y")} User declined to dump trash\n")
 
         else:
             print(
-                f"{Color.RED}Invalid input, the files have not been dumped.{Color.DEFAULT}"
+                f"{Color.RED}Invalid input, the files have not been dumped.{Style.DEFAULT}"
             )

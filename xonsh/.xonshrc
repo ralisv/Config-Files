@@ -232,7 +232,7 @@ __xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.rainbowize(" λ ")
 __xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.rainbowize(".")
 
 __xonsh__.env["PROMPT"] = (
-    Color.PINK
+    str(Color.PINK)
     + "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
 )
 
