@@ -31,6 +31,7 @@ GIT_STATUS_VERBOSE: dict[str, str] = {
     "DA": "Unmerged, deleted by us",
     "AA": "Unmerged, both added",
     "UU": "Unmerged, both modified",
+    "AD": "Unmerged, added by us, deleted by them",
 }
 """ A dictionary mapping git status codes to verbose descriptions """
 

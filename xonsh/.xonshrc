@@ -12,7 +12,7 @@ from getpass import getuser
 
 from git import InvalidGitRepositoryError, Repo
 
-from colors import LS_COLORS, Color, Rainbowizer, colorize
+from colors import LS_COLORS, Color, Rainbowizer, Style, colorize
 from trash import ask_whether_to_dump, remove
 from utils import start_in_new_session, super_util
 
@@ -136,10 +136,14 @@ __xonsh__.env["LS_COLORS"] = LS_COLORS
 class XonshPrompt:
     """
     A class that encapsulates the logic for customizing the xonsh prompt
+
+    Assign a dye parameter a function that takes a string and returns a colored string to
+    dye prompt in your favourite colors
     """
 
     rainbowizer = Rainbowizer(1024, 850)
-    rainbowize = rainbowizer.rainbowize
+
+    dye = rainbowizer.rainbowize
 
     @staticmethod
     def enclose_in_brackets(text: str) -> str:
@@ -152,7 +156,7 @@ class XonshPrompt:
         Returns:
             str: The enclosed text
         """
-        return f"{XonshPrompt.rainbowize('[')}{text}{XonshPrompt.rainbowize(']')}{Color.PINK}"
+        return f"{XonshPrompt.dye('[')}{text}{XonshPrompt.dye(']')}{Style.DEFAULT}"
 
     @staticmethod
     def git_info() -> str:
@@ -173,7 +177,7 @@ class XonshPrompt:
             return XonshPrompt.enclose_in_brackets(f"{Color.WHITE}unknown")
 
         color = (
-            Color.ORANGE if repo.is_dirty(untracked_files=True) else Color.LIME_GREEN
+            Color.SALMON if repo.is_dirty(untracked_files=True) else Color.LIME_GREEN
         )
 
         if branch == "master":
@@ -218,18 +222,16 @@ class XonshPrompt:
         """
         # If the deprecation warnings about event loop appear ever again, uncomment the following line
         # warnings.filterwarnings("ignore", category=DeprecationWarning)
-        return Color.WHITE
+        return Style.DEFAULT
 
 
 __xonsh__.env["PROMPT_FIELDS"]["git-info"] = XonshPrompt.git_info
 __xonsh__.env["PROMPT_FIELDS"]["last-exit-code-info"] = XonshPrompt.last_exit_code_info
 __xonsh__.env["PROMPT_FIELDS"]["path-info"] = XonshPrompt.path_info
 __xonsh__.env["PROMPT_FIELDS"]["reset"] = XonshPrompt.reset
-__xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: XonshPrompt.rainbowize(
-    getuser()
-)
-__xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.rainbowize(" λ ")
-__xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.rainbowize(".")
+__xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: XonshPrompt.dye(getuser())
+__xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.dye(" λ ")
+__xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.dye(".")
 
 __xonsh__.env["PROMPT"] = (
     str(Color.PINK)

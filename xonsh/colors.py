@@ -133,7 +133,7 @@ class Color:
 
 GIT_STATUS_COLORS = {
     "??": Color.YELLOW,
-    "M": Color.ARCTIC_BLUE,
+    "M": Color.AZURE,
     "A": Color.GREEN,
     "D": Color.RED,
     "R": Color.ORANGE,
@@ -146,12 +146,13 @@ GIT_STATUS_COLORS = {
     "DA": Color.TURQUOISE,
     "AA": Color.LAVENDER,
     "UU": Color.GRAPE_VINE,
+    "AD": Color.MAGENTA,
 }
 """ A dictionary mapping git status codes to colors """
 
 GIT_STATUS_COLORS_STAGED = {
     "??": Color.LEMON_YELLOW,
-    "M": Color.SKY_BLUE,
+    "M": Color.AQUA,
     "MM": Color.VIOLET,
     "A": Color.LIME_GREEN,
     "D": Color.SALMON,
@@ -165,6 +166,7 @@ GIT_STATUS_COLORS_STAGED = {
     "DA": Color.TURQUOISE,
     "AA": Color.VIOLET,
     "UU": Color.LAVENDER,
+    "AD": Color.RUST,
 }
 """ A dictionary mapping git status codes to colors for staged files """
 
@@ -266,6 +268,8 @@ class Rainbowizer:
         self,
         resolution: int = DEFAULT_RAINBOW_RESOLUTION,
         initial_index: int = 0,
+        lightness: float = 0.5,
+        saturation: float = 0.85,
     ) -> None:
         """
         Initializes the Rainbowizer object with the given resolution
@@ -273,7 +277,9 @@ class Rainbowizer:
         Args:
             resolution (int, optional): The number of colors in the rainbow. Defaults to DEFAULT_RAINBOW_RESOLUTION.
         """
-        self.rainbow_colors = self.generate_rainbow_colors(resolution)
+        self.rainbow_colors = Rainbowizer.generate_rainbow_colors(
+            resolution, lightness, saturation
+        )
         self.rainbow_index = initial_index
 
     def rainbowize(self, string: str) -> str:
@@ -297,9 +303,8 @@ class Rainbowizer:
     @staticmethod
     def generate_rainbow_colors(
         resolution: int,
-        *,
-        lightness: float = 0.95,
-        saturation: float = 0.5,
+        lightness: float,
+        saturation: float,
     ) -> List[str]:
         """
         Generates a list of colors in the rainbow
@@ -315,8 +320,7 @@ class Rainbowizer:
         colors: List[str] = []
         for i in range(resolution):
             hue = i / resolution
-            lightness = 0.8
-            saturation = 1.0
+
             r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
             hex_color = f"\033[38;2;{int(r * 255)};{int(g * 255)};{int(b * 255)}m"
             colors.append(hex_color)
