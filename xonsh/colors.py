@@ -53,6 +53,9 @@ class AnsiColorCode:
     def background(self) -> "AnsiColorCode":
         return AnsiColorCode(self.rgb_red, self.rgb_green, self.rgb_blue, True)
 
+    def wrap(self, string: str) -> str:
+        return f"{self}{string}{Style.DEFAULT}"
+
 
 class Color:
     """
@@ -289,14 +292,14 @@ class Rainbowizer:
                 f"{self.rainbow_colors[self.rainbow_index % len(self.rainbow_colors)]}{char}"
             )
             self.rainbow_index += 1
-        return "".join(result)
+        return "".join(result + [Style.DEFAULT])
 
     @staticmethod
     def generate_rainbow_colors(
         resolution: int,
         *,
-        lightness: float = 0.8,
-        saturation: float = 1.0,
+        lightness: float = 0.95,
+        saturation: float = 0.5,
     ) -> List[str]:
         """
         Generates a list of colors in the rainbow
