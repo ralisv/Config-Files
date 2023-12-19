@@ -6,6 +6,31 @@
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true
   },
+  "codium.enable": true,
+  "editor.fontFamily": "FiraCode Nerd Font Ret",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 15,
+  "editor.formatOnPaste": true,
+  "editor.letterSpacing": 0,
+  "editor.lineHeight": 1.5,
+  "editor.minimap.enabled": false,
+  "editor.quickSuggestions": {
+    "comments": "off",
+    "other": "on",
+    "strings": "off"
+  },
+  "editor.scrollbar.vertical": "hidden",
+  "editor.scrollBeyondLastLine": false,
+  "editor.smoothScrolling": true,
+  "editor.tabSize": 4,
+  "git.openRepositoryInParentFolders": "always",
+  "github.copilot.enable": {
+    "*": false,
+    "csharp": true,
+    "markdown": false,
+    "plaintext": false,
+    "scminput": false
+  },
   "isort.args": [
     "--multi-line=3",
     "--trailing-comma",
@@ -14,59 +39,13 @@
     "--line-width=88"
   ],
   "isort.check": true,
-  "isort.severity": {
-    "W": "Warning",
-    "E": "Error"
-  },
-  "isort.path": [],
-  "isort.interpreter": [],
   "isort.importStrategy": "fromEnvironment",
+  "isort.interpreter": [],
+  "isort.path": [],
   "isort.serverEnabled": true,
-  "editor.quickSuggestions": {
-    "other": "on",
-    "comments": "off",
-    "strings": "off"
-  },
-  "editor.fontFamily": "FiraCode Nerd Font Ret",
-  "editor.smoothScrolling": true,
-  "editor.fontLigatures": true,
-  "editor.lineHeight": 1.5,
-  "editor.minimap.enabled": false,
-  "editor.tabSize": 4,
-  "editor.fontSize": 15,
-  "editor.letterSpacing": 0,
-  "editor.scrollbar.vertical": "hidden",
-  "editor.scrollBeyondLastLine": false,
-  "workbench.iconTheme": "material-icon-theme",
-  "workbench.colorTheme": "Neon City",
-  "workbench.colorCustomizations": {
-    "terminal.ansiBlue": "#00aaff"
-  },
-  "terminal.integrated": {
-    "fontFamily": "FiraCode Nerd Font Ret",
-    "fontSize": 16,
-    "lineHeight": 1.2
-  },
-  "terminal.integrated.profiles.linux": {
-    "xonsh": {
-      "path": "bash",
-      "args": [
-        "-c",
-        "nix develop path:/home/ralis/Config-Files/nixos --command xonsh"
-      ]
-    }
-  },
-  "terminal.integrated.defaultProfile.linux": "xonsh",
-  "git.openRepositoryInParentFolders": "always",
-  "window.titleBarStyle": "custom",
-  "codium.enable": true,
-  "editor.formatOnPaste": true,
-  "github.copilot.enable": {
-    "*": true,
-    "plaintext": false,
-    "markdown": false,
-    "scminput": false,
-    "csharp": true
+  "isort.severity": {
+    "E": "Error",
+    "W": "Warning"
   },
   "nix.serverSettings": {
     // settings for 'nil' LSP
@@ -84,12 +63,33 @@
       }
     }
   },
-  "python.defaultInterpreterPath": "/run/current-system/sw/bin/python",
-  "python.analysis.typeCheckingMode": "strict",
-  "python.analysis.completeFunctionParens": true,
   "python.analysis.autoFormatStrings": true,
   "python.analysis.autoImportCompletions": true,
-  "python.analysis.inlayHints.variableTypes": true,
+  "python.analysis.completeFunctionParens": true,
+  "python.analysis.inlayHints.callArgumentTypes": true,
   "python.analysis.inlayHints.functionReturnTypes": true,
-  "python.analysis.inlayHints.callArgumentTypes": true
+  "python.analysis.inlayHints.variableTypes": true,
+  "python.analysis.typeCheckingMode": "strict",
+  "python.defaultInterpreterPath": "/run/current-system/sw/bin/python",
+  "terminal.integrated": {
+    "fontFamily": "FiraCode Nerd Font Ret",
+    "fontSize": 16,
+    "lineHeight": 1.2
+  },
+  "terminal.integrated.defaultProfile.linux": "xonsh",
+  "terminal.integrated.profiles.linux": {
+    "xonsh": {
+      "args": [
+        "-c",
+        "nix develop path:/home/ralis/Config-Files/nixos --command xonsh"
+      ],
+      "path": "bash"
+    }
+  },
+  "window.titleBarStyle": "custom",
+  "workbench.colorCustomizations": {
+    "terminal.ansiBlue": "#00aaff"
+  },
+  "workbench.colorTheme": "Neon City",
+  "workbench.iconTheme": "material-icon-theme"
 }
