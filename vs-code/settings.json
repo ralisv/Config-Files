@@ -6,27 +6,40 @@
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true
   },
-  "codium.enable": true,
+  "editor.acceptSuggestionOnCommitCharacter": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.jshint": true,
+    "source.fixAll.markdownlint": true,
+    "source.fixAll.stylelint": true,
+    "source.fixAll.tslint": true,
+    "source.organizeImports": true
+  },
+  "editor.cursorSurroundingLines": 2,
+  "editor.defaultColorDecorators": true,
   "editor.fontFamily": "FiraCode Nerd Font Ret",
   "editor.fontLigatures": true,
   "editor.fontSize": 15,
   "editor.formatOnPaste": true,
+  "editor.guides.bracketPairs": true,
+  "editor.hover.delay": 100,
+  "editor.hover.hidingDelay": 200,
+  "editor.language.colorizedBracketPairs": [
+    "()",
+    "[]",
+    "{}"
+  ],
   "editor.letterSpacing": 0,
   "editor.lineHeight": 1.5,
   "editor.minimap.enabled": false,
-  "editor.quickSuggestions": {
-    "comments": "off",
-    "other": "on",
-    "strings": "off"
-  },
   "editor.scrollbar.vertical": "hidden",
   "editor.scrollBeyondLastLine": false,
   "editor.smoothScrolling": true,
   "editor.tabSize": 4,
   "git.openRepositoryInParentFolders": "always",
   "github.copilot.enable": {
-    "*": false,
-    "csharp": true,
+    "*": true,
+    "csharp": false,
     "markdown": false,
     "plaintext": false,
     "scminput": false
@@ -76,6 +89,7 @@
     "fontSize": 16,
     "lineHeight": 1.2
   },
+  "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.defaultProfile.linux": "xonsh",
   "terminal.integrated.profiles.linux": {
     "xonsh": {
