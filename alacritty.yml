@@ -1,34 +1,54 @@
 # Based on cyber_punk_neon theme at ~/.config/alacritty/themes/themes/cyber_punk_neon.yaml
 
+# Visual Bell
+# Any time the BEL code is received, Alacritty "rings" the visual bell.
+visual_bell:
+  animation: EaseOutExpo
+  duration: 0.15
+
+
 window:
-  opacity: 0.9
+  opacity: 0.85
+
   dimensions:
     columns: 100
     lines: 25
+
   position:
     x: 100
     y: 100
 
+  padding:
+    x: 8
+    y: 8
+
   class:
-    # Application instance name
     instance: Alacritty
-    # General application class
     general: Alacritty
+
+
+  title: "Alacritty"
+
+  dynamic_title: true
+
 
 scrolling:
   history: 10000
   multiplier: 1
   auto_scroll: true
 
+
 colors:
   primary:
     background: "0x000000"
     foreground: "0xdddddd"
 
+
 cursor:
   style:
     shape: Beam
     blinking: Always
+
 
 font:
   normal:
@@ -42,6 +62,7 @@ font:
     style: Italic
 
   size: 11
+
 
 shell:
   program: bash
