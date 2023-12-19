@@ -52,11 +52,9 @@ def remove(args: list[str]) -> None:
                 trashed_file = TRASH_DIR / f"{file.name}_{i}"
 
             try:
-                file_size = bytes_to_megabytes(get_size(file))
-                message = f"{Color.GREEN} ✔ {colorize(file.name)} ({Color.CYAN}{file_size:.2f} MB{Style.DEFAULT}){Style.DEFAULT}"
+                message = f"{Color.GREEN} ✔ {colorize(file.name)}{Style.DEFAULT}"
 
-                # shutil.move works across different file systems, Path.rename
-                # does not
+                # shutil.move works across different file systems, Path.rename does not
                 shutil.move(str(file), str(trashed_file))
                 ok_messages.append(message)
 
