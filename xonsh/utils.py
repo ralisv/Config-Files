@@ -42,18 +42,21 @@ def super_git_status() -> str:
     Returns:
         str: git status
     """
-    # Check if the current directory is in a git repository
-    git_rev_parse = subprocess.run(
-        ["git", "rev-parse", "--is-inside-work-tree"], capture_output=True, text=True
+    # Get root directory of the git repository
+    git_revparse = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True
     )
-    if git_rev_parse.returncode != 0:
+    if git_revparse.returncode != 0:
         return ""
+
+    repo_root = Path(git_revparse.stdout.strip())
 
     # Get the git status in short format
     git_status = subprocess.run(
-        ["git", "status", "--short"], capture_output=True, text=True
+        ["git", "status", "--porcelain"], capture_output=True, text=True
     )
 
+    # Don't print empty lines
     if git_status.stdout == "":
         return ""
 
@@ -79,10 +82,13 @@ def super_git_status() -> str:
             else GIT_STATUS_COLORS_STAGED
         ).get(state, Style.DEFAULT)
 
-        verbose_state = GIT_STATUS_VERBOSE.get(state, "")
+        # Get the relative path to the file
+        file_path = os.path.relpath(repo_root / filename, Path.cwd())
 
         # Colorize the relative path
-        colorized_file = colorize(filename)
+        colorized_file = colorize(str(file_path))
+
+        verbose_state = GIT_STATUS_VERBOSE.get(state, "")
 
         # Append rows to the list
         table_data.append(
