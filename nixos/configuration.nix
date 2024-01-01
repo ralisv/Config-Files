@@ -57,6 +57,7 @@
     vscode-fhs
     nixpkgs-fmt
     zulu8 # Java 8, for Digital executable
+    arduino
 
     # Utility for file type convertions
     texlive.combined.scheme-full
@@ -209,7 +210,7 @@
   users.users.ralis = {
     isNormalUser = true;
     description = "Vojtech Ralis";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" "jackaudio" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "audio" "jackaudio" "dialout" ];
   };
 
   nix.gc.automatic = true;
