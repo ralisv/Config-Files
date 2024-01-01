@@ -46,6 +46,8 @@ def super_git_status() -> str:
     git_revparse = subprocess.run(
         ["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True
     )
+
+    # When not in a git repository, return empty string
     if git_revparse.returncode != 0:
         return ""
 
@@ -56,7 +58,7 @@ def super_git_status() -> str:
         ["git", "status", "--porcelain"], capture_output=True, text=True
     )
 
-    # Don't print empty lines
+    # When git status reports no changes, return empty string
     if git_status.stdout == "":
         return ""
 
@@ -85,9 +87,6 @@ def super_git_status() -> str:
         # Get the relative path to the file
         file_path = os.path.relpath(repo_root / filename, Path.cwd())
 
-        # Colorize the relative path
-        colorized_file = colorize(str(file_path))
-
         verbose_state = GIT_STATUS_VERBOSE.get(state, "")
 
         # Append rows to the list
@@ -95,7 +94,7 @@ def super_git_status() -> str:
             (
                 f"{state_color}{state}",
                 f"{state_color}{verbose_state}",
-                colorized_file,
+                colorize(file_path),
             )
         )
 
