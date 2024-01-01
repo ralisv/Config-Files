@@ -53,6 +53,10 @@ def super_git_status() -> str:
     git_status = subprocess.run(
         ["git", "status", "--short"], capture_output=True, text=True
     )
+
+    if git_status.stdout == "":
+        return ""
+
     file_states = [line.split() for line in git_status.stdout.split("\n") if line]
 
     # When too many files were received from git status
