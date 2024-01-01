@@ -22,7 +22,7 @@
   "editor.fontSize": 15,
   "editor.formatOnPaste": true,
   "editor.guides.bracketPairs": true,
-  "editor.hover.delay": 100,
+  "editor.hover.delay": 200,
   "editor.hover.hidingDelay": 200,
   "editor.language.colorizedBracketPairs": [
     "()",
@@ -39,10 +39,10 @@
   "git.openRepositoryInParentFolders": "always",
   "github.copilot.enable": {
     "*": true,
-    "csharp": false,
-    "markdown": false,
     "plaintext": false,
-    "scminput": false
+    "markdown": false,
+    "scminput": false,
+    "csharp": true
   },
   "isort.args": [
     "--multi-line=3",
