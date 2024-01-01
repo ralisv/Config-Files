@@ -3,7 +3,6 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from git import Repo
 from tabulate import tabulate
 
 from colors import (
@@ -43,50 +42,55 @@ def super_git_status() -> str:
     Returns:
         str: git status
     """
-    try:
-        repo = Repo(".", search_parent_directories=True)
-
-        if not repo.is_dirty(untracked_files=True):
-            return ""
-
-        git_status = repo.git.status("--short")
-
-        file_states = [line.split() for line in git_status.split("\n") if line]
-
-        # When too many files were received from repo.git.status (tabulate
-        # handles extremely long lists slowly)
-        if len(file_states) > 1000:
-            return f"{Color.RED}Super git status error: TooManyEntries ({len(file_states)})"
-
-        staged_files: set[str] = {item.a_path for item in repo.index.diff("HEAD")}  # type: ignore
-
-        # Initialize a list to store the rows
-        table_data: list[tuple[str, str, str]] = []
-
-        for state, *_, filename in file_states:
-            state_color = (
-                GIT_STATUS_COLORS
-                if filename not in staged_files
-                else GIT_STATUS_COLORS_STAGED
-            ).get(state, Style.DEFAULT)
-
-            verbose_state = GIT_STATUS_VERBOSE.get(state, "")
-            colorized_file = colorize(filename)
-
-            # Append rows to the list
-            table_data.append(
-                (
-                    f"{state_color}{state}",
-                    f"{state_color}{verbose_state}",
-                    colorized_file,
-                )
-            )
-
-        # type: ignore
-        return tabulate(table_data, tablefmt="plain") + "\n"
-
-    except Exception:
+    # Check if the current directory is in a git repository
+    git_rev_parse = subprocess.run(
+        ["git", "rev-parse", "--is-inside-work-tree"], capture_output=True, text=True
+    )
+    if git_rev_parse.returncode != 0:
         return ""
+
+    # Get the git status in short format
+    git_status = subprocess.run(
+        ["git", "status", "--short"], capture_output=True, text=True
+    )
+    file_states = [line.split() for line in git_status.stdout.split("\n") if line]
+
+    # When too many files were received from git status
+    if len(file_states) > 1000:
+        return f"{Color.RED}Super git status error: TooManyEntries ({len(file_states)})"
+
+    # Get the staged files
+    git_diff = subprocess.run(
+        ["git", "diff", "--name-only", "--cached"], capture_output=True, text=True
+    )
+    staged_files = set(git_diff.stdout.splitlines())
+
+    # Initialize a list to store the rows
+    table_data: list[tuple[str, str, str]] = []
+
+    for state, *_, filename in file_states:
+        state_color = (
+            GIT_STATUS_COLORS
+            if filename not in staged_files
+            else GIT_STATUS_COLORS_STAGED
+        ).get(state, Style.DEFAULT)
+
+        verbose_state = GIT_STATUS_VERBOSE.get(state, "")
+
+        # Colorize the relative path
+        colorized_file = colorize(filename)
+
+        # Append rows to the list
+        table_data.append(
+            (
+                f"{state_color}{state}",
+                f"{state_color}{verbose_state}",
+                colorized_file,
+            )
+        )
+
+    # Assuming tabulate is defined elsewhere
+    return tabulate(table_data, tablefmt="plain") + "\n"
 
 
 def super_ls(args: list[str]) -> str:
