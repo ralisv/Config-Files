@@ -23,7 +23,6 @@ pkgs.mkShell {
     (pkgs.python312.withPackages my-python-packages)
   ];
   buildInputs = with pkgs; [
-    python3Packages.gitpython
     python3Packages.tabulate
     python3Packages.wheel
     python3Packages.prompt-toolkit
