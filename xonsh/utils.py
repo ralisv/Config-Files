@@ -3,8 +3,6 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from tabulate import tabulate
-
 from colors import (
     GIT_STATUS_COLORS,
     GIT_STATUS_COLORS_STAGED,
@@ -13,6 +11,7 @@ from colors import (
     Style,
     colorize,
 )
+from tabulate import tabulate
 
 GIT_STATUS_VERBOSE: dict[str, str] = {
     "M": "Modified",
@@ -62,21 +61,20 @@ def super_git_status() -> str:
     if git_status.stdout == "":
         return ""
 
-    file_states = [line.split() for line in git_status.stdout.split("\n") if line]
-
-    # When too many files were received from git status
-    if len(file_states) > 1000:
-        return f"{Color.RED}Super git status error: TooManyEntries ({len(file_states)})"
-
     # Get the staged files
     git_diff = subprocess.run(
         ["git", "diff", "--name-only", "--cached"], capture_output=True, text=True
     )
     staged_files = set(git_diff.stdout.splitlines())
 
-    # Initialize a list to store the rows
-    table_data: list[tuple[str, str, str]] = []
+    file_states = [line.split() for line in git_status.stdout.split("\n") if line]
 
+    # When too many files were received from git status
+    if len(file_states) > 1000:
+        return f"{Color.RED}Super git status error: TooManyEntries ({len(file_states)})"
+
+    # Create the table
+    table_data: list[tuple[str, str, str]] = []
     for state, *_, filename in file_states:
         state_color = (
             GIT_STATUS_COLORS
@@ -89,7 +87,6 @@ def super_git_status() -> str:
 
         verbose_state = GIT_STATUS_VERBOSE.get(state, "")
 
-        # Append rows to the list
         table_data.append(
             (
                 f"{state_color}{state}",
@@ -98,7 +95,6 @@ def super_git_status() -> str:
             )
         )
 
-    # Assuming tabulate is defined elsewhere
     return tabulate(table_data, tablefmt="plain") + "\n"
 
 
@@ -193,8 +189,8 @@ def get_size(path: Path) -> int:
 
     try:
         for dirpath, _, filenames in os.walk(path, followlinks=False):
-            for f in filenames:
-                fp = Path(dirpath) / f
+            for filename in filenames:
+                fp = Path(dirpath) / filename
 
                 if not fp.is_symlink():
                     total += fp.stat().st_size
