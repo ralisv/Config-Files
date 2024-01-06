@@ -100,7 +100,6 @@
       "path": "bash"
     }
   },
-  "window.titleBarStyle": "custom",
   "workbench.colorCustomizations": {
     "terminal.ansiBlue": "#00aaff"
   },
