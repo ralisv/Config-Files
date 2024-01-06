@@ -58,6 +58,7 @@
     nixpkgs-fmt
     zulu8 # Java 8, for Digital executable
     arduino
+    man-pages
 
     # Utility for file type convertions
     texlive.combined.scheme-full
@@ -71,11 +72,11 @@
     pavucontrol
     wayland-utils
     bash-completion
-    man-pages
 
     # Python packages
     python311Packages.gitpython
     python311Packages.tabulate
+    python311Packages.types-tabulate
     python311Packages.jupyter
     python311Packages.jupyter-core
     python311Packages.scipy
@@ -98,6 +99,7 @@
     dev.enable = true;
     man.enable = true;
     nixos.enable = true;
+    doc.enable = true;
   };
 
   boot = {
@@ -180,6 +182,8 @@
     layout = "cz";
     xkbVariant = "";
   };
+
+  services.touchegg.enable = true;
 
   # Enable CUPS to print documents.
   services.printing.enable = true;

@@ -24,6 +24,7 @@ pkgs.mkShell {
   ];
   buildInputs = with pkgs; [
     python3Packages.tabulate
+    python3Packages.types-tabulate
     python3Packages.wheel
     python3Packages.prompt-toolkit
     python3Packages.pygments
