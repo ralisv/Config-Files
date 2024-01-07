@@ -47,6 +47,7 @@
     zip
     timer
     gnome.cheese
+    translate-shell
 
     # Development
     dotnet-sdk_6
@@ -72,6 +73,7 @@
     pavucontrol
     wayland-utils
     bash-completion
+    xdg-utils
 
     # Python packages
     python311Packages.gitpython
