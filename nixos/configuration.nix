@@ -37,7 +37,7 @@
     discord
     bat
     tree
-    micro
+    ne
     joplin-desktop
     libreoffice
     franz
