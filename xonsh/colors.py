@@ -4,7 +4,8 @@ from pathlib import Path
 from stat import S_IXUSR
 from typing import List
 
-LS_COLORS = (Path.home() / "Config-Files" / "ls-colors.txt").open().read()
+LS_COLORS_DIRECTORY = Path(__file__).resolve().parent.parent
+LS_COLORS = (LS_COLORS_DIRECTORY / "ls-colors.txt").open().read()
 """ The contents of the LS_COLORS environment variable """
 
 LS_COLORS_PARSED = dict(
@@ -227,7 +228,7 @@ def get_file_color(path: Path) -> str:
     return f"\033[{color}m"
 
 
-def colorize(filename: str, color: str | None = None) -> str:
+def colorize(filename: str, color: AnsiColorCode | None = None) -> str:
     """
     Returns the given filename enclosed in the color escape sequence
 
@@ -241,10 +242,7 @@ def colorize(filename: str, color: str | None = None) -> str:
     """
 
     # Return the filename enclosed in the color escape sequence
-    # The "\033[0m" sequence at the end resets the color back to the default
-    return (
-        f"{get_file_color(Path(filename)) if color is None else color}{filename}\033[0m"
-    )
+    return f"{get_file_color(Path(filename)) if color is None else color}{filename}{Style.DEFAULT}"
 
 
 class Rainbowizer:

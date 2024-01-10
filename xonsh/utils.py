@@ -38,6 +38,8 @@ def super_git_status() -> str:
     """
     Returns a string containing git status in super colorful format
 
+    The paths of dirty files are relative to the current working directory.
+
     Returns:
         str: git status
     """

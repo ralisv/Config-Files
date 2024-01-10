@@ -7,7 +7,6 @@ from pathlib import Path
 
 # Include the directory where this file is located in the search path
 sys.path.append(str(Path(__file__).resolve().parent))
-sys.path.append(str(Path.home() / ".local" / "lib" / "python3.10" / "site-packages"))
 
 from getpass import getuser
 
@@ -81,7 +80,6 @@ my_aliases = {
     "s": lambda args: super_util(args),
     "sl": "sl -e",
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
-    "trans": "~/Executables/trans -j -d -t czech",
     "uaexpert": lambda args: start_in_new_session(
         f"{os.path.expanduser('~')}/Executables/UaExpert/AppRun", args
     ),
@@ -242,10 +240,9 @@ __xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: XonshPrompt.dye(getuser
 __xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.dye(" λ ")
 __xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.dye(".")
 
-__xonsh__.env["PROMPT"] = (
-    str(Color.PINK)
-    + "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
-)
+__xonsh__.env[
+    "PROMPT"
+] = "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
 
 
 # Colorful manpages if using less as MANPAGER
