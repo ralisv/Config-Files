@@ -23,11 +23,11 @@ pkgs.mkShell {
     (pkgs.python312.withPackages my-python-packages)
   ];
   buildInputs = with pkgs; [
-    python3Packages.tabulate
-    python3Packages.types-tabulate
-    python3Packages.wheel
-    python3Packages.prompt-toolkit
-    python3Packages.pygments
+    python312Packages.tabulate
+    python312Packages.types-tabulate
+    python312Packages.wheel
+    python312Packages.prompt-toolkit
+    python312Packages.pygments
   ];
   shellHook = ''
     python3.12 -m xonsh

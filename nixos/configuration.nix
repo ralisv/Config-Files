@@ -37,7 +37,7 @@
     discord
     bat
     tree
-    ne
+    micro
     joplin-desktop
     libreoffice
     franz
@@ -74,16 +74,16 @@
     wayland-utils
     bash-completion
     xdg-utils
+    nethogs # For application network activity monitoring
 
     # Python packages
-    python311Packages.gitpython
-    python311Packages.tabulate
-    python311Packages.types-tabulate
-    python311Packages.jupyter
-    python311Packages.jupyter-core
-    python311Packages.scipy
-    python311Packages.numpy
-    python311Packages.wheel
+    python312Packages.tabulate
+    python312Packages.types-tabulate
+    python312Packages.jupyter
+    python312Packages.jupyter-core
+    python312Packages.scipy
+    python312Packages.wheel
+    python312Packages.numpy
   ];
 
   xdg.portal.enable = true;
