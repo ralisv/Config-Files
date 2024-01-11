@@ -79,22 +79,20 @@
     # Python packages
     python312Packages.tabulate
     python312Packages.types-tabulate
-    python312Packages.jupyter
-    python312Packages.jupyter-core
-    python312Packages.scipy
     python312Packages.wheel
-    python312Packages.numpy
+    python312Packages.prompt-toolkit
+    python312Packages.pygments
+
+    python311Packages.jupyter
+    python311Packages.jupyter-core
+    python311Packages.scipy
+    python311Packages.numpy
   ];
 
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  services.udev.extraRules = ''
-    # Regular legions
-    SUBSYSTEM=="usb", ATTR{idVendor}=="048d", ATTR{idProduct}=="c965", MODE="0666"
-  '';
 
   documentation = {
     enable = true;
@@ -185,7 +183,8 @@
     xkbVariant = "";
   };
 
-  services.touchegg.enable = true;
+  # For touchpad gestures
+  # services.touchegg.enable = true;
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -209,9 +208,6 @@
   hardware.i2c.enable = true;
   services.illum.enable = true;
   hardware.acpilight.enable = true;
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
 
   users.users.ralis = {
     isNormalUser = true;
