@@ -21,7 +21,11 @@
     xwayland.enable = true;
   };
 
-  hardware.bluetooth.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
 
   hardware.opengl.enable = true;
   hardware.nvidia.modesetting.enable = true;
@@ -29,6 +33,7 @@
   environment.systemPackages = with pkgs; [
     # Useful applications
     brave
+    firefox
     xonsh
     vlc
     alacritty
@@ -48,6 +53,7 @@
     timer
     gnome.cheese
     translate-shell
+    qbittorrent
 
     # Development
     dotnet-sdk_6
@@ -67,14 +73,12 @@
 
     # System utilities
     brightnessctl
-    bluetooth_battery
-    bluez
-    pipewire
     pavucontrol
     wayland-utils
     bash-completion
     xdg-utils
     nethogs # For application network activity monitoring
+    ntfs3g # For NTFS support
 
     # Python packages
     python312Packages.tabulate
@@ -103,6 +107,8 @@
   };
 
   boot = {
+    supportedFilesystems = [ "ntfs" ];
+
     loader = {
       # systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -138,11 +144,6 @@
   };
 
   networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -189,8 +190,6 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  nixpkgs.config.pulseaudio = true;
-
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
@@ -201,7 +200,6 @@
     alsa.support32Bit = true;
     audio.enable = true;
     pulse.enable = true;
-    jack.enable = true;
     wireplumber.enable = true;
   };
 
@@ -212,12 +210,14 @@
   users.users.ralis = {
     isNormalUser = true;
     description = "Vojtech Ralis";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" "jackaudio" "dialout" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "audio" "jackaudio" "dialout" "bluetooth" "lp" ];
   };
 
-  nix.gc.automatic = true;
-  nix.gc.dates = "monthly";
-  nix.gc.options = "--delete-older-than 30d";
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
 
   nix.optimise.automatic = true;
   nix.settings.auto-optimise-store = true;
