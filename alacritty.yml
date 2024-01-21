@@ -11,7 +11,7 @@ window:
   opacity: 0.85
 
   dimensions:
-    columns: 100
+    columns: 80
     lines: 25
 
   position:
@@ -61,7 +61,7 @@ font:
     family: FiraCode Nerd Font Mono
     style: Italic
 
-  size: 11
+  size: 12
 
 
 shell:
