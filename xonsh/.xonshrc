@@ -135,7 +135,7 @@ class XonshPrompt:
     dye prompt in your favourite colors
     """
 
-    rainbowizer = Rainbowizer(1024, 850)
+    rainbowizer = Rainbowizer(512, 425)
 
     dye = rainbowizer.rainbowize
 

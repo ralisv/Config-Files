@@ -228,7 +228,7 @@ def get_file_color(path: Path) -> str:
     return f"\033[{color}m"
 
 
-def colorize(filename: str, color: AnsiColorCode | None = None) -> str:
+def colorize_filename(filename: str, color: AnsiColorCode | None = None) -> str:
     """
     Returns the given filename enclosed in the color escape sequence
 

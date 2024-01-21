@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 from typing import List
 
-from colors import Color, Style, colorize
+from colors import Color, Style, colorize_filename
 from utils import bytes_to_megabytes, get_size, seconds_to_days
 
 TRASH_DIR = Path.home() / ".trash-bin"
@@ -52,14 +52,14 @@ def remove(args: list[str]) -> None:
                 trashed_file = TRASH_DIR / f"{file.name}_{i}"
 
             try:
-                message = f"{Color.GREEN} ✔ {colorize(file.name)}{Style.DEFAULT}"
+                message = f"{Color.GREEN} ✔ {colorize_filename(file.name)}{Style.DEFAULT}"
 
                 # shutil.move works across different file systems, Path.rename does not
                 shutil.move(str(file), str(trashed_file))
                 ok_messages.append(message)
 
             except Exception as e:
-                message = f"{Color.RED} ✘ {colorize(file.name)}{Color.RED}: {e}{Style.DEFAULT}"
+                message = f"{Color.RED} ✘ {colorize_filename(file.name)}{Color.RED}: {e}{Style.DEFAULT}"
                 error_messages.append(message)
 
         if not files:
@@ -120,7 +120,7 @@ def dump(files: List[Path]) -> int:
 
         except Exception as e:
             message = (
-                f"{Color.RED} ✘ {colorize(str(file_to_dump))}{Color.RED}: {e}{Style.DEFAULT}"
+                f"{Color.RED} ✘ {colorize_filename(str(file_to_dump))}{Color.RED}: {e}{Style.DEFAULT}"
             )
             error_messages.append(message)
 
@@ -167,7 +167,7 @@ def ask_whether_to_dump() -> None:
         end="\n\n",
     )
     print(
-        *[colorize(str(file)).replace(str(TRASH_DIR) + "/", "")
+        *[colorize_filename(str(file)).replace(str(TRASH_DIR) + "/", "")
             for file in dumpable],
         sep="\n",
         end="\n\n",

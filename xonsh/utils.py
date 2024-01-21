@@ -3,15 +3,16 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from tabulate import tabulate
+
 from colors import (
     GIT_STATUS_COLORS,
     GIT_STATUS_COLORS_STAGED,
     LS_COLORS,
     Color,
     Style,
-    colorize,
+    colorize_filename,
 )
-from tabulate import tabulate
 
 GIT_STATUS_VERBOSE: dict[str, str] = {
     "M": "Modified",
@@ -93,7 +94,7 @@ def super_git_status() -> str:
             (
                 f"{state_color}{state}",
                 f"{state_color}{verbose_state}",
-                colorize(file_path),
+                colorize_filename(file_path),
             )
         )
 
