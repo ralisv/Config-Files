@@ -39,24 +39,3 @@ if platform.system() == "Linux":
 
         print(f"Creating symlink {destination} -> {source}")
         os.symlink(source, destination)
-
-    def update_nix_configuration():
-        try:
-            if input("Do you wish to update configuration.nix file? ") in ("y", ""):
-                os.system(
-                    f"sudo cp {INSTALL_SCRIPT_DIRECTORY}/nixos/configuration.nix /etc/nixos/configuration.nix"
-                )
-            else:
-                return
-
-            if input("Do you wish to test new nixos configuration? ") in ("y", ""):
-                os.system("sudo nixos-rebuild test")
-
-            if input("Do you wish to switch to new nixos configuration? ") in ("y", ""):
-                os.system("sudo nixos-rebuild test")
-
-        except KeyboardInterrupt:
-            print()
-
-    if os.path.exists("/etc/nixos"):
-        update_nix_configuration()
