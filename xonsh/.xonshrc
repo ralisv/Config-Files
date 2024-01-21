@@ -10,7 +10,7 @@ sys.path.append(str(Path(__file__).resolve().parent))
 
 from getpass import getuser
 
-from colors import LS_COLORS, Color, Rainbowizer, Style, colorize
+from colors import LS_COLORS, Color, Rainbowizer, Style, colorize, get_file_color
 from trash import ask_whether_to_dump, remove
 from utils import start_in_new_session, super_util
 
@@ -19,6 +19,9 @@ __xonsh__ = __xonsh__
 
 __xonsh__.env["PATH"].append(str(Path.home() / ".local" / "bin"))
 __xonsh__.env["PATH"].append(str(Path.home() / ".dotnet" / "tools"))
+
+# Select between readline and prompt_toolkit
+__xonsh__.env["SHELL_TYPE"] = "prompt_toolkit"
 
 
 # Silence the deprecation warning caused by bug inside of prompt-toolkit library
@@ -50,7 +53,6 @@ __xonsh__.env["SUBSEQUENCE_PATH_COMPLETION"] = True
 __xonsh__.env["SUGGEST_COMMANDS"] = True
 __xonsh__.env["SUGGEST_MAX_NUM"] = 20
 __xonsh__.env["TITLE"] = "Xonsh"
-__xonsh__.env["UPDATE_COMPLETIONS_ON_KEYPRESS"] = True
 __xonsh__.env["XONSH_AUTOPAIR"] = True
 __xonsh__.env["XONSH_CACHE_DIR"] = "~"
 __xonsh__.env["XONSH_COLOR_STYLE"] = "paraiso-dark"
@@ -74,7 +76,6 @@ my_aliases = {
     "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' {os.path.expanduser('~')}/aisa",
     "okular": lambda args: start_in_new_session(shutil.which("okular"), args),
     "pip": "python -m pip",
-    "python": "python3.10",
     "R": "R --no-save -q",
     "rm": lambda args: remove(args),
     "s": lambda args: super_util(args),
@@ -90,8 +91,6 @@ aliases.update(my_aliases)
 
 
 # Style the terminal
-
-
 def set_style() -> None:
     """
     Sets the color style of the terminal
