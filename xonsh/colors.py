@@ -240,8 +240,6 @@ def colorize(filename: str, color: AnsiColorCode | None = None) -> str:
     Returns:
         str: The colorized filename
     """
-
-    # Return the filename enclosed in the color escape sequence
     return f"{get_file_color(Path(filename)) if color is None else color}{filename}{Style.DEFAULT}"
 
 
@@ -251,12 +249,14 @@ class Rainbowizer:
 
     Consecutive calls to the rainbowize method will return the same string with each character
     enclosed in a different color escape sequence
+
+    The class also implements iterator that yields AnsiCodes in a cycle indefinitely
     """
 
     DEFAULT_RAINBOW_RESOLUTION = 256
     """ The default number of colors in the rainbow """
 
-    rainbow_colors: List[str]
+    rainbow_colors: List[AnsiColorCode]
     """ A list of colors in the rainbow """
 
     rainbow_index: int
@@ -291,19 +291,17 @@ class Rainbowizer:
             str: The colorized string
         """
         result: List[str] = []
-        for char in string:
-            result.append(
-                f"{self.rainbow_colors[self.rainbow_index % len(self.rainbow_colors)]}{char}"
-            )
-            self.rainbow_index += 1
-        return "".join(result + [Style.DEFAULT])
+        for char, color in zip(string, self):
+            result.append(color.wrap(char))
+
+        return "".join(result)
 
     @staticmethod
     def generate_rainbow_colors(
         resolution: int,
         lightness: float,
         saturation: float,
-    ) -> List[str]:
+    ) -> List[AnsiColorCode]:
         """
         Generates a list of colors in the rainbow
 
@@ -315,11 +313,19 @@ class Rainbowizer:
         Returns:
             List[str]: A list of colors in the rainbow
         """
-        colors: List[str] = []
+        colors: List[AnsiColorCode] = []
         for i in range(resolution):
             hue = i / resolution
 
             r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
-            hex_color = f"\033[38;2;{int(r * 255)};{int(g * 255)};{int(b * 255)}m"
+            hex_color = AnsiColorCode(int(r * 255), int(g * 255), int(b * 255))
             colors.append(hex_color)
         return colors
+
+    def __iter__(self):
+        return self
+
+    def __next__(self) -> AnsiColorCode:
+        next = self.rainbow_colors[self.rainbow_index % len(self.rainbow_colors)]
+        self.rainbow_index += 1
+        return next
