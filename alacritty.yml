@@ -8,7 +8,7 @@ visual_bell:
 
 
 window:
-  opacity: 0.85
+  opacity: 0.88
 
   dimensions:
     columns: 80

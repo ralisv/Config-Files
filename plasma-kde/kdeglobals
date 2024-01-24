@@ -1,0 +1,170 @@
+[$Version]
+update_info=icons_remove_effects.upd:IconsRemoveEffects,style_widgetstyle_default_breeze.upd:StyleWidgetStyleDefaultBreeze,filepicker.upd:filepicker-remove-old-previews-entry,fonts_global.upd:Fonts_Global,fonts_global_toolbar.upd:Fonts_Global_Toolbar,kwin.upd:animation-speed
+
+[ColorEffects:Disabled]
+ChangeSelectionColor=
+Color=56,56,56
+ColorAmount=0
+ColorEffect=0
+ContrastAmount=0
+ContrastEffect=1
+Enable=
+IntensityAmount=0.1
+IntensityEffect=2
+
+[ColorEffects:Inactive]
+ChangeSelectionColor=true
+Color=112,111,110
+ColorAmount=0.025
+ColorEffect=2
+ContrastAmount=0.1
+ContrastEffect=2
+Enable=false
+IntensityAmount=0
+IntensityEffect=0
+
+[Colors:Button]
+BackgroundAlternate=150,50,93
+BackgroundNormal=124,14,115
+DecorationFocus=162,66,84
+DecorationHover=162,66,84
+ForegroundActive=162,66,84
+ForegroundInactive=9,24,51
+ForegroundLink=162,66,84
+ForegroundNegative=255,0,0
+ForegroundNeutral=245,120,0
+ForegroundNormal=0,0,0
+ForegroundPositive=0,0,0
+ForegroundVisited=179,0,170
+
+[Colors:Complementary]
+BackgroundAlternate=0,11,30
+BackgroundNormal=9,24,51
+DecorationFocus=162,66,84
+DecorationHover=162,66,84
+ForegroundActive=162,66,84
+ForegroundInactive=19,62,124
+ForegroundLink=162,66,84
+ForegroundNegative=255,0,0
+ForegroundNeutral=255,255,0
+ForegroundNormal=10,189,198
+ForegroundPositive=0,255,0
+ForegroundVisited=113,28,145
+
+[Colors:Selection]
+BackgroundAlternate=115,48,61
+BackgroundNormal=115,48,61
+DecorationFocus=162,66,84
+DecorationHover=162,66,84
+ForegroundActive=162,66,84
+ForegroundInactive=255,255,255
+ForegroundLink=162,66,84
+ForegroundNegative=255,0,0
+ForegroundNeutral=245,120,0
+ForegroundNormal=255,255,255
+ForegroundPositive=0,0,0
+ForegroundVisited=179,0,170
+
+[Colors:Tooltip]
+BackgroundAlternate=0,11,30
+BackgroundNormal=9,24,51
+DecorationFocus=162,66,84
+DecorationHover=162,66,84
+ForegroundActive=162,66,84
+ForegroundInactive=19,62,124
+ForegroundLink=162,66,84
+ForegroundNegative=255,0,0
+ForegroundNeutral=245,120,0
+ForegroundNormal=234,0,217
+ForegroundPositive=0,0,0
+ForegroundVisited=179,0,170
+
+[Colors:View]
+BackgroundAlternate=0,11,30
+BackgroundNormal=8,8,8
+DecorationFocus=162,66,84
+DecorationHover=162,66,84
+ForegroundActive=162,66,84
+ForegroundInactive=19,62,124
+ForegroundLink=162,66,84
+ForegroundNegative=255,0,0
+ForegroundNeutral=245,120,0
+ForegroundNormal=255,0,127
+ForegroundPositive=0,0,0
+ForegroundVisited=179,0,170
+
+[Colors:Window]
+BackgroundAlternate=9,24,51
+BackgroundNormal=0,11,30
+DecorationFocus=162,66,84
+DecorationHover=162,66,84
+ForegroundActive=162,66,84
+ForegroundInactive=19,62,124
+ForegroundLink=162,66,84
+ForegroundNegative=255,0,0
+ForegroundNeutral=245,120,0
+ForegroundNormal=255,44,188
+ForegroundPositive=0,0,0
+ForegroundVisited=179,0,170
+
+[DirSelect Dialog]
+DirSelectDialog Size=868,596
+History Items[$e]=file:$HOME/Pictures/Wallpapers,file:$HOME/Documents/linux-x64,file:$HOME/Pictures/Wallpapers,file:$HOME/Pictures/Screenshots
+
+[General]
+AccentColor=162,66,84
+BrowserApplication=brave-browser.desktop
+ColorSchemeHash=09ecacb876acb5c31b1868b216dd210ea46e490a
+LastUsedCustomAccentColor=233,61,88
+TerminalApplication=alacritty
+TerminalService=Alacritty.desktop
+XftHintStyle=hintslight
+XftSubPixel=none
+accentColorFromWallpaper=true
+fixed=FiraCode Nerd Font Mono Ret,10,-1,5,53,0,0,0,0,0,Regular
+font=FiraCode Nerd Font Ret,10,-1,5,53,0,0,0,0,0,Regular
+menuFont=FiraCode Nerd Font Ret,10,-1,5,53,0,0,0,0,0,Regular
+smallestReadableFont=FiraCode Nerd Font Ret,8,-1,5,53,0,0,0,0,0,Regular
+toolBarFont=FiraCode Nerd Font Ret,10,-1,5,53,0,0,0,0,0,Regular
+
+[Icons]
+Theme=candy-icons
+
+[KDE]
+LookAndFeelPackage=Iridescent-kvantum
+widgetStyle=Breeze
+
+[KFileDialog Settings]
+Allow Expansion=false
+Automatically select filename extension=true
+Breadcrumb Navigation=true
+Decoration position=0
+LocationCombo Completionmode=5
+PathCombo Completionmode=5
+Show Bookmarks=false
+Show Full Path=false
+Show Inline Previews=true
+Show Preview=false
+Show Speedbar=true
+Show hidden files=false
+Sort by=Date
+Sort directories first=true
+Sort hidden files last=false
+Sort reversed=true
+Speedbar Width=138
+View Style=Simple
+
+[KShortcutsDialog Settings]
+Dialog Size=600,480
+
+[PreviewSettings]
+MaximumRemoteSize=0
+
+[WM]
+activeBackground=0,11,30
+activeBlend=0,11,30
+activeFont=FiraCode Nerd Font Ret,10,-1,5,53,0,0,0,0,0,Regular
+activeForeground=234,0,217
+inactiveBackground=0,11,30
+inactiveBlend=0,11,30
+inactiveForeground=179,0,170

@@ -10,7 +10,7 @@ sys.path.append(str(Path(__file__).resolve().parent))
 
 from getpass import getuser
 
-from colors import LS_COLORS, Color, Rainbowizer, Style, colorize, get_file_color
+from colors import LS_COLORS, Color, Rainbowizer, Style, colorize_filename
 from trash import ask_whether_to_dump, remove
 from utils import start_in_new_session, super_util
 
@@ -135,7 +135,7 @@ class XonshPrompt:
     dye prompt in your favourite colors
     """
 
-    rainbowizer = Rainbowizer(512, 425)
+    rainbowizer = Rainbowizer(512, 425, lightness=0.55)
 
     dye = rainbowizer.rainbowize
 
@@ -200,7 +200,7 @@ class XonshPrompt:
             str: The current working directory colored based on LS_COLORS
         """
         return XonshPrompt.enclose_in_brackets(
-            f"{colorize(str(Path.cwd())).replace(str(Path.home()), '~')}"
+            f"{colorize_filename(str(Path.cwd())).replace(str(Path.home()), '~')}"
         )
 
     @staticmethod
