@@ -19,6 +19,7 @@
     light.enable = true;
     git.enable = true;
     xwayland.enable = true;
+    hyprland.enable = true;
   };
 
   hardware.bluetooth = {
@@ -67,6 +68,9 @@
     zulu8 # Java 8, for Digital executable
     arduino
     man-pages
+    ghc
+    cargo
+    rustc
 
     # Utility for file type convertions
     texlive.combined.scheme-full
@@ -80,6 +84,7 @@
     xdg-utils
     nethogs # For application network activity monitoring
     ntfs3g # For NTFS support
+    networkmanagerapplet
 
     # Python packages
     python312Packages.tabulate

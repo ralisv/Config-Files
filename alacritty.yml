@@ -8,7 +8,7 @@ visual_bell:
 
 
 window:
-  opacity: 0.88
+  opacity: 0.94
 
   dimensions:
     columns: 80
@@ -61,7 +61,7 @@ font:
     family: FiraCode Nerd Font Mono
     style: Italic
 
-  size: 12
+  size: 10
 
 
 shell:
