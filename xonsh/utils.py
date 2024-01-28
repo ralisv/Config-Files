@@ -3,6 +3,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from tabulate import tabulate
+
 from colors import (
     GIT_STATUS_COLORS,
     GIT_STATUS_COLORS_STAGED,
@@ -11,7 +13,6 @@ from colors import (
     Style,
     colorize_filename,
 )
-from tabulate import tabulate
 
 GIT_STATUS_VERBOSE: dict[str, str] = {
     "M": "Modified",
@@ -119,7 +120,7 @@ def super_ls(args: list[str]) -> str:
                     "-C",
                     *args,
                 ],  # type: ignore
-                env={"LS_COLORS": LS_COLORS},
+                env=os.environ | {"LS_COLORS": LS_COLORS},
                 stderr=subprocess.PIPE,
             )
             .decode()
