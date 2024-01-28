@@ -2,9 +2,9 @@
   :monitor 0
   :geometry (geometry
     :x "0%"
-    :y "10px"
+    :y "8px"
     :width "95%"
-    :height "30px"
+    :height "3%"
     :anchor "top center"
   )
   :stacking "fg"
@@ -12,19 +12,36 @@
   :reserve (struts :distance "40px" :side "top")
   :windowtype "dock"
   :wm-ignore false
-  time
+  (bar)
 )
 
-(defwidget greeter [?text name]
+
+(defwidget bar []
   (box
-    :orientation "horizontal"
-    :halign "center"
-    text
-    (button :text "Click me!" :onclick "notify-send 'Hello, ${name}!'")
+    (label :text battery-capacity)
+    (label :text battery-left)
+    (label :text current-time)
   )
 )
 
-(defpoll time
-  :interval "1s"
+
+(defpoll current-time
+  :interval "15s"
   :initial "00:00"
-  `date +%H:%M`)
+  :halign "right"
+  `date +%H:%M`
+)
+
+(defpoll battery-capacity
+  :interval "60s"
+  :initial "-"
+  `acpi -b | awk '{print $4}' | sed 's/,//g'`
+)
+
+(defpoll battery-left
+  :interval "60s"
+  :initial "-"
+  `acpi -b | awk '{print $5}' | sed 's/,//g'`
+)
+
+

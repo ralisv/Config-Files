@@ -88,6 +88,7 @@
     nethogs # For application network activity monitoring
     ntfs3g # For NTFS support
     networkmanagerapplet
+    acpi
 
     # Python packages
     python312Packages.tabulate

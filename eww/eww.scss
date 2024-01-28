@@ -1,0 +1,17 @@
+* {
+    all: unset; //Unsets everything so you can style everything from scratch
+}
+
+.bar {
+    background: linear-gradient(to right, #121212, #181818, #050505, #181818, #121212);;
+    opacity: 0.7;
+    color: #ffb6b6;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.time {
+    font-size: 20px;
+    opacity: 1;
+    font-family: Arial, sans-serif;
+}
