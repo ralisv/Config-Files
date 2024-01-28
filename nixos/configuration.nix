@@ -13,9 +13,10 @@
           sha256 = "1i6dwmddjh0cbrp6zgafdrji202alkz52rjisx0hs1bgjbrbwxdj";
         })
       )
+      <home-manager/nixos>
     ];
 
-  programs = {
+  programs = { #
     light.enable = true;
     git.enable = true;
     xwayland.enable = true;
@@ -56,6 +57,8 @@
     translate-shell
     qbittorrent
     gparted  # For imaging USB drives
+    dolphin
+    polkit-kde-agent
 
     # Development
     dotnet-sdk_6
@@ -97,7 +100,18 @@
     python311Packages.jupyter-core
     python311Packages.scipy
     python311Packages.numpy
+
+    # Useful things for Hyprland
+    hyprpaper
+    avizo # Notifications
+    wluma # Brightness auto-adjust
+    grimblast # Screenshot tool
+    gimp # Image editing
   ];
+
+  home-manager.users.ralis = {
+    home.stateVersion = "23.11";
+  };
 
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
@@ -156,8 +170,7 @@
 
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
-    # As of now, it's causing problems, not worth the optimization
-    NIXOS_OZONE_WL = "0";
+    NIXOS_OZONE_WL = "1";
   };
 
   # Set your time zone.
