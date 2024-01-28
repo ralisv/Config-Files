@@ -22,7 +22,7 @@
   "editor.defaultColorDecorators": true,
   "editor.fontFamily": "FiraCode Nerd Font Mono",
   "editor.fontLigatures": true,
-  "editor.fontSize": 15,
+  "editor.fontSize": 14,
   "editor.formatOnPaste": true,
   "editor.guides.bracketPairs": true,
   "editor.hover.delay": 200,
@@ -36,7 +36,7 @@
   "editor.lineHeight": 1.5,
   "editor.minimap.enabled": false,
   "editor.scrollbar.vertical": "hidden",
-  "editor.scrollBeyondLastLine": false,
+  "editor.scrollBeyondLastLine": true,
   "editor.smoothScrolling": true,
   "editor.tabSize": 4,
   "git.openRepositoryInParentFolders": "always",
@@ -108,5 +108,7 @@
   },
   "workbench.colorTheme": "Neon City",
   "workbench.iconTheme": "material-icon-theme",
-  "editor.codeLensFontFamily": "Firacode Nerd Font Ret"
+  "editor.codeLensFontFamily": "Firacode Nerd Font Ret",
+  "window.zoomLevel": -1,
+  "window.titleBarStyle": "custom"
 }

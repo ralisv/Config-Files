@@ -131,6 +131,10 @@ class Color:
     WHITE = AnsiColorCode(255, 255, 255)
     YELLOW = AnsiColorCode(255, 255, 0)
 
+    def __iter__(self):
+        """Iterates through all known colors"""
+        return self.__class__.__dict__.values().__iter__()
+
 
 GIT_STATUS_COLORS = {
     "??": Color.YELLOW,

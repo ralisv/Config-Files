@@ -65,7 +65,7 @@ my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
     "c": "cd",
     "cat": "bat --pager=never",
-    "code": "env -u WAYLAND_DISPLAY code",  # because vs-code doesn't work well with wayland, make sure that XWayland or X11 server is running
+    "code": "code",  # because vs-code doesn't work well with wayland, make sure that XWayland or X11 server is running
     "d": "cd",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
     "du": "du -h",

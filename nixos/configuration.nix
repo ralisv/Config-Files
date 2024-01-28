@@ -37,7 +37,7 @@
     brave
     firefox
     xonsh
-    vlc
+    vlc mpv  # Video players
     alacritty
     pinta
     flameshot
@@ -102,11 +102,12 @@
     python311Packages.numpy
 
     # Useful things for Hyprland
-    hyprpaper
-    avizo # Notifications
-    wluma # Brightness auto-adjust
-    grimblast # Screenshot tool
-    gimp # Image editing
+    hyprpaper     # Wallpaper manager
+    avizo         # Notifications
+    wluma         # Brightness auto-adjust
+    grimblast     # Screenshot tool
+    gimp          # Image editing
+    eww-wayland   # Widgets
   ];
 
   home-manager.users.ralis = {
