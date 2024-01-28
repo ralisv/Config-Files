@@ -89,6 +89,7 @@
     ntfs3g # For NTFS support
     networkmanagerapplet
     acpi
+    wlsunset # For screen temperature adjustment
 
     # Python packages
     python312Packages.tabulate
@@ -236,7 +237,7 @@
 
   nix.gc = {
     automatic = true;
-    dates = "weekly";
+    dates = "quarterly";
     options = "--delete-older-than 30d";
   };
 
