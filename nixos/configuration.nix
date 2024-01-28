@@ -102,12 +102,12 @@
     python311Packages.numpy
 
     # Useful things for Hyprland
-    hyprpaper     # Wallpaper manager
-    avizo         # Notifications
-    wluma         # Brightness auto-adjust
-    grimblast     # Screenshot tool
-    gimp          # Image editing
-    eww-wayland   # Widgets
+    hyprpaper         # Wallpaper manager
+    mako libnotify    # Notifications
+    wluma             # Brightness auto-adjust
+    grimblast         # Screenshot tool
+    gimp              # Image editing
+    eww-wayland       # Widgets
   ];
 
   home-manager.users.ralis = {

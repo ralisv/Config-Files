@@ -1,0 +1,30 @@
+(defwindow bar
+  :monitor 0
+  :geometry (geometry
+    :x "0%"
+    :y "10px"
+    :width "95%"
+    :height "30px"
+    :anchor "top center"
+  )
+  :stacking "fg"
+  :exclusive true
+  :reserve (struts :distance "40px" :side "top")
+  :windowtype "dock"
+  :wm-ignore false
+  time
+)
+
+(defwidget greeter [?text name]
+  (box
+    :orientation "horizontal"
+    :halign "center"
+    text
+    (button :text "Click me!" :onclick "notify-send 'Hello, ${name}!'")
+  )
+)
+
+(defpoll time
+  :interval "1s"
+  :initial "00:00"
+  `date +%H:%M`)

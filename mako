@@ -4,13 +4,13 @@ background-color=#2e3440
 width=300
 height=110
 border-size=2
-border-color=#88c0d0
+border-color=#ff008c
 border-radius=15
 icons=0
 max-icon-size=64
 default-timeout=5000
 ignore-timeout=1
-font=monospace 14
+font=monospace 12
 
 [urgency=low]
 border-color=#cccccc
