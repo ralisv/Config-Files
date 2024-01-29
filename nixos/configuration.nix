@@ -110,6 +110,7 @@
     grimblast         # Screenshot tool
     gimp              # Image editing
     eww-wayland       # Widgets
+    wlogout           # Logout menu
   ];
 
   home-manager.users.ralis = {
