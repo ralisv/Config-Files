@@ -2,9 +2,9 @@
   :monitor 0
   :geometry (geometry
     :x "0%"
-    :y "8px"
-    :width "95%"
-    :height "3%"
+    :y "5px"
+    :width "97.5%"
+    :height "2.5%"
     :anchor "top center"
   )
   :stacking "fg"
@@ -19,23 +19,29 @@
 (defwidget bar []
   (box
     (label :text battery-info)
+    (label :text storage-info)
     (label :text current-time)
   )
 )
 
 
 (defpoll current-time
-  :interval "15s"
+  :interval "10s"
   :initial "00:00"
   :halign "right"
-  `date +%H:%M`
+  `date "+%a %d.%m. %H:%M"`
 )
 
 
 (defpoll battery-info
-  :interval "15s"
+  :interval "30s"
   :initial "-"
   "scripts/battery.sh"
 )
 
 
+(defpoll storage-info
+  :interval "300s"
+  :initial "-"
+  "scripts/storage.sh"
+)
