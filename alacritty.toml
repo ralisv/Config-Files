@@ -26,7 +26,7 @@ history = 10000
 multiplier = 1
 
 [shell]
-args = ["-c", "nix develop path:./Config-Files/nixos --quiet"]
+args = ["-c", "nix develop path:./Config-Files/shell/nix --quiet"]
 program = "bash"
 
 [window]
