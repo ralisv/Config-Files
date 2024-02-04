@@ -16,7 +16,8 @@
       <home-manager/nixos>
     ];
 
-  programs = { #
+  programs = {
+    #
     light.enable = true;
     git.enable = true;
     xwayland.enable = true;
@@ -28,6 +29,27 @@
     powerOnBoot = true;
   };
 
+  services.power-profiles-daemon.enable = false;
+  services.tlp = {
+    enable = true;
+    settings = {
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+
+      CPU_MIN_PERF_ON_AC = 0;
+      CPU_MAX_PERF_ON_AC = 100;
+      CPU_MIN_PERF_ON_BAT = 0;
+      CPU_MAX_PERF_ON_BAT = 40;
+
+      #Optional helps save long term battery health
+      START_CHARGE_THRESH_BAT0 = 70; # 70 and bellow it starts to charge
+      STOP_CHARGE_THRESH_BAT0 = 85; # 80 and above it stops charging
+
+    };
+  };
 
   hardware.opengl.enable = true;
   hardware.nvidia.modesetting.enable = true;
@@ -37,7 +59,8 @@
     brave
     firefox
     xonsh
-    vlc mpv  # Video players
+    vlc
+    mpv # Video players
     alacritty
     pinta
     flameshot
@@ -56,7 +79,7 @@
     gnome.cheese
     translate-shell
     qbittorrent
-    gparted  # For imaging USB drives
+    gparted # For imaging USB drives
     dolphin
     polkit-kde-agent
 
@@ -104,13 +127,14 @@
     python311Packages.numpy
 
     # Useful things for Hyprland
-    hyprpaper         # Wallpaper manager
-    mako libnotify    # Notifications
-    wluma             # Brightness auto-adjust
-    grimblast         # Screenshot tool
-    gimp              # Image editing
-    eww-wayland       # Widgets
-    wlogout           # Logout menu
+    hyprpaper # Wallpaper manager
+    mako
+    libnotify # Notifications
+    wluma # Brightness auto-adjust
+    grimblast # Screenshot tool
+    gimp # Image editing
+    eww-wayland # Widgets
+    wlogout # Logout menu
   ];
 
   home-manager.users.ralis = {
