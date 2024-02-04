@@ -18,8 +18,7 @@
 
 (defwidget bar []
   (box
-    (label :text battery-capacity)
-    (label :text battery-left)
+    (label :text battery-info)
     (label :text current-time)
   )
 )
@@ -32,16 +31,11 @@
   `date +%H:%M`
 )
 
-(defpoll battery-capacity
-  :interval "60s"
-  :initial "-"
-  `acpi -b | awk '{print $4}' | sed 's/,//g'`
-)
 
-(defpoll battery-left
-  :interval "60s"
+(defpoll battery-info
+  :interval "15s"
   :initial "-"
-  `acpi -b | awk '{print $5}' | sed 's/,//g'`
+  "scripts/battery.sh"
 )
 
 
