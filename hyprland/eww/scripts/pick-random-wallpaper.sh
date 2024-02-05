@@ -1,0 +1,1 @@
+../../scripts/pick-random-wallpaper.sh

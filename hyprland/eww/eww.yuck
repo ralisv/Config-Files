@@ -4,7 +4,7 @@
     :x "0%"
     :y "5px"
     :width "97.5%"
-    :height "2.5%"
+    :height "3%"
     :anchor "top center"
   )
   :focusable false
@@ -27,6 +27,7 @@
     :text sound-settings)
     (label
     :text current-time)
+    (wallpaper-updater)
   )
 )
 
@@ -59,16 +60,16 @@
 `wpctl get-volume @DEFAULT_AUDIO_SINK@`)
 
 
-(defwidget notify []
-  (overlay
+(defwidget wallpaper-updater []
+  (overlay :orientation "horizontal"
+    :halign "center"
     (image
-      :image-width "28"
-      :image-height "28"
-    :path "icons/alarm-clock.svg")
+      :image-width "23"
+      :image-height "23"
+      :path "icons/picture.svg")
     (button
-      :tooltip "Notify"
-      :width "2%"
-      :height "2%"
-    :on-click "notify-send 'Hello World!'")
+      :width "23"
+      :height "23"
+      :onclick "scripts/pick-random-wallpaper.sh")
   )
 )
