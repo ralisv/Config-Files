@@ -7,6 +7,7 @@
     :height "2.5%"
     :anchor "top center"
   )
+  :focusable false
   :stacking "fg"
   :exclusive true
   :reserve (struts :distance "40px" :side "top")
@@ -18,9 +19,14 @@
 
 (defwidget bar []
   (box
-    (label :text battery-info)
-    (label :text storage-info)
-    (label :text current-time)
+    (label
+    :text battery-info)
+    (label
+    :text storage-info)
+    (label
+    :text sound-settings)
+    (label
+    :text current-time)
   )
 )
 
@@ -29,7 +35,7 @@
   :interval "10s"
   :initial "00:00"
   :halign "right"
-  `date "+%a %d.%m. %H:%M"`
+  `date "+%a %_d.%_m. %k:%M"`
 )
 
 
@@ -44,4 +50,25 @@
   :interval "300s"
   :initial "-"
   "scripts/storage.sh"
+)
+
+
+(defpoll sound-settings
+  :interval "60m"
+  :initial "-"
+`wpctl get-volume @DEFAULT_AUDIO_SINK@`)
+
+
+(defwidget notify []
+  (overlay
+    (image
+      :image-width "28"
+      :image-height "28"
+    :path "icons/alarm-clock.svg")
+    (button
+      :tooltip "Notify"
+      :width "2%"
+      :height "2%"
+    :on-click "notify-send 'Hello World!'")
+  )
 )

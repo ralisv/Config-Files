@@ -3,15 +3,12 @@
 }
 
 .bar {
-    background: linear-gradient(to right, #121212, #181818, #050505, #181818, #121212);;
-    opacity: 0.7;
+    background: linear-gradient(to right, #121212, #181818, #101010, #181818, #121212);
+    opacity: 0.8;
     color: #ffb6b6;
     padding: 5px;
     border-radius: 5px;
-}
-
-.time {
-    font-size: 20px;
-    opacity: 1;
-    font-family: Arial, sans-serif;
+    border-color: #080808;
+    border-width: 4px;
+    border-style: groove;
 }
