@@ -74,7 +74,7 @@
     python311Packages.numpy
 
     # Useful things for Hyprland
-    hyprpaper # Wallpaper manager
+    hyprpaper swww # Wallpaper manager
     mako
     libnotify # Notifications
     wluma # Brightness auto-adjust

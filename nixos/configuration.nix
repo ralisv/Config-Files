@@ -18,7 +18,6 @@
     ];
 
   programs = {
-    #
     light.enable = true;
     git.enable = true;
     xwayland.enable = true;
@@ -70,27 +69,6 @@
     man.enable = true;
     nixos.enable = true;
     doc.enable = true;
-  };
-
-  boot = {
-    supportedFilesystems = [ "ntfs" ];
-
-    loader = {
-      # systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-      grub = {
-        enable = true;
-        device = "nodev";
-        useOSProber = true;
-        darkmatter-theme = {
-          enable = true;
-          style = "nixos";
-          icon = "color";
-          resolution = "1440p";
-        };
-        efiSupport = true;
-      };
-    };
   };
 
   fonts = {
@@ -190,5 +168,26 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  system.stateVersion = "23.05";
+  boot = {
+    supportedFilesystems = [ "ntfs" ];
+
+    loader = {
+      # systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+      grub = {
+        enable = true;
+        device = "nodev";
+        useOSProber = true;
+        darkmatter-theme = {
+          enable = true;
+          style = "nixos";
+          icon = "color";
+          resolution = "1440p";
+        };
+        efiSupport = true;
+      };
+    };
+  };
+
+  system.stateVersion = "24.05";
 }

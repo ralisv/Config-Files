@@ -109,6 +109,6 @@
   "workbench.colorTheme": "Neon City",
   "workbench.iconTheme": "material-icon-theme",
   "editor.codeLensFontFamily": "Firacode Nerd Font Ret",
-  "window.zoomLevel": -1,
+  "window.zoomLevel": -2,
   "window.titleBarStyle": "custom"
 }
