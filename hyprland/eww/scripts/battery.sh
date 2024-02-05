@@ -14,7 +14,7 @@ energy_full=$(cat "$bat_path/energy_full")
 prepend_zero_if_single_digit() {
     local number="$1"
     if [ "$number" -ge 0 ] && [ "$number" -le 9 ]; then
-        echo "00$number"
+        echo "0$number"
     else
         echo "$number"
     fi
