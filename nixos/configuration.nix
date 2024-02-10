@@ -3,19 +3,17 @@
 {
   security.sudo.wheelNeedsPassword = false;
 
-  imports =
-    [
-      # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      (
-        let rev = "main"; in import (builtins.fetchTarball {
-          url = "https://gitlab.com/VandalByte/darkmatter-grub-theme/-/archive/${rev}/darkmatter-grub-theme-${rev}.tar.gz";
-          sha256 = "1i6dwmddjh0cbrp6zgafdrji202alkz52rjisx0hs1bgjbrbwxdj";
-        })
-      )
-      <home-manager/nixos>
-      ./packages.nix
-    ];
+  imports = [
+    ./hardware-configuration.nix
+    (
+      let rev = "main"; in import (builtins.fetchTarball {
+        url = "https://gitlab.com/VandalByte/darkmatter-grub-theme/-/archive/${rev}/darkmatter-grub-theme-${rev}.tar.gz";
+        sha256 = "1i6dwmddjh0cbrp6zgafdrji202alkz52rjisx0hs1bgjbrbwxdj";
+      })
+    )
+    <home-manager/nixos>
+    ./packages.nix
+  ];
 
   programs = {
     light.enable = true;
@@ -24,38 +22,62 @@
     hyprland.enable = true;
   };
 
+  services = {
+    power-profiles-daemon.enable = false;
+
+    tlp = {
+      enable = true;
+      settings = {
+        CPU_SCALING_GOVERNOR_ON_AC = "performance";
+        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+
+        CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+        CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+
+        CPU_MIN_PERF_ON_AC = 0;
+        CPU_MAX_PERF_ON_AC = 100;
+        CPU_MIN_PERF_ON_BAT = 0;
+        CPU_MAX_PERF_ON_BAT = 40;
+
+        START_CHARGE_THRESH_BAT0 = 70; # 70 and bellow it starts to charge
+        STOP_CHARGE_THRESH_BAT0 = 85; # 80 and above it stops charging
+      };
+    };
+
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      audio.enable = true;
+      pulse.enable = true;
+      wireplumber.enable = true;
+    };
+
+    illum.enable = true;
+
+    xserver = {
+      enable = true;
+      displayManager.sddm = {
+        enable = true;
+        theme = "chili";
+      };
+    };
+  };
+
+  environment.etc."xdg/gtk-2.0/gtkrc".text = ''
+    gtk-theme-name = "tokyo-night-gtk_full"
+  '';
+
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
-  };
-
-  services.power-profiles-daemon.enable = false;
-  services.tlp = {
-    enable = true;
-    settings = {
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-
-      CPU_MIN_PERF_ON_AC = 0;
-      CPU_MAX_PERF_ON_AC = 100;
-      CPU_MIN_PERF_ON_BAT = 0;
-      CPU_MAX_PERF_ON_BAT = 40;
-
-      #Optional helps save long term battery health
-      START_CHARGE_THRESH_BAT0 = 70; # 70 and bellow it starts to charge
-      STOP_CHARGE_THRESH_BAT0 = 85; # 80 and above it stops charging
-
-    };
   };
 
   hardware.opengl.enable = true;
   hardware.nvidia.modesetting.enable = true;
 
   home-manager.users.ralis = {
-    home.stateVersion = "23.11";
+    home.stateVersion = "24.05";
   };
 
   xdg.portal.enable = true;
@@ -115,39 +137,12 @@
     LC_TIME = "cs_CZ.UTF-8";
   };
 
-  # Enable the KDE Plasma Desktop Environment.
-  services.xserver = {
-    enable = true;
-    displayManager.sddm = {
-      enable = true;
-      # theme = "Magna-SDDM";
-    };
-    desktopManager.plasma5.enable = true;
-    layout = "cz";
-    xkbVariant = "";
-  };
-
-  # For touchpad gestures
-  # services.touchegg.enable = true;
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    audio.enable = true;
-    pulse.enable = true;
-    wireplumber.enable = true;
-  };
 
   hardware.i2c.enable = true;
-  services.illum.enable = true;
   hardware.acpilight.enable = true;
 
   users.users.ralis = {

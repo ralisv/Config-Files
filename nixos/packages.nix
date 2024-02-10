@@ -12,6 +12,7 @@
     pinta
     flameshot
     discord
+    webcord-vencord
     bat
     tree
     micro
@@ -28,7 +29,6 @@
     qbittorrent
     gparted # For imaging USB drives
     dolphin
-    polkit-kde-agent
 
     # Development
     dotnet-sdk_6
@@ -60,6 +60,9 @@
     networkmanagerapplet
     acpi
     wlsunset # For screen temperature adjustment
+    btop
+    stacer # System monitoring
+    home-manager # For managing some dotfiles
 
     # Python packages
     python312Packages.tabulate
@@ -74,7 +77,8 @@
     python311Packages.numpy
 
     # Useful things for Hyprland
-    hyprpaper swww # Wallpaper manager
+    hyprpaper
+    swww # Wallpaper manager
     mako
     libnotify # Notifications
     wluma # Brightness auto-adjust
@@ -82,5 +86,14 @@
     gimp # Image editing
     eww-wayland # Widgets
     wlogout # Logout menu
+    tokyo-night-gtk
+    webcord-vencord # Discord
+
+    # SDDM themes
+    sddm-chili-theme
+    where-is-my-sddm-theme
+    catppuccin-sddm-corners
+
+    dwm
   ];
 }
