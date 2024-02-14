@@ -98,7 +98,7 @@
     "xonsh": {
       "args": [
         "-c",
-        "nix develop path:/home/ralis/Config-Files/nixos --command xonsh"
+        "nix develop path:/home/ralis/Config-Files/shell/nix --command xonsh"
       ],
       "path": "bash"
     }

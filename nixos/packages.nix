@@ -29,6 +29,7 @@
     qbittorrent
     gparted # For imaging USB drives
     dolphin
+    eza
 
     # Development
     dotnet-sdk_6
@@ -93,7 +94,5 @@
     sddm-chili-theme
     where-is-my-sddm-theme
     catppuccin-sddm-corners
-
-    dwm
   ];
 }
