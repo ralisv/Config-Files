@@ -1,11 +1,11 @@
 // Place your key bindings in this file to override the defaultsauto[]
 [
     {
-        "key": "ctrl+y",
+        "key": "ctrl+z",
         "command": "redo"
     },
     {
-        "key": "ctrl+z",
+        "key": "ctrl+y",
         "command": "undo"
     },
     {
