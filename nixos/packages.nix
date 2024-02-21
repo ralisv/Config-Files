@@ -30,6 +30,7 @@
     gparted # For imaging USB drives
     dolphin
     eza
+    okular
 
     # Development
     dotnet-sdk_6
@@ -45,6 +46,8 @@
     ghc
     cargo
     rustc
+    docker
+    docker-compose
 
     # Utility for file type convertions
     texlive.combined.scheme-full
@@ -89,6 +92,8 @@
     wlogout # Logout menu
     tokyo-night-gtk
     webcord-vencord # Discord
+    libsForQt5.polkit-kde-agent
+
 
     # SDDM themes
     sddm-chili-theme

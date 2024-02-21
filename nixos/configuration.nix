@@ -2,6 +2,7 @@
 
 {
   security.sudo.wheelNeedsPassword = false;
+  security.polkit.enable = true;
 
   imports = [
     ./hardware-configuration.nix
@@ -15,6 +16,16 @@
     ./packages.nix
   ];
 
+  networking.wireless.networks.eduroam = {
+    auth = ''
+      key_mgmt=WPA-EAP
+      eap=PEAP
+      phase2="auth=MSCHAPV2"
+      identity="524771@muni.cz"
+      password="disBos4buC"
+    '';
+  };
+
   programs = {
     light.enable = true;
     git.enable = true;
@@ -24,6 +35,7 @@
 
   services = {
     power-profiles-daemon.enable = false;
+    upower.enable = true;
 
     tlp = {
       enable = true;
@@ -59,8 +71,8 @@
       enable = true;
       displayManager.sddm = {
         enable = true;
-        theme = "chili";
       };
+      desktopManager.plasma5.enable = true;
     };
   };
 
@@ -148,7 +160,7 @@
   users.users.ralis = {
     isNormalUser = true;
     description = "Vojtech Ralis";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" "jackaudio" "dialout" "bluetooth" "lp" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "audio" "jackaudio" "dialout" "bluetooth" "lp" "docker" ];
   };
 
   nix.gc = {
@@ -182,6 +194,12 @@
         efiSupport = true;
       };
     };
+  };
+
+  virtualisation.docker.enable = true;
+  virtualisation.docker.rootless = {
+    enable = true;
+    setSocketVariable = true;
   };
 
   system.stateVersion = "24.05";
