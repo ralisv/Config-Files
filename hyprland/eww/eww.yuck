@@ -56,29 +56,25 @@
 
 (defpoll current-time
   :interval "10s"
-  :initial "00:00"
+  :initial "..."
   :halign "right"
   `date "+%a %_d.%_m. %k:%M"`
 )
 
 
-(defpoll battery-info
-  :interval "30s"
-  :initial "-"
-  "scripts/battery.sh"
-)
+(defvar battery-info "...")
 
 
 (defpoll storage-info
   :interval "300s"
-  :initial "-"
+  :initial "..."
   "scripts/storage.sh"
 )
 
 
 (defpoll sound-settings
   :interval "60m"
-  :initial "-"
+  :initial "..."
 `wpctl get-volume @DEFAULT_AUDIO_SINK@`)
 
 
