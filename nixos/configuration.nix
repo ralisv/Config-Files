@@ -31,6 +31,7 @@
     git.enable = true;
     xwayland.enable = true;
     hyprland.enable = true;
+    npm.enable = true;
   };
 
   services = {

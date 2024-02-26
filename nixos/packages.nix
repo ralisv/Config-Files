@@ -8,12 +8,12 @@
     xonsh
     vlc
     mpv # Video players
-    alacritty
-    pinta
-    flameshot
+    alacritty # Terminal emulator
+    pinta # Image editor
+    flameshot # Screenshot tool
     discord
-    webcord-vencord
-    bat
+    webcord-vencord # Discord frontend for Wayland
+    bat # Better cat
     tree
     micro
     joplin-desktop
@@ -23,14 +23,15 @@
     teams-for-linux
     unzip
     zip
-    timer
-    gnome.cheese
-    translate-shell
-    qbittorrent
+    timer # CLI timer
+    gnome.cheese # Webcam
+    translate-shell # CLI translator
+    qbittorrent # Torrent client
     gparted # For imaging USB drives
-    dolphin
-    eza
-    okular
+    dolphin # File manager
+    eza # Better ls
+    okular # PDF viewer
+    caprine-bin # Facebook Messenger
 
     # Development
     dotnet-sdk_6
