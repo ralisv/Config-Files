@@ -46,6 +46,7 @@ __xonsh__.env["COMPLETIONS_CONFIRM"] = False
 __xonsh__.env["COMPLETIONS_MENU_ROWS"] = 2
 __xonsh__.env["DYNAMIC_CWD_WIDTH"] = "50%"
 __xonsh__.env["DYNAMIC_CWD_ELISION_CHAR"] = "..."
+__xonsh__.env["ENABLE_ASYNC_PROMPT"] = True
 __xonsh__.env["FOREIGN_ALIASES_SUPPRESS_SKIP_MESSAGE"] = 1
 __xonsh__.env["INDENT"] = "   "
 __xonsh__.env["MULTILINE_PROMPT"] = " "
@@ -239,9 +240,9 @@ __xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: XonshPrompt.dye(getuser
 __xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.dye(" λ ")
 __xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.dye(".")
 
-__xonsh__.env[
-    "PROMPT"
-] = "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
+__xonsh__.env["PROMPT"] = (
+    "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
+)
 
 
 # Colorful manpages if using less as MANPAGER
