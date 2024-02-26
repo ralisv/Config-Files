@@ -86,4 +86,3 @@ upower --monitor | while read -r line; do
     fi
     
 done
-
