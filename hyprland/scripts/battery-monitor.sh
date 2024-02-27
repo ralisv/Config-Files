@@ -8,6 +8,8 @@ ENERGY_NOW_FILE="$BAT_DIR/energy_now"
 ENERGY_FULL_FILE="$BAT_DIR/energy_full"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+LOG_FILE="$SCRIPT_DIR/battery-monitor.log"
+touch $LOG_FILE
 
 FIRST_WARNING_TIME=10
 SECOND_WARNING_TIME=100
@@ -32,7 +34,7 @@ second_warning=false;
 
 status_report=""
 
-upower --monitor | while read -r line; do
+upower --monitor 2> >(tee -a "$LOG_FILE" >&2) | while read -r line; do
     # Update battery stats
     new_status=$(cat "$STATUS_FILE")
     capacity=$(cat "$CAPACITY_FILE")
@@ -40,14 +42,14 @@ upower --monitor | while read -r line; do
     energy_now=$(cat "$ENERGY_NOW_FILE")
     
     # Update eww widget
-    if [ $new_status = "Charging" ]; then
-        remaining_time_hours=$((($energy_full - $energy_now) / power_now))
-        remaining_time_minutes=$((($energy_full - $energy_now) % power_now * 60 / power_now))
+    if [ $new_status = "Charging" ] && [ $power_now != "0" ]; then
+        remaining_time_hours=$((($energy_full - $energy_now) / $power_now))
+        remaining_time_minutes=$((($energy_full - $energy_now) % $power_now * 60 / $power_now))
         remaining_time_formatted=$(prepend_zero_if_single_digit $remaining_time_hours):$(prepend_zero_if_single_digit $remaining_time_minutes)
         
         status_report="$new_status, $remaining_time_formatted to fully charged, $capacity%"
         
-        elif [ $new_status = "Discharging" ]; then
+        elif [ $new_status = "Discharging" ]  && [ $power_now != "0" ]; then
         remaining_time_hours=$(($energy_now / $power_now))
         remaining_time_minutes=$((($energy_now % $power_now) * 60 / $power_now))
         remaining_time_formatted=$(prepend_zero_if_single_digit $remaining_time_hours):$(prepend_zero_if_single_digit $remaining_time_minutes)
