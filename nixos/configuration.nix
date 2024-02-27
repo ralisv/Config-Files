@@ -69,6 +69,7 @@
     illum.enable = true;
 
     xserver = {
+      videoDrivers = [ "nvidia" ];
       enable = true;
       displayManager.sddm = {
         enable = true;
@@ -86,8 +87,25 @@
     powerOnBoot = true;
   };
 
-  hardware.opengl.enable = true;
-  hardware.nvidia.modesetting.enable = true;
+  hardware.opengl = {
+  	enable = true;
+  	driSupport = true;
+    driSupport32Bit = true;
+  };
+
+  hardware.nvidia = {
+    package = config.boot.kernelPackages.nvidiaPackages.stable; 
+    modesetting.enable = true;
+    nvidiaSettings = true;
+    prime = {
+  	  amdgpuBusId = "PCI:5:0:0";
+  	  nvidiaBusId = "PCI:1:0:0";
+  	  offload = {
+	    enable = true;
+        enableOffloadCmd = true;
+	  };
+	};
+  };
 
   home-manager.users.ralis = {
     home.stateVersion = "24.05";
