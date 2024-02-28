@@ -23,5 +23,9 @@
     {
         "key": "ctrl+shift+q",
         "command": "workbench.action.closeSidebar"
+    },
+    {
+        "key": "ctrl+r",
+        "command": "python.execInTerminal"
     }
 ]

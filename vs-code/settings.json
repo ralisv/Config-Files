@@ -85,7 +85,7 @@
   "python.analysis.inlayHints.callArgumentTypes": true,
   "python.analysis.inlayHints.functionReturnTypes": true,
   "python.analysis.inlayHints.variableTypes": true,
-  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.typeCheckingMode": "standard",
   "python.defaultInterpreterPath": "/run/current-system/sw/bin/python",
   "terminal.integrated": {
     "fontFamily": "FiraCode Nerd Font Ret",
