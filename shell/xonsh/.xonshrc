@@ -66,6 +66,7 @@ my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
     "c": "cd",
     "cat": "bat --pager=never",
+    "cd": "z",
     "code": "code",  # because vs-code doesn't work well with wayland, make sure that XWayland or X11 server is running
     "d": "cd",
     "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
@@ -262,3 +263,6 @@ __xonsh__.env["MANROFFOPT"] = "-c"
 
 # Ask about dumping trash
 ask_whether_to_dump()
+
+# Setup zoxide
+execx($(zoxide init xonsh), 'exec', __xonsh__.ctx, filename='zoxide')

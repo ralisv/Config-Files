@@ -32,6 +32,7 @@
     eza # Better ls
     okular # PDF viewer
     caprine-bin # Facebook Messenger
+    zoxide # cd improved
 
     # Development
     dotnet-sdk_6
@@ -89,7 +90,7 @@
     wluma # Brightness auto-adjust
     grimblast # Screenshot tool
     gimp # Image editing
-    eww-wayland # Widgets
+    eww # Widgets
     wlogout # Logout menu
     tokyo-night-gtk
     webcord-vencord # Discord
