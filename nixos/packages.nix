@@ -67,6 +67,7 @@
     acpi
     wlsunset # For screen temperature adjustment
     btop
+    htop
     stacer # System monitoring
     home-manager # For managing some dotfiles
 
