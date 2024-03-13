@@ -6,7 +6,8 @@ import sys
 from pathlib import Path
 
 # Include the directory where this file is located in the search path
-sys.path.append(str(Path(__file__).resolve().parent))
+SCRIPT_DIRECTORY = Path(__file__).resolve().parent
+sys.path.append(str(SCRIPT_DIRECTORY))
 
 from getpass import getuser
 
@@ -80,7 +81,7 @@ my_aliases = {
     "pip": "python -m pip",
     "R": "R --no-save -q",
     "rm": lambda args: remove(args),
-    "s": lambda args: super_util(args),
+    "s": f"{SCRIPT_DIRECTORY / 'nice-git.py'}; eza --icons=always",
     "sl": "sl -e",
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
     "uaexpert": lambda args: start_in_new_session(
@@ -100,11 +101,48 @@ def set_style() -> None:
     from xonsh.tools import register_custom_style
 
     mystyle = {
-        "Literal.String.Single": "#55ff55",
-        "Literal.String.Double": "#55ff55",
+        "Literal.String.Single": "#11ff11",
+        "Literal.String.Double": "#11ff11",
         "Token.Operator": "#fffd00",
         "Token.PTK.CompletionMenu": "#000000",
         "Token.Literal.Number.Integer": "#44ffff",
+        "Token.Literal.Number.Float": "#44ffff",
+        
+        # Foreground colors
+        "Token.Color.BLACK": "#333333",
+        "Token.Color.RED": "#ff1111",
+        "Token.Color.GREEN": "#11ff11",
+        "Token.Color.YELLOW": "#ffff11",
+        "Token.Color.BLUE": "#1111ff",
+        "Token.Color.MAGENTA": "#ff11ff",
+        "Token.Color.CYAN": "#11ccff",
+        "Token.Color.WHITE": "#eeeeee",
+        "Token.Color.INTENSE_BLACK": "#222222",
+        "Token.Color.INTENSE_RED": "#ff0000",
+        "Token.Color.INTENSE_GREEN": "#00ff00",
+        "Token.Color.INTENSE_YELLOW": "#ffff00",
+        "Token.Color.INTENSE_BLUE": "#0000ff",
+        "Token.Color.INTENSE_MAGENTA": "#ff00ff",
+        "Token.Color.INTENSE_CYAN": "#00ddff",
+        "Token.Color.INTENSE_WHITE": "#ffffff",
+        
+        # Background colors
+        "Token.Color.BACKGROUND_BLACK": "#111111",
+        "Token.Color.BACKGROUND_RED": "#ff1111",
+        "Token.Color.BACKGROUND_GREEN": "#11ff11",
+        "Token.Color.BACKGROUND_YELLOW": "#ffff11",
+        "Token.Color.BACKGROUND_BLUE": "#1111ff",
+        "Token.Color.BACKGROUND_MAGENTA": "#ff11ff",
+        "Token.Color.BACKGROUND_CYAN": "#11ccff",
+        "Token.Color.BACKGROUND_WHITE": "#eeeeee",
+        "Token.Color.BACKGROUND_INTENSE_BLACK": "#000000",
+        "Token.Color.BACKGROUND_INTENSE_RED": "#ff0000",
+        "Token.Color.BACKGROUND_INTENSE_GREEN": "#00ff00",
+        "Token.Color.BACKGROUND_INTENSE_YELLOW": "#ffff00",
+        "Token.Color.BACKGROUND_INTENSE_BLUE": "#0000ff",
+        "Token.Color.BACKGROUND_INTENSE_MAGENTA": "#ff00ff",
+        "Token.Color.BACKGROUND_INTENSE_CYAN": "#00ddff",
+        "Token.Color.BACKGROUND_INTENSE_WHITE": "#ffffff",
     }
 
     register_custom_style("mystyle", mystyle, base="paraiso-dark")
@@ -156,6 +194,13 @@ class XonshPrompt:
 
     @staticmethod
     def git_info() -> str:
+        try:
+            return XonshPrompt.git_info_raw()
+        except Exception:
+            return ""
+
+    @staticmethod
+    def git_info_raw() -> str:
         """s
         Returns the information about the git repository in the current directory
 
