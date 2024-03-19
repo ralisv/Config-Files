@@ -96,7 +96,11 @@
     tokyo-night-gtk
     webcord-vencord # Discord
     libsForQt5.polkit-kde-agent
-
+    hyprlock # Lock screen
+    hypridle # Idle manager
+    nwg-look # GTK theme
+    hyprpicker # Color picker
+    wl-clipboard # Clipboard manager
 
     # SDDM themes
     sddm-chili-theme

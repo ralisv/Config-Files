@@ -176,6 +176,9 @@
   hardware.i2c.enable = true;
   hardware.acpilight.enable = true;
 
+  # Necessary to make swaylock work
+  security.pam.services.swaylock = {};
+
   users.users.ralis = {
     isNormalUser = true;
     description = "Vojtech Ralis";
