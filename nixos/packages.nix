@@ -31,8 +31,11 @@
     dolphin # File manager
     eza # Better ls
     okular # PDF viewer
+    evince # Alternative PDF viewer
     caprine-bin # Facebook Messenger
     zoxide # cd improved
+    (nnn.override { withNerdIcons = true; }) # CLI file manager
+    cinnamon.nemo # Alternative file manager
 
     # Development
     dotnet-sdk_6
