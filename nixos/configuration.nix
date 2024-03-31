@@ -30,7 +30,10 @@
     light.enable = true;
     git.enable = true;
     xwayland.enable = true;
-    hyprland.enable = true;
+    hyprland = {
+    	enable = true;
+    	xwayland.enable = true;
+    };
     npm.enable = true;
   };
 
@@ -225,4 +228,14 @@
   };
 
   system.stateVersion = "24.05";
+
+  xdg.mime.defaultApplications = {
+    "text/plain" = "micro.desktop";
+    "application/pdf" = "org.kde.okular.desktop";
+    "text/html" = "brave-browser.desktop";
+    "application/x-shellscript" = "code.desktop";
+    "image/png" = "org.kde.okular.desktop";
+    "audio/mpeg" = "org.kde.okular.desktop";
+    "application/octet-stream" = "micro";
+  };
 }
