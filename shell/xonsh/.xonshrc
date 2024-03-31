@@ -88,7 +88,6 @@ my_aliases = {
         f"{os.path.expanduser('~')}/Executables/UaExpert/AppRun", args
     ),
     "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
-    "vlc": lambda args: start_in_new_session(shutil.which("vlc"), args),
 }
 aliases.update(my_aliases)
 
@@ -283,7 +282,7 @@ __xonsh__.env["PROMPT_FIELDS"]["last-exit-code-info"] = XonshPrompt.last_exit_co
 __xonsh__.env["PROMPT_FIELDS"]["path-info"] = XonshPrompt.path_info
 __xonsh__.env["PROMPT_FIELDS"]["reset"] = XonshPrompt.reset
 __xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: XonshPrompt.dye(getuser())
-__xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.dye(" λ ")
+__xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.dye("\n λ ")
 __xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.dye(".")
 
 __xonsh__.env["PROMPT"] = (
