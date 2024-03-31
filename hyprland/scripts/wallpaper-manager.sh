@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-sleep 1  # Wait a while to have a good look at the hyprland logo
 swww init
 
 # Get the directory of the current script
