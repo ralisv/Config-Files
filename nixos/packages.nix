@@ -19,7 +19,7 @@
     gparted # For imaging USB drives
     brightnessctl
     pavucontrol
-    wayland-util
+    wayland-utils
     bash-completion
     xdg-utils
     nethogs # For application network activity monitoring
