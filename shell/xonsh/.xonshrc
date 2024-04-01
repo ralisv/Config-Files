@@ -63,21 +63,15 @@ __xonsh__.env["XONSH_HISTORY_MATCH_ANYWHERE"] = True
 __xonsh__.env["BAT_STYLE"] = "grid,changes,header-filename,header-filesize,numbers"
 
 my_aliases = {
-    "bat": "bat --theme=DarkNeon",
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
-    "c": "cd",
-    "cat": "bat --pager=never",
-    "cd": "z",
-    "code": "code",  # because vs-code doesn't work well with wayland, make sure that XWayland or X11 server is running
-    "d": "cd",
-    "drive": "mountpoint -q ~/Drive || setsid rclone mount Google-Drive:Drive ~/Drive",
+    "cat": "bat --pager=never --theme=DarkNeon",
+    "cdi": "zi", # Interactive zoxide (fzf)
+    "cd": "z", # Use zoxide instead of cd
     "du": "du -h",
     "fc-list": "fc-list --format='%{family}'\n",
     "grep": "grep --color=auto",
-    "light": "sudo light -S",
     "ls": "ls --color=auto",
     "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' {os.path.expanduser('~')}/aisa",
-    "okular": lambda args: start_in_new_session(shutil.which("okular"), args),
     "pip": "python -m pip",
     "R": "R --no-save -q",
     "rm": lambda args: remove(args),
@@ -88,6 +82,12 @@ my_aliases = {
         f"{os.path.expanduser('~')}/Executables/UaExpert/AppRun", args
     ),
     "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
+    
+    # Setsid by default for some commands
+    "totem": "setsid totem",
+    "vlc": "setsid vlc",
+    "okular": "setsid okular",
+    "evince": "setsid evince",
 }
 aliases.update(my_aliases)
 
