@@ -2,40 +2,62 @@
 
 {
   environment.systemPackages = with pkgs; [
-    # Useful applications
+    # Web browsers
     brave
-    firefox
-    xonsh
+    librewolf-wayland
+
+    # Mediaplayers
     vlc
-    mpv # Video players
+    gnome.totem
+
+    # Essential tools, utilities and applications
     alacritty # Terminal emulator
+    libreoffice
+    coreutils
+    unzip
+    zip
+    gparted # For imaging USB drives
+    brightnessctl
+    pavucontrol
+    wayland-util
+    bash-completion
+    xdg-utils
+    nethogs # For application network activity monitoring
+    ntfs3g # For NTFS support
+    networkmanagerapplet
+    acpi
+    wlsunset # For screen temperature adjustment
+    btop
+    htop
+    stacer # System monitoring
+    home-manager # For managing some dotfiles
+
+    # Useful applications
     pinta # Image editor
     flameshot # Screenshot tool
     discord
     webcord-vencord # Discord frontend for Wayland
-    bat # Better cat
-    tree
-    micro
-    joplin-desktop
-    libreoffice
-    franz
-    coreutils
-    teams-for-linux
-    unzip
-    zip
-    timer # CLI timer
-    gnome.cheese # Webcam
-    translate-shell # CLI translator
     qbittorrent # Torrent client
-    gparted # For imaging USB drives
-    dolphin # File manager
-    eza # Better ls
+    teams-for-linux
     okular # PDF viewer
     evince # Alternative PDF viewer
     caprine-bin # Facebook Messenger
+    gnome.cheese # Webcam
+
+    # Shell utilities
+    xonsh
     zoxide # cd improved
-    (nnn.override { withNerdIcons = true; }) # CLI file manager
-    cinnamon.nemo # Alternative file manager
+    timer # CLI timer
+    bat # Better cat
+    tree
+    micro
+    eza # Better ls
+    translate-shell # CLI translator
+
+    # File managers
+    dolphin
+    (nnn.override { withNerdIcons = true; })
+    cinnamon.nemo
 
     # Development
     dotnet-sdk_6
@@ -58,22 +80,6 @@
     texlive.combined.scheme-full
     pandoc
 
-    # System utilities
-    brightnessctl
-    pavucontrol
-    wayland-utils
-    bash-completion
-    xdg-utils
-    nethogs # For application network activity monitoring
-    ntfs3g # For NTFS support
-    networkmanagerapplet
-    acpi
-    wlsunset # For screen temperature adjustment
-    btop
-    htop
-    stacer # System monitoring
-    home-manager # For managing some dotfiles
-
     # Python packages
     python312Packages.tabulate
     python312Packages.types-tabulate
@@ -87,27 +93,19 @@
     python311Packages.numpy
 
     # Useful things for Hyprland
-    hyprpaper
     swww # Wallpaper manager
-    mako
+    mako # Notifications daemon
     libnotify # Notifications
     wluma # Brightness auto-adjust
     grimblast # Screenshot tool
     gimp # Image editing
     eww # Widgets
     wlogout # Logout menu
-    tokyo-night-gtk
-    webcord-vencord # Discord
     libsForQt5.polkit-kde-agent
     hyprlock # Lock screen
     hypridle # Idle manager
     nwg-look # GTK theme
     hyprpicker # Color picker
     wl-clipboard # Clipboard manager
-
-    # SDDM themes
-    sddm-chili-theme
-    where-is-my-sddm-theme
-    catppuccin-sddm-corners
   ];
 }
