@@ -7,11 +7,11 @@ let
   my-python-packages = p: with p; [
     (buildPythonPackage rec {
       pname = "xonsh";
-      version = "0.14.3";
+      version = "0.15.1";
 
       src = fetchPypi {
         inherit pname version;
-        sha256 = "sha256-pG1mE/jef1vrpsWyIuw3Z0BLZ4tLcH9Sq2ajJ+qbOWQ=";
+        sha256 = "sha256-NKYzK3qG9v6Gp0JzWFxZqx88iSkv2lqer+VMkmusRxA=";
       };
 
       doCheck = false;
