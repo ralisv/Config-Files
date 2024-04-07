@@ -31,8 +31,8 @@
     git.enable = true;
     xwayland.enable = true;
     hyprland = {
-    	enable = true;
-    	xwayland.enable = true;
+      enable = true;
+      xwayland.enable = true;
     };
     npm.enable = true;
   };
@@ -76,14 +76,12 @@
       enable = true;
       displayManager.sddm = {
         enable = true;
+        wayland.enable = true;
+        autoNumlock = true;
       };
       desktopManager.plasma5.enable = true;
     };
   };
-
-  environment.etc."xdg/gtk-2.0/gtkrc".text = ''
-    gtk-theme-name = "tokyo-night-gtk_full"
-  '';
 
   hardware.bluetooth = {
     enable = true;
@@ -91,23 +89,23 @@
   };
 
   hardware.opengl = {
-  	enable = true;
-  	driSupport = true;
+    enable = true;
+    driSupport = true;
     driSupport32Bit = true;
   };
 
   hardware.nvidia = {
-    package = config.boot.kernelPackages.nvidiaPackages.stable; 
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
     modesetting.enable = true;
     nvidiaSettings = true;
     prime = {
-  	  amdgpuBusId = "PCI:5:0:0";
-  	  nvidiaBusId = "PCI:1:0:0";
-  	  offload = {
-	    enable = true;
+      amdgpuBusId = "PCI:5:0:0";
+      nvidiaBusId = "PCI:1:0:0";
+      offload = {
+        enable = true;
         enableOffloadCmd = true;
-	  };
-	};
+      };
+    };
   };
 
   home-manager.users.ralis = {
@@ -180,7 +178,7 @@
   hardware.acpilight.enable = true;
 
   # Necessary to make swaylock work
-  security.pam.services.swaylock = {};
+  security.pam.services.swaylock = { };
 
   users.users.ralis = {
     isNormalUser = true;
