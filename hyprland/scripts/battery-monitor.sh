@@ -78,11 +78,11 @@ upower --monitor 2> >(tee -a "$LOG_FILE" >&2) | while read -r line; do
     # Send notifications if battery is low, and only once
     if [ $status = "Discharging" ]; then
         if [ $capacity -le 10 ] && [ $second_warning = false ]; then
-            notify-send -t $SECOND_WARNING_TIME "Battery critically low" "Battery is at $capacity%"
+            notify-send -u critical -t $SECOND_WARNING_TIME "Battery critically low" "Battery is at $capacity%"
             first_warning=true;
             second_warning=true;
             elif [ $capacity -le 20 ] && [ $first_warning = false ]; then
-            notify-send -t $FIRST_WARNING_TIME "Battery low" "Battery is at $capacity%"
+            notify-send -u normal -t $FIRST_WARNING_TIME "Battery low" "Battery is at $capacity%"
             first_warning=true;
         fi
     fi
