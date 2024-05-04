@@ -30,7 +30,7 @@ program = "bash"
 
 [window]
 dynamic_title = true
-opacity = 0.80
+opacity = 0.7
 title = "Alacritty"
 
 [window.class]
