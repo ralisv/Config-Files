@@ -73,12 +73,7 @@
 
     xserver = {
       videoDrivers = [ "nvidia" ];
-      enable = true;
-      displayManager.sddm = {
-        enable = true;
-        wayland.enable = true;
-        autoNumlock = true;
-      };
+      enable = false;
       desktopManager.plasma5.enable = true;
     };
   };
