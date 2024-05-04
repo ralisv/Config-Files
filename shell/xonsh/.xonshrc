@@ -230,10 +230,6 @@ class XonshPrompt:
         # Determine the color based on the state of the repository
         color = Color.SALMON if is_dirty else Color.LIME_GREEN
 
-        # Replace 'master' with 'main' if applicable
-        if branch == "master":
-            branch = "main"
-
         # Assuming XonshPrompt.enclose_in_brackets and Color are defined elsewhere
         return XonshPrompt.enclose_in_brackets(f"{color}{branch}")
 
