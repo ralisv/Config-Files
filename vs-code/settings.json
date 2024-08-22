@@ -9,6 +9,24 @@
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true
   },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[java]": {
+    "editor.formatOnSave": true,
+  },
+  "editor.quickSuggestions": {
+  "strings": "on",
+  },
   "editor.acceptSuggestionOnCommitCharacter": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
@@ -39,11 +57,10 @@
   "editor.tabSize": 4,
   "git.openRepositoryInParentFolders": "always",
   "github.copilot.enable": {
-    "*": true,
-    "plaintext": false,
-    "markdown": false,
-    "scminput": false,
-    "csharp": true
+    "*": false,
+    "markdown": true,
+    "csharp": true,
+    "python": true
   },
   "isort.args": [
     "--multi-line=3",
@@ -113,4 +130,8 @@
   "terminal.integrated.letterSpacing": 0,
   "editor.fontLigatures": true,
   "workbench.iconTheme": "material-icon-theme",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "github.copilot.editor.enableAutoCompletions": true,
 }
