@@ -8,7 +8,6 @@
 
     # Mediaplayers
     vlc
-    gnome.totem
 
     # Essential tools, utilities and applications
     alacritty # Terminal emulator
@@ -64,20 +63,14 @@
     python312Full
     libgccjit
     cmake
-    godot_4
     vscode-fhs
     nixpkgs-fmt
-    zulu8 # Java 8, for Digital executable
-    arduino
     man-pages
     ghc
-    cargo
-    rustc
     docker
     docker-compose
 
     # Utility for file type convertions
-    texlive.combined.scheme-full
     pandoc
 
     # Python packages
