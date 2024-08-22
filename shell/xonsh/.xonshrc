@@ -64,7 +64,7 @@ __xonsh__.env["BAT_STYLE"] = "grid,changes,header-filename,header-filesize,numbe
 
 my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
-    "cat": "bat --pager=never --theme=DarkNeon",
+    "cat": "bat --pager=never --theme=DarkNeon --style=header,changes",
     "cdi": "zi", # Interactive zoxide (fzf)
     "cd": "z", # Use zoxide instead of cd
     "du": "du -h",
@@ -302,7 +302,7 @@ __xonsh__.env["MANPAGER"] = "sh -c 'col -bx | bat -l man --plain'"
 __xonsh__.env["MANROFFOPT"] = "-c"
 
 # Ask about dumping trash
-ask_whether_to_dump()
+# ask_whether_to_dump()
 
 # Setup zoxide
 execx($(zoxide init xonsh), 'exec', __xonsh__.ctx, filename='zoxide')
