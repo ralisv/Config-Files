@@ -35,6 +35,7 @@
       xwayland.enable = true;
     };
     npm.enable = true;
+    steam.enable = true;
   };
 
   services = {
@@ -85,7 +86,6 @@
 
   hardware.opengl = {
     enable = true;
-    driSupport = true;
     driSupport32Bit = true;
   };
 
@@ -165,7 +165,6 @@
   };
 
   # Enable sound with pipewire.
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
