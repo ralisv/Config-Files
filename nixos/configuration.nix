@@ -146,7 +146,18 @@
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
+    QT_QPA_PLATFORMTHEME = "qt5ct";
   };
+
+  nixpkgs.config.qt5 = {
+    enable = true;
+    platformTheme = "qt5ct";
+    style = {
+      package = pkgs.utterly-nord-plasma;
+      name = "Utterly Nord Plasma";
+    };
+  };
+
 
   # Set your time zone.
   time.timeZone = "Europe/Prague";
