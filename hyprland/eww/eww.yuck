@@ -1,44 +1,10 @@
-(defwindow bar
-  :monitor 0
-  :geometry (geometry
-    :x "0%"
-    :y "5px"
-    :width "97.5%"
-    :height "3%"
-    :anchor "top center"
-  )
-  :focusable false
-  :stacking "fg"
-  :exclusive true
-  :reserve (struts :distance "40px" :side "top")
-  :windowtype "dock"
-  :wm-ignore false
-  (bar)
-)
-
-
-(defwidget bar []
-  (box
-    (label
-    :text battery-info)
-    (label
-    :text storage-info)
-    (label
-    :text sound-settings)
-    (label
-    :text current-time)
-    (wallpaper-updater)
-  )
-)
-
-
 (defwidget info []
   (box
     :orientation "vertical"
     (label
       :class "text"
       :truncate-left true
-    :text battery-info)
+    :text current-time)
     (label
       :class "text"
       :truncate-left true
@@ -50,7 +16,11 @@
     (label
       :class "text"
       :truncate-left true
-    :text current-time)
+    :text battery-info)
+    (label
+      :class "text"
+      :truncate-left true
+    :text vpn-status)
   )
 )
 
@@ -61,9 +31,12 @@
   `date "+%a %_d.%_m. %k:%M"`
 )
 
-
-(defvar battery-info "...")
-
+(defpoll battery-info 
+  :interval "30s"
+  :initial "..."
+  :halign "right"
+  "../scripts/get-battery-status.sh"
+)
 
 (defpoll storage-info
   :interval "300s"
@@ -71,12 +44,16 @@
   "scripts/storage.sh"
 )
 
-
 (defpoll sound-settings
   :interval "60m"
   :initial "..."
-`wpctl get-volume @DEFAULT_AUDIO_SINK@`)
+  `wpctl get-volume @DEFAULT_AUDIO_SINK@`)
 
+(defpoll vpn-status
+  :interval "30s"
+  :initial "..."
+  "scripts/get-vpn-status.sh"
+)
 
 (defwidget wallpaper-updater []
   (overlay :orientation "horizontal"
@@ -92,7 +69,6 @@
   )
 )
 
-
 (defwindow info
   :monitor 0
   :geometry (geometry
@@ -106,20 +82,4 @@
   :stacking "bg"
   :exclusive false
   (info)
-)
-
-
-(defwindow calendar
-  :monitor 0
-  :geometry (geometry
-    :x "1%"
-    :y "6%"
-    :width "20%"
-    :height "20%"
-    :anchor "bottom right"
-  )
-  :focusable false
-  :stacking "bg"
-  :exclusive false
-  (calendar)
 )
