@@ -24,6 +24,9 @@
   "[java]": {
     "editor.formatOnSave": true,
   },
+  "[nix]": {
+    "editor.formatOnSave": true,
+  },
   "editor.quickSuggestions": {
   "strings": "on",
   },
@@ -57,10 +60,9 @@
   "editor.tabSize": 4,
   "git.openRepositoryInParentFolders": "always",
   "github.copilot.enable": {
-    "*": false,
-    "markdown": true,
-    "csharp": true,
-    "python": true
+    "*": true,
+    "plaintext": false,
+    "scminput": false
   },
   "isort.args": [
     "--multi-line=3",
@@ -102,11 +104,6 @@
   "python.analysis.inlayHints.variableTypes": true,
   "python.analysis.typeCheckingMode": "standard",
   "python.defaultInterpreterPath": "/run/current-system/sw/bin/python",
-  "terminal.integrated": {
-    "fontFamily": "FiraCode Nerd Font Ret",
-    "fontSize": 16,
-    "lineHeight": 1.2
-  },
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.defaultProfile.linux": "xonsh",
   "terminal.integrated.profiles.linux": {
@@ -115,6 +112,9 @@
         "-c",
         "nix develop path:/home/ralis/Config-Files/shell/nix --command xonsh"
       ],
+      "font": "FiraCode Nerd Font Ret",
+      "fontSize": 16,
+      "lineHeight": 1.2,
       "path": "bash"
     }
   },
@@ -130,6 +130,7 @@
   "terminal.integrated.letterSpacing": 0,
   "editor.fontLigatures": true,
   "workbench.iconTheme": "material-icon-theme",
+  "workbench.externalBrowser": "brave",
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
