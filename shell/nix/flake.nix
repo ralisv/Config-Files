@@ -1,5 +1,5 @@
 {
-  description = "my project description";
+  description = "Base shell environment";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
