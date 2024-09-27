@@ -77,6 +77,11 @@
       enable = false;
       desktopManager.plasma5.enable = true;
     };
+
+    mullvad-vpn = {
+      enable = true;
+      package = pkgs.mullvad-vpn;
+    };
   };
 
   hardware.bluetooth = {
@@ -84,12 +89,13 @@
     powerOnBoot = true;
   };
 
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport32Bit = true;
+    enable32Bit = true;
   };
 
   hardware.nvidia = {
+    open = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
     modesetting.enable = true;
     nvidiaSettings = true;
@@ -101,10 +107,6 @@
         enableOffloadCmd = true;
       };
     };
-  };
-
-  home-manager.users.ralis = {
-    home.stateVersion = "24.05";
   };
 
   xdg.portal.enable = true;
