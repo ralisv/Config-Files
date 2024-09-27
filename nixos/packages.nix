@@ -4,10 +4,15 @@
   environment.systemPackages = with pkgs; [
     # Web browsers
     brave
-    librewolf-wayland
+    mullvad-browser
 
     # Mediaplayers
     vlc
+    freetube
+
+    # PDF readers
+    okular
+    evince
 
     # Essential tools, utilities and applications
     alacritty # Terminal emulator
@@ -25,26 +30,17 @@
     ntfs3g # For NTFS support
     networkmanagerapplet
     acpi
-    wlsunset # For screen temperature adjustment
     btop
     htop
     stacer # System monitoring
-    home-manager # For managing some dotfiles
 
     # Useful applications
-    pinta # Image editor
-    flameshot # Screenshot tool
     discord
     webcord-vencord # Discord frontend for Wayland
-    qbittorrent # Torrent client
     teams-for-linux
-    okular # PDF viewer
-    evince # Alternative PDF viewer
-    caprine-bin # Facebook Messenger
-    gnome.cheese # Webcam
+    cheese # Webcam
 
     # Shell utilities
-    xonsh
     zoxide # cd improved
     timer # CLI timer
     bat # Better cat
@@ -56,7 +52,7 @@
     # File managers
     dolphin
     (nnn.override { withNerdIcons = true; })
-    cinnamon.nemo
+    nemo
 
     # Development
     dotnet-sdk_6
@@ -69,9 +65,6 @@
     ghc
     docker
     docker-compose
-
-    # Utility for file type convertions
-    pandoc
 
     # Python packages
     python312Packages.tabulate
@@ -89,16 +82,20 @@
     swww # Wallpaper manager
     mako # Notifications daemon
     libnotify # Notifications
-    wluma # Brightness auto-adjust
     grimblast # Screenshot tool
     gimp # Image editing
     eww # Widgets
     wlogout # Logout menu
-    libsForQt5.polkit-kde-agent
     hyprlock # Lock screen
     hypridle # Idle manager
-    nwg-look # GTK theme
     hyprpicker # Color picker
     wl-clipboard # Clipboard manager
+
+    # Theming
+    libsForQt5.polkit-kde-agent # Auth for elevating permissions
+    libsForQt5.qtstyleplugin-kvantum # Qt theme engine
+    libsForQt5.qt5ct # Qt theme manager
+    catppuccin-qt5ct # Qt theme
+    nwg-look # GTK theme manager
   ];
 }
