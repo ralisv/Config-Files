@@ -93,7 +93,6 @@
 
     # Theming
     libsForQt5.polkit-kde-agent # Auth for elevating permissions
-    libsForQt5.qtstyleplugin-kvantum # Qt theme engine
     libsForQt5.qt5ct # Qt theme manager
     catppuccin-qt5ct # Qt theme
     nwg-look # GTK theme manager
