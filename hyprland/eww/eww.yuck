@@ -16,6 +16,10 @@
     (label
       :class "text"
       :truncate-left true
+    :text mic-settings)
+    (label
+      :class "text"
+      :truncate-left true
     :text battery-info)
     (label
       :class "text"
@@ -31,7 +35,7 @@
   `date "+%a %_d.%_m. %k:%M"`
 )
 
-(defpoll battery-info 
+(defpoll battery-info
   :interval "30s"
   :initial "..."
   :halign "right"
@@ -47,7 +51,12 @@
 (defpoll sound-settings
   :interval "60m"
   :initial "..."
-  `wpctl get-volume @DEFAULT_AUDIO_SINK@`)
+"../scripts/volume.sh get")
+
+(defpoll mic-settings
+  :interval "60m"
+  :initial "..."
+"../scripts/mic.sh get")
 
 (defpoll vpn-status
   :interval "30s"
