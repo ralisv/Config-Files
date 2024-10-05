@@ -80,9 +80,9 @@
 
     # Useful things for Hyprland
     swww # Wallpaper manager
-    mako # Notifications daemon
-    libnotify # Notifications
-    grimblast # Screenshot tool
+    hyprshot # Screenshot tool
+    hyprnotify # Bridge between hyprland notifications and libnotify
+    libnotify # Notifications interface
     gimp # Image editing
     eww # Widgets
     wlogout # Logout menu
