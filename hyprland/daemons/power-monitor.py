@@ -19,6 +19,7 @@ EWW_CONFIG = Path("~/Config-Files/hyprland/eww").expanduser()
 FIRST_WARNING_TIME = 10_000
 SECOND_WARNING_TIME = 100_000
 FULL_BATTERY_NOTE_TIME = 5_000
+STATE_CHANGE_NOTE_TIME = 5_000
 
 
 def prepend_zero_if_single_digit(number: int) -> str:
@@ -57,6 +58,27 @@ def format_time(hours: int, minutes: int) -> str:
     )
 
 
+def get_status_report(
+    status: str, capacity: int, power_now: int, energy_now: int, energy_full: int
+) -> str:
+    if status == "Charging":
+        if power_now == 0:
+            return f"{status}, {capacity}%"
+        hours, minutes = calculate_remaining_time(energy_full - energy_now, power_now)
+        time_formatted = format_time(hours, minutes)
+        return f"{status}, {time_formatted} to fully charged, {capacity}%"
+
+    elif status == "Discharging":
+        if power_now == 0:
+            return f"{status}, {capacity}%"
+        hours, minutes = calculate_remaining_time(energy_now, power_now)
+        time_formatted = format_time(hours, minutes)
+        return f"{status}, {time_formatted} remaining, {capacity}%"
+
+    else:
+        return f"{status}, {capacity}%"
+
+
 def main() -> None:
     status = read_file(STATUS_FILE)
     energy_full = int(read_file(ENERGY_FULL_FILE))
@@ -70,27 +92,9 @@ def main() -> None:
         power_now = int(read_file(POWER_NOW_FILE))
         energy_now = int(read_file(ENERGY_NOW_FILE))
 
-        def get_status_report(status: str) -> str:
-            if status == "Charging":
-                if power_now == 0:
-                    return f"{status}, {capacity}%"
-                hours, minutes = calculate_remaining_time(
-                    energy_full - energy_now, power_now
-                )
-                time_formatted = format_time(hours, minutes)
-                return f"{status}, {time_formatted} to fully charged, {capacity}%"
-
-            elif status == "Discharging":
-                if power_now == 0:
-                    return f"{status}, {capacity}%"
-                hours, minutes = calculate_remaining_time(energy_now, power_now)
-                time_formatted = format_time(hours, minutes)
-                return f"{status}, {time_formatted} remaining, {capacity}%"
-
-            else:
-                return f"{status}, {capacity}%"
-
-        status_report = get_status_report(new_status)
+        status_report = get_status_report(
+            new_status, capacity, power_now, energy_now, energy_full
+        )
         update_eww(status_report)
 
         if status != new_status:
@@ -99,9 +103,23 @@ def main() -> None:
                     "normal", FULL_BATTERY_NOTE_TIME, "Battery fully charged", ""
                 )
 
-            elif new_status == "Charging":
+            elif status == "Discharging" and new_status == "Charging":
+                send_notification(
+                    "normal",
+                    STATE_CHANGE_NOTE_TIME,
+                    "Battery is now charging",
+                    f"Current capacity: {capacity}%",
+                )
                 first_warning = False
                 second_warning = False
+
+            elif status == "Charging" and new_status == "Discharging":
+                send_notification(
+                    "normal",
+                    STATE_CHANGE_NOTE_TIME,
+                    "Battery is now discharging",
+                    f"Current capacity: {capacity}%",
+                )
 
         status = new_status
 
@@ -115,6 +133,7 @@ def main() -> None:
                 )
                 first_warning = True
                 second_warning = True
+
             elif capacity <= 20 and not first_warning:
                 send_notification(
                     "normal",
