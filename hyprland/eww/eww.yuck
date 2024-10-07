@@ -58,10 +58,7 @@
   :initial "..."
 "../scripts/mic.sh get")
 
-(defpoll vpn-status
-  :interval "30s"
-  :initial "..."
-  "scripts/get-vpn-status.sh"
+(defvar vpn-status "..."
 )
 
 (defwidget wallpaper-updater []
