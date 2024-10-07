@@ -39,6 +39,29 @@
   };
 
   services = {
+    illum.enable = true;
+
+    mullvad-vpn = {
+      enable = true;
+      package = pkgs.mullvad-vpn.overrideAttrs (finalAttrs: prevAttrs: rec {
+        version = "2024.5";
+        platform = "amd64";
+        src = pkgs.fetchurl {
+          url = "https://github.com/mullvad/mullvadvpn-app/releases/download/${version}/MullvadVPN-${version}_${platform}.deb";
+          hash = "sha256-2d4l5BIjXQaaKOUkK+pZYsECVnyK6zOx0NkuCy9jx5I=";
+        };
+      });
+    };
+
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      audio.enable = true;
+      pulse.enable = true;
+      wireplumber.enable = true;
+    };
+
     power-profiles-daemon.enable = false;
     upower.enable = true;
 
@@ -61,26 +84,12 @@
       };
     };
 
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      audio.enable = true;
-      pulse.enable = true;
-      wireplumber.enable = true;
-    };
 
-    illum.enable = true;
 
     xserver = {
       videoDrivers = [ "nvidia" ];
       enable = false;
       desktopManager.plasma5.enable = true;
-    };
-
-    mullvad-vpn = {
-      enable = true;
-      package = pkgs.mullvad-vpn;
     };
   };
 
