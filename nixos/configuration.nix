@@ -176,6 +176,10 @@
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
     QT_QPA_PLATFORMTHEME = "qt5ct";
+    QT_QPA_PLATFORM = "wayland";
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    ELECTRON_ENABLE_LOGGING = "true";
+    GDK_BACKEND = "wayland";
   };
 
   nixpkgs.config.qt5 = {
