@@ -12,11 +12,11 @@
     (label
       :class "text"
       :truncate-left true
-    :text sound-settings)
+    :text sink-settings)
     (label
       :class "text"
       :truncate-left true
-    :text mic-settings)
+    :text source-settings)
     (label
       :class "text"
       :truncate-left true
@@ -48,18 +48,11 @@
   "scripts/storage.sh"
 )
 
-(defpoll sound-settings
-  :interval "60m"
-  :initial "..."
-"../scripts/volume.sh get")
+(defvar sink-settings "...")
 
-(defpoll mic-settings
-  :interval "60m"
-  :initial "..."
-"../scripts/mic.sh get")
+(defvar source-settings "...")
 
-(defvar vpn-status "..."
-)
+(defvar vpn-status "...")
 
 (defwidget wallpaper-updater []
   (overlay :orientation "horizontal"

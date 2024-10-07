@@ -13,12 +13,8 @@ elif [ "$1" = "mute" ]; then
     wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 elif [ "$1" = "get" ]; then 
     wpctl get-volume @DEFAULT_AUDIO_SINK@
-    exit 0
 else
     echo "Invalid argument: $1"
     echo "Usage: $0 {up|down|mute}"
     exit 1
 fi
-
-export SOUND_SETTINGS_CACHE=`wpctl get-volume @DEFAULT_AUDIO_SINK@`
-eww --config ~/Config-Files/hyprland/eww update "sound-settings=$SOUND_SETTINGS_CACHE"
