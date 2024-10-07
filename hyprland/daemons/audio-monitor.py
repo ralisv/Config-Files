@@ -1,15 +1,17 @@
+#!/usr/bin/env python3
+
 import json
-import re
 import subprocess
 from dataclasses import dataclass
+from pathlib import Path
 
+EWW_CONFIG_PATH = Path("~/Config-Files/hyprland/eww").expanduser()
 
 @dataclass
 class Volume:
     value: int
     value_percent: str
     db: str
-
 
 @dataclass
 class AudioDevice:
@@ -20,10 +22,8 @@ class AudioDevice:
     mute: bool
     volume: dict[str, Volume]
 
-
 def get_audio_devices() -> list[AudioDevice]:
     try:
-        # Run the pactl command for both sources and sinks
         sources = subprocess.run(
             ["pactl", "--format=json", "list", "sources"],
             capture_output=True,
@@ -33,7 +33,6 @@ def get_audio_devices() -> list[AudioDevice]:
             ["pactl", "--format=json", "list", "sinks"], capture_output=True, text=True
         )
 
-        # Combine and parse the JSON output
         sources_json = json.loads(sources.stdout)
         sinks_json = json.loads(sinks.stdout)
 
@@ -67,22 +66,30 @@ def get_audio_devices() -> list[AudioDevice]:
         print(f"Error parsing JSON output: {e}")
         return []
 
-
 def get_default_device(device_type):
     cmd = ["pactl", f"get-default-{device_type}"]
     result = subprocess.run(cmd, capture_output=True, text=True)
     return result.stdout.strip()
 
+def update_eww_sound_settings(sink: str, source: str):
+    subprocess.run(
+        [
+            "eww",
+            "--config",
+            EWW_CONFIG_PATH.as_posix(),
+            "update",
+            f"sink-settings={sink}",
+            f"source-settings={source}",
+        ],
+        check=True,
+    )
 
-def print_audio_state(state):
-    print("\nCurrent Audio State:")
-    print(f"Sink (Output): {state.sink.name}")
-    print(f"  Volume: {state.sink.volume}%")
-    print(f"  Muted: {'Yes' if state.sink.muted else 'No'}")
-    print(f"Source (Input): {state.source.name}")
-    print(f"  Volume: {state.source.volume}%")
-    print(f"  Muted: {'Yes' if state.source.muted else 'No'}")
+def format_device_info(device):
+    if device is None:
+        return "N/A"
 
+    volume = next(iter(device.volume.values())).value_percent
+    return f"{device.description}, Volume: {volume}{" [MUTED]" if device.mute else ""}"
 
 def main():
     process = subprocess.Popen(
@@ -95,17 +102,17 @@ def main():
 
     print("Monitoring for audio changes...")
 
-    try:
-        for line in iter(process.stdout.readline, ""):  # type: ignore
-            if "change" not in line:
-                continue
+    source_info = "..."
+    sink_info = "..."
 
+    try:
+        while True:
+            # Execute the loop body once at the beginning
             try:
                 default_source = get_default_device("source")
                 default_sink = get_default_device("sink")
 
                 audio_devices = get_audio_devices()
-                # Find the default source and sink
                 source = next(
                     (
                         device
@@ -119,15 +126,31 @@ def main():
                     None,
                 )
 
+                new_source_info = "Source: " + format_device_info(source)
+                new_sink_info = "Sink: " + format_device_info(sink)
+
+                if new_source_info != source_info or new_sink_info != sink_info:
+                    source_info = new_source_info
+                    sink_info = new_sink_info
+
+                    update_eww_sound_settings(sink_info, source_info)
+
+                    print(f"{source_info} | {sink_info}")
+
             except Exception as e:
-                print(f"Error getting audio devices: {e}")
+                print(f"Error updating audio devices: {e}")
+
+            # Now wait for the next line from the process
+            line = process.stdout.readline()
+            if not line:
+                break
+            if "change" not in line:
                 continue
 
     except KeyboardInterrupt:
         print("\nMonitoring stopped.")
     finally:
         process.terminate()
-
 
 if __name__ == "__main__":
     main()
