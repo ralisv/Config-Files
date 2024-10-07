@@ -61,22 +61,27 @@ def format_time(hours: int, minutes: int) -> str:
 def get_status_report(
     status: str, capacity: int, power_now: int, energy_now: int, energy_full: int
 ) -> str:
+    power_watts = power_now / 1_000_000  # Convert microwatts to watts
+
     if status == "Charging":
+        power_sign = "+"
         if power_now == 0:
             return f"{status}, {capacity}%"
         hours, minutes = calculate_remaining_time(energy_full - energy_now, power_now)
         time_formatted = format_time(hours, minutes)
-        return f"{status}, {time_formatted} to fully charged, {capacity}%"
+        return f"{status}, {time_formatted} to fully charged, {capacity}%, {power_sign}{power_watts:.2f}W"
 
     elif status == "Discharging":
+        power_sign = "-"
         if power_now == 0:
             return f"{status}, {capacity}%"
         hours, minutes = calculate_remaining_time(energy_now, power_now)
         time_formatted = format_time(hours, minutes)
-        return f"{status}, {time_formatted} remaining, {capacity}%"
+        return f"{status}, {time_formatted} remaining, {capacity}%, {power_sign}{power_watts:.2f}W"
 
     else:
-        return f"{status}, {capacity}%"
+        power_sign = ""  # No sign for other states (e.g., "Full")
+        return f"{status}, {capacity}%, {power_sign}{power_watts:.2f}W"
 
 
 def main() -> None:
