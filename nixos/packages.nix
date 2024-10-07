@@ -38,6 +38,10 @@
     discord
     webcord-vencord # Discord frontend for Wayland
     teams-for-linux
+    caprine # Facebook Messenger client
+    signal-desktop
+    signal-cli
+
     cheese # Webcam
 
     # Shell utilities
