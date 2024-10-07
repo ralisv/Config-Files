@@ -59,9 +59,29 @@
       alsa.support32Bit = true;
       audio.enable = true;
       pulse.enable = true;
-      wireplumber.enable = true;
-    };
+      wireplumber = {
+        enable = true;
+        extraConfig = {
+          "10-bluez" = {
+            "monitor.bluez.properties" = {
+              "bluez5.default-profile" = "a2dp-sink";
+              "bluez5.a2dp.default.audio-info" = "format=S16LE rate=48000 channels=2";
+              "bluez5.a2dp.default.buffer-size" = 1024;
 
+              "bluez5.codecs" = [ "sbc_xq" "aac" "ldac" "aptx" "aptx_hd" ];
+              "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" ];
+
+              "bluez5.enable-hw-volume" = true;
+            };
+            "11-bluetooth-policy" = {
+              "wireplumber.settings" = {
+                "bluetooth.autoswitch-to-headset-profile" = true;
+              };
+            };
+          };
+        };
+      };
+    };
     power-profiles-daemon.enable = false;
     upower.enable = true;
 

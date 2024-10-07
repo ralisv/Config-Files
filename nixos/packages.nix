@@ -22,7 +22,8 @@
     zip
     gparted # For imaging USB drives
     brightnessctl
-    pavucontrol
+    pavucontrol # Audio control
+    pulseaudio # CLI tools for audio
     wayland-utils
     bash-completion
     xdg-utils
