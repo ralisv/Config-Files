@@ -100,13 +100,13 @@ def parse_mullvad_status(json_data: dict) -> MullvadStatus:
 def format_status_for_eww(status: MullvadStatus) -> str:
     if status.state == "connected" and isinstance(status.details, ConnectedDetails):
         ip = status.details.location.ipv4 or status.details.location.ipv6 or "N/A"
-        return f"Connected: {status.details.location.city}, {status.details.location.country} ({ip})"
+        return f"Connected: {status.details.location.city}, {status.details.location.country} [{ip}]"
     elif status.state == "connecting":
         return "Connecting..."
     elif status.state == "disconnected":
         if isinstance(status.details, DisconnectedDetails) and status.details.location:
             ip = status.details.location.ipv4 or status.details.location.ipv6 or "N/A"
-            return f"Disconnected: {status.details.location.city}, {status.details.location.country} ({ip})"
+            return f"Disconnected: {status.details.location.city}, {status.details.location.country} [{ip}]"
         else:
             return "Disconnected"
     elif status.state == "disconnecting":
