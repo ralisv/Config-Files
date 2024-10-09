@@ -49,9 +49,22 @@ class DisconnectedDetails:
 
 
 @dataclass
+class ErrorCause:
+    reason: str
+
+
+@dataclass
+class ErrorDetails:
+    cause: ErrorCause
+    block_failure: str | None
+
+
+@dataclass
 class MullvadStatus:
     state: str
-    details: Optional[ConnectedDetails | DisconnectedDetails | Literal["nothing"]]
+    details: Optional[
+        ConnectedDetails | DisconnectedDetails | Literal["nothing"] | ErrorDetails
+    ]
 
 
 EWW_CONFIG = Path("~/Config-Files/hyprland/eww").expanduser()
@@ -93,6 +106,14 @@ def parse_mullvad_status(json_data: dict) -> MullvadStatus:
             return MullvadStatus(state=state, details=disconnected_details)
         else:
             return MullvadStatus(state=state, details=None)
+    elif state == "error":
+        return MullvadStatus(
+            state=state,
+            details=ErrorDetails(
+                cause=ErrorCause(**details["cause"]),
+                block_failure=details.get("block_failure"),
+            ),
+        )
     else:
         return MullvadStatus(state=state, details=details)
 
@@ -111,8 +132,14 @@ def format_status_for_eww(status: MullvadStatus) -> str:
             return "Disconnected"
     elif status.state == "disconnecting":
         return "Disconnecting..."
+    elif (
+        status.state == "error"
+        and isinstance(status.details, ErrorDetails)
+        and status.details.cause.reason == "is_offline"
+    ):
+        return "Offline"
     else:
-        return f"Unknown state: {status.state}"
+        return f"Unknown status: {status}"
 
 
 def run_mullvad_status():
