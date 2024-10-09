@@ -88,6 +88,7 @@ def main() -> None:
     status = read_file(STATUS_FILE)
     energy_full = int(read_file(ENERGY_FULL_FILE))
 
+    full_battery_note = False
     first_warning = False
     second_warning = False
 
@@ -102,13 +103,20 @@ def main() -> None:
         )
         update_eww(status_report)
 
-        if status != new_status:
-            if new_status == "Full":
-                send_notification(
-                    "normal", FULL_BATTERY_NOTE_TIME, "Battery fully charged", ""
-                )
+        if capacity >= 95 and not full_battery_note:
+            send_notification(
+                "normal",
+                FULL_BATTERY_NOTE_TIME,
+                "Battery fully charged",
+                f"Current capacity: {capacity}%",
+            )
+            full_battery_note = True
 
-            elif status == "Discharging" and new_status == "Charging":
+        if capacity < 94:
+            full_battery_note = False
+
+        if status != new_status:
+            if status == "Discharging" and new_status == "Charging":
                 send_notification(
                     "normal",
                     STATE_CHANGE_NOTE_TIME,
