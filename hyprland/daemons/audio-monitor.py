@@ -27,6 +27,16 @@ class AudioDevice:
     volume: dict[str, Volume]
 
 
+@dataclass
+class AudioState:
+    sink: AudioDevice
+    source: AudioDevice
+
+
+def send_notification(urgency: str, timeout: int, title: str, body: str) -> None:
+    subprocess.run(["notify-send", "-u", urgency, "-t", str(timeout), title, body])
+
+
 def get_audio_devices() -> list[AudioDevice]:
     try:
         sources = subprocess.run(
@@ -92,7 +102,7 @@ def update_eww_variables(sink: str, source: str):
     )
 
 
-def format_device_info(device):
+def format_device_info(device: AudioDevice) -> str:
     if device is None:
         return "N/A"
 
@@ -114,7 +124,7 @@ def format_device_info(device):
 
 def get_sound_settings(
     prev_source_info: str = "", prev_sink_info: str = ""
-) -> tuple[str, str]:
+) -> AudioState:
     default_source = get_default_device("source")
     default_sink = get_default_device("sink")
 
@@ -128,10 +138,7 @@ def get_sound_settings(
         None,
     )
 
-    source_info = format_device_info(source)
-    sink_info = format_device_info(sink)
-
-    return source_info, sink_info
+    return AudioState(sink=sink, source=source)  # type: ignore
 
 
 def main():
@@ -144,8 +151,10 @@ def main():
     )
 
     print("Monitoring for audio changes...")
-    source, sink = get_sound_settings()
-    update_eww_variables(sink, source)
+    audio = get_sound_settings()
+    update_eww_variables(
+        format_device_info(audio.sink), format_device_info(audio.source)
+    )
 
     try:
         while True:
@@ -157,11 +166,29 @@ def main():
                 continue
 
             try:
-                new_source, new_sink = get_sound_settings(source, sink)
-                if new_source != source or new_sink != sink:
-                    source, sink = new_source, new_sink
-                    update_eww_variables(sink, source)
-                    print(f"{source} | {sink}")
+                new_audio = get_sound_settings()
+
+                if new_audio != audio:
+                    if new_audio.source.name != audio.source.name:
+                        send_notification(
+                            "normal",
+                            5000,
+                            "Audio source device changed",
+                            f"{new_audio.source.description}",
+                        )
+                    if new_audio.sink.name != audio.sink.name:
+                        send_notification(
+                            "normal",
+                            5000,
+                            "Audio sink device changed",
+                            f"New Sink: {new_audio.sink.description}",
+                        )
+
+                    audio = new_audio
+                    update_eww_variables(
+                        format_device_info(audio.sink), format_device_info(audio.source)
+                    )
+                    print(f"{audio.sink} | {audio.source}")
 
             except Exception as e:
                 print(f"Error updating audio devices: {e}")
