@@ -33,13 +33,19 @@
     hyprland = {
       enable = true;
       xwayland.enable = true;
+      portalPackage = pkgs.xdg-desktop-portal-hyprland;
     };
     npm.enable = true;
     steam.enable = true;
   };
 
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
+
   services = {
-    illum.enable = true;
+    illum.enable = true; # Map brightness keys
 
     mullvad-vpn = {
       enable = true;
@@ -138,9 +144,6 @@
     };
   };
 
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   documentation = {
@@ -159,9 +162,9 @@
     ];
     fontconfig = {
       defaultFonts = {
-        serif = [ "Ubuntu" ];
-        sansSerif = [ "Ubuntu" ];
-        monospace = [ "Ubuntu" ];
+        serif = [ "FiraCode Nerd Font" ];
+        sansSerif = [ "FiraCode Nerd Font" ];
+        monospace = [ "FiraCode Nerd Font Mono Ret" ];
       };
     };
     fontDir.enable = true;
