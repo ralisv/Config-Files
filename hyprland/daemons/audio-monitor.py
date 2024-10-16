@@ -5,6 +5,7 @@ import subprocess
 from dataclasses import dataclass
 from math import ceil
 from pathlib import Path
+from time import sleep
 
 EWW_CONFIG_PATH = Path("~/Config-Files/hyprland/eww").expanduser()
 BLOCKS = ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
@@ -88,15 +89,15 @@ def get_default_device(device_type):
     return result.stdout.strip()
 
 
-def update_eww_variables(sink: str, source: str):
+def update_eww_variables(audio: AudioState):
     subprocess.run(
         [
             "eww",
             "--config",
             EWW_CONFIG_PATH.as_posix(),
             "update",
-            f"sink-settings=♫ {sink}",
-            f"source-settings=🎙 {source}",
+            f"sink-settings=♫ {format_device_info(audio.sink)}",
+            f"source-settings=🎙 {format_device_info(audio.source)}",
         ],
         check=True,
     )
@@ -114,7 +115,7 @@ def format_device_info(device: AudioDevice) -> str:
     )
 
     cropped_description = (
-        device.description[:27] + "..."
+        device.description[:27].ljust(30, ".")
         if len(device.description) > 30
         else device.description
     )
@@ -122,9 +123,7 @@ def format_device_info(device: AudioDevice) -> str:
     return f"{cropped_description}: [{volume_string}]"
 
 
-def get_sound_settings(
-    prev_source_info: str = "", prev_sink_info: str = ""
-) -> AudioState:
+def get_sound_settings() -> AudioState:
     default_source = get_default_device("source")
     default_sink = get_default_device("sink")
 
@@ -152,9 +151,11 @@ def main():
 
     print("Monitoring for audio changes...")
     audio = get_sound_settings()
-    update_eww_variables(
-        format_device_info(audio.sink), format_device_info(audio.source)
-    )
+    if None in (audio.sink, audio.source):
+        sleep(2)
+        audio = get_sound_settings()
+
+    update_eww_variables(audio)
 
     try:
         while True:
@@ -174,20 +175,19 @@ def main():
                             "normal",
                             5000,
                             "Audio source device changed",
-                            f"{new_audio.source.description}",
+                            new_audio.source.description,
                         )
                     if new_audio.sink.name != audio.sink.name:
                         send_notification(
                             "normal",
                             5000,
                             "Audio sink device changed",
-                            f"New Sink: {new_audio.sink.description}",
+                            new_audio.sink.description,
                         )
 
                     audio = new_audio
-                    update_eww_variables(
-                        format_device_info(audio.sink), format_device_info(audio.source)
-                    )
+                    update_eww_variables(audio)
+
                     print(f"{audio.sink} | {audio.source}")
 
             except Exception as e:
