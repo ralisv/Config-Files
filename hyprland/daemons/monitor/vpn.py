@@ -72,6 +72,8 @@ class MullvadStatus:
 
 EWW_CONFIG = Path("~/Config-Files/hyprland/eww").expanduser()
 
+LOG_PREFIX = "vpn-monitor: "
+
 
 def get_mullvad_status_manual() -> MullvadStatus:
     process = subprocess.Popen(
@@ -146,7 +148,7 @@ def format_status_for_eww(status: MullvadStatus) -> str:
         return f"Unknown status: {status}"
 
 
-def run_mullvad_status():
+def vpn_monitor():
     process = subprocess.Popen(
         ["mullvad", "status", "--json", "listen"],
         stdout=subprocess.PIPE,
@@ -154,32 +156,31 @@ def run_mullvad_status():
         bufsize=1,  # Line buffered
     )
 
-    print("Monitoring Mullvad VPN status...")
-    print("Press Ctrl+C to stop.")
+    print(f"{LOG_PREFIX} monitoring Mullvad VPN status...")
 
     try:
         for line in iter(process.stdout.readline, ""):  # type: ignore
             try:
                 status = parse_mullvad_status(json.loads(line.strip()))
-                print(f"State: {status.state}")
-
+                print(f"{LOG_PREFIX} status: {status.state}")
                 update_eww({"vpn-status": format_status_for_eww(status)})
 
                 if status.state == "disconnected":
+                    print(f"{LOG_PREFIX} vpn in disconnected state. Retry in 1 second.")
                     sleep(1)
+
                     status = get_mullvad_status_manual()
-                    print(f"Manual check: {status.state}")
+                    print(f"{LOG_PREFIX} status: {status.state}")
                     update_eww({"vpn-status": format_status_for_eww(status)})
 
-                print("-" * 30)
             except json.JSONDecodeError:
-                print("Error parsing JSON output")
+                print(f"{LOG_PREFIX} error parsing JSON output")
 
     except KeyboardInterrupt:
-        print("\nMonitoring stopped.")
+        print(f"{LOG_PREFIX} monitoring stopped.")
     finally:
         process.terminate()
 
 
 if __name__ == "__main__":
-    run_mullvad_status()
+    vpn_monitor()

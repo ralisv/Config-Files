@@ -23,6 +23,8 @@ SECOND_WARNING_TIME = 100_000
 FULL_BATTERY_NOTE_TIME = 5_000
 STATE_CHANGE_NOTE_TIME = 5_000
 
+LOG_PREFIX = "power-monitor: "
+
 
 def prepend_zero_if_single_digit(number: int) -> str:
     return f"0{number}" if 0 <= number <= 9 else str(number)
@@ -70,7 +72,8 @@ def get_status_report(
         return f"{status}, {capacity}%, {power_sign}{power_watts:.2f}W"
 
 
-def main() -> None:
+def power_monitor() -> None:
+    print(f"{LOG_PREFIX}Monitoring for power changes...")
     status = read_file(STATUS_FILE)
     energy_full = int(read_file(ENERGY_FULL_FILE))
 
@@ -89,6 +92,8 @@ def main() -> None:
         )
         update_eww({"battery-info": status_report})
 
+        print(f"{LOG_PREFIX}Status report: {status_report}")
+
         if capacity >= 95 and not full_battery_note:
             send_notification(
                 "normal",
@@ -97,6 +102,8 @@ def main() -> None:
                 f"Current capacity: {capacity}%",
             )
             full_battery_note = True
+
+            print(f"{LOG_PREFIX}Battery fully charged notification sent.")
 
         if capacity < 94:
             full_battery_note = False
@@ -112,6 +119,8 @@ def main() -> None:
                 first_warning = False
                 second_warning = False
 
+                print(f"{LOG_PREFIX}State change notification sent: Charging.")
+
             elif status == "Charging" and new_status == "Discharging":
                 send_notification(
                     "normal",
@@ -119,6 +128,8 @@ def main() -> None:
                     "Battery is now discharging",
                     f"Current capacity: {capacity}%",
                 )
+
+                print(f"{LOG_PREFIX}State change notification sent: Discharging.")
 
         status = new_status
 
@@ -133,6 +144,8 @@ def main() -> None:
                 first_warning = True
                 second_warning = True
 
+                print(f"{LOG_PREFIX}Critical battery warning sent.")
+
             elif capacity <= 20 and not first_warning:
                 send_notification(
                     "normal",
@@ -142,8 +155,10 @@ def main() -> None:
                 )
                 first_warning = True
 
+                print(f"{LOG_PREFIX}Low battery warning sent.")
+
         time.sleep(1)  # Check every second
 
 
 if __name__ == "__main__":
-    main()
+    power_monitor()

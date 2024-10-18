@@ -12,6 +12,8 @@ from utils import send_notification, update_eww
 EWW_CONFIG_PATH = Path("~/Config-Files/hyprland/eww").expanduser()
 BLOCKS = ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
 
+LOG_PREFIX = "audio-monitor: "
+
 
 @dataclass
 class Volume:
@@ -74,10 +76,10 @@ def get_audio_devices() -> list[AudioDevice]:
         return audio_devices
 
     except subprocess.CalledProcessError as e:
-        print(f"Error running pactl command: {e}")
+        print(f"{LOG_PREFIX}Error running pactl command: {e}")
         return []
     except json.JSONDecodeError as e:
-        print(f"Error parsing JSON output: {e}")
+        print(f"{LOG_PREFIX}Error parsing JSON output: {e}")
         return []
 
 
@@ -133,7 +135,7 @@ def get_sound_settings() -> AudioState:
     return AudioState(sink=sink, source=source)  # type: ignore
 
 
-def main():
+def audio_monitor():
     process = subprocess.Popen(
         ["pactl", "subscribe"],
         stdout=subprocess.PIPE,
@@ -142,8 +144,10 @@ def main():
         bufsize=1,
     )
 
-    print("Monitoring for audio changes...")
+    print(f"{LOG_PREFIX}Monitoring for audio changes...")
+
     audio = get_sound_settings()
+
     if None in (audio.sink, audio.source):
         sleep(2)
         audio = get_sound_settings()
@@ -181,16 +185,17 @@ def main():
                     audio = new_audio
                     update_eww_variables(audio)
 
-                    print(f"{audio.sink} | {audio.source}")
+                    print(f"{LOG_PREFIX}{audio.sink} | {audio.source}")
 
             except Exception as e:
-                print(f"Error updating audio devices: {e}")
+                print(f"{LOG_PREFIX}Error updating audio devices: {e}")
 
     except KeyboardInterrupt:
-        print("Monitoring stopped.")
+        print(f"{LOG_PREFIX}Monitoring stopped.")
+
     finally:
         process.terminate()
 
 
 if __name__ == "__main__":
-    main()
+    audio_monitor()
