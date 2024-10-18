@@ -75,6 +75,11 @@ EWW_CONFIG = Path("~/Config-Files/hyprland/eww").expanduser()
 LOG_PREFIX = "vpn-monitor: "
 
 
+def log(message: str):
+    """Log a message with a predefined prefix."""
+    print(f"{LOG_PREFIX}{message}")
+
+
 def get_mullvad_status_manual() -> MullvadStatus:
     process = subprocess.Popen(
         ["mullvad", "status", "--json", "listen"],
@@ -156,28 +161,29 @@ def vpn_monitor():
         bufsize=1,  # Line buffered
     )
 
-    print(f"{LOG_PREFIX} monitoring Mullvad VPN status...")
+    log("Monitoring Mullvad VPN status...")
 
     try:
         for line in iter(process.stdout.readline, ""):  # type: ignore
             try:
                 status = parse_mullvad_status(json.loads(line.strip()))
-                print(f"{LOG_PREFIX} status: {status.state}")
+                log(f"Status: {status.state}")
                 update_eww({"vpn-status": format_status_for_eww(status)})
 
                 if status.state == "disconnected":
-                    print(f"{LOG_PREFIX} vpn in disconnected state. Retry in 1 second.")
+                    log("VPN in disconnected state. Retry in 1 second.")
                     sleep(1)
 
                     status = get_mullvad_status_manual()
-                    print(f"{LOG_PREFIX} status: {status.state}")
+                    log(f"Status after retrying manually: {status.state}")
                     update_eww({"vpn-status": format_status_for_eww(status)})
 
             except json.JSONDecodeError:
-                print(f"{LOG_PREFIX} error parsing JSON output")
+                log("Error parsing JSON output")
 
     except KeyboardInterrupt:
-        print(f"{LOG_PREFIX} monitoring stopped.")
+        log("Monitoring stopped.")
+
     finally:
         process.terminate()
 

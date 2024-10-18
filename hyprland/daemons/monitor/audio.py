@@ -38,49 +38,46 @@ class AudioState:
     source: AudioDevice
 
 
+def log(message: str):
+    """Log a message with a predefined prefix."""
+    print(f"{LOG_PREFIX}{message}")
+
+
 def get_audio_devices() -> list[AudioDevice]:
-    try:
-        sources = subprocess.run(
-            ["pactl", "--format=json", "list", "sources"],
-            capture_output=True,
-            text=True,
-        )
-        sinks = subprocess.run(
-            ["pactl", "--format=json", "list", "sinks"], capture_output=True, text=True
-        )
+    sources = subprocess.run(
+        ["pactl", "--format=json", "list", "sources"],
+        capture_output=True,
+        text=True,
+    )
+    sinks = subprocess.run(
+        ["pactl", "--format=json", "list", "sinks"], capture_output=True, text=True
+    )
 
-        sources_json = json.loads(sources.stdout)
-        sinks_json = json.loads(sinks.stdout)
+    sources_json = json.loads(sources.stdout)
+    sinks_json = json.loads(sinks.stdout)
 
-        audio_devices = []
+    audio_devices = []
 
-        for device in sources_json + sinks_json:
-            volume_dict = {}
-            for channel, vol in device.get("volume", {}).items():
-                volume_dict[channel] = Volume(
-                    value=vol.get("value", 0),
-                    value_percent=vol.get("value_percent", "0%"),
-                    db=vol.get("db", "0 dB"),
-                )
-
-            audio_device = AudioDevice(
-                state=device.get("state", ""),
-                name=device.get("name", ""),
-                description=device.get("description", ""),
-                channel_map=device.get("channel_map", []),
-                mute=device.get("mute", False),
-                volume=volume_dict,
+    for device in sources_json + sinks_json:
+        volume_dict = {}
+        for channel, vol in device.get("volume", {}).items():
+            volume_dict[channel] = Volume(
+                value=vol.get("value", 0),
+                value_percent=vol.get("value_percent", "0%"),
+                db=vol.get("db", "0 dB"),
             )
-            audio_devices.append(audio_device)
 
-        return audio_devices
+        audio_device = AudioDevice(
+            state=device.get("state", ""),
+            name=device.get("name", ""),
+            description=device.get("description", ""),
+            channel_map=device.get("channel_map", []),
+            mute=device.get("mute", False),
+            volume=volume_dict,
+        )
+        audio_devices.append(audio_device)
 
-    except subprocess.CalledProcessError as e:
-        print(f"{LOG_PREFIX}Error running pactl command: {e}")
-        return []
-    except json.JSONDecodeError as e:
-        print(f"{LOG_PREFIX}Error parsing JSON output: {e}")
-        return []
+    return audio_devices
 
 
 def get_default_device(device_type):
@@ -144,7 +141,7 @@ def audio_monitor():
         bufsize=1,
     )
 
-    print(f"{LOG_PREFIX}Monitoring for audio changes...")
+    log("Monitoring for audio changes...")
 
     audio = get_sound_settings()
 
@@ -174,6 +171,7 @@ def audio_monitor():
                             "Audio source device changed",
                             new_audio.source.description,
                         )
+                        log(f"Audio source device changed")
                     if new_audio.sink.name != audio.sink.name:
                         send_notification(
                             "normal",
@@ -181,17 +179,16 @@ def audio_monitor():
                             "Audio sink device changed",
                             new_audio.sink.description,
                         )
+                        log(f"Audio sink device changed")
 
                     audio = new_audio
                     update_eww_variables(audio)
 
-                    print(f"{LOG_PREFIX}{audio.sink} | {audio.source}")
-
             except Exception as e:
-                print(f"{LOG_PREFIX}Error updating audio devices: {e}")
+                log(f"Error updating audio devices: {e}")
 
     except KeyboardInterrupt:
-        print(f"{LOG_PREFIX}Monitoring stopped.")
+        log("Monitoring stopped.")
 
     finally:
         process.terminate()
