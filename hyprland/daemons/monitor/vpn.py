@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
+import json
 import subprocess
 from pathlib import Path
 from time import sleep
-from typing import List, Literal, Optional
+from typing import Annotated, List, Literal, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, TypeAdapter
 
 from utils import update_eww
 
@@ -39,7 +40,7 @@ class Location(BaseModel):
 class ConnectedDetails(BaseModel):
     endpoint: Endpoint
     location: Location
-    feature_indicators: List[str]
+    feature_indicators: list[str]
 
 
 class DisconnectedDetails(BaseModel):
@@ -56,15 +57,39 @@ class ErrorDetails(BaseModel):
     block_failure: Optional[str]
 
 
-class MullvadStatus(BaseModel):
-    state: str
-    details: (
-        ConnectedDetails
-        | DisconnectedDetails
-        | Literal["nothing"]
-        | ErrorDetails
-        | Literal["reconnect"]
-    )
+class ConnectedStatus(BaseModel):
+    state: Literal["connected"]
+    details: ConnectedDetails
+
+
+class DisconnectedStatus(BaseModel):
+    state: Literal["disconnected"]
+    details: DisconnectedDetails
+
+
+class ErrorStatus(BaseModel):
+    state: Literal["error"]
+    details: ErrorDetails
+
+
+class ConnectingStatus(BaseModel):
+    state: Literal["connecting"]
+
+
+class DisconnectingStatus(BaseModel):
+    state: Literal["disconnecting"]
+
+
+MullvadStatus = Annotated[
+    Union[
+        ConnectedStatus,
+        DisconnectedStatus,
+        ErrorStatus,
+        ConnectingStatus,
+        DisconnectingStatus,
+    ],
+    Field(discriminator="state"),
+]
 
 
 EWW_CONFIG = Path("~/Config-Files/hyprland/eww").expanduser()
@@ -89,34 +114,37 @@ def get_mullvad_status_manual() -> MullvadStatus:
 
 
 def parse_mullvad_status(json_data: str) -> MullvadStatus:
-    return MullvadStatus.model_validate_json(json_data)
+    # Parse the JSON string into a dictionary first
+    data_dict = json.loads(json_data)
+
+    parse_status = TypeAdapter(MullvadStatus).validate_python
+
+    return parse_status(data_dict)
 
 
 def format_status_for_eww(status: MullvadStatus) -> str:
-    match status.state:
-        case "connected" if isinstance(status.details, ConnectedDetails):
-            ip = status.details.location.ipv4 or status.details.location.ipv6 or "N/A"
-            return f"Connected: {status.details.location.city}, {status.details.location.country} [{ip}]"
-        case "connecting":
+    match status:
+        case ConnectedStatus(
+            details=ConnectedDetails(
+                location=Location(city=city, country=country, ipv4=ipv4, ipv6=ipv6)
+            )
+        ):
+            ip = ipv4 or ipv6 or "N/A"
+            return f"Connected: {city}, {country} [{ip}]"
+        case ConnectingStatus():
             return "Connecting..."
-        case "disconnected":
-            if (
-                isinstance(status.details, DisconnectedDetails)
-                and status.details.location
-            ):
-                ip = (
-                    status.details.location.ipv4
-                    or status.details.location.ipv6
-                    or "N/A"
-                )
-                return f"Disconnected: {status.details.location.city}, {status.details.location.country} [{ip}]"
-            else:
-                return "Disconnected"
-        case "disconnecting":
+        case DisconnectedStatus(
+            details=DisconnectedDetails(
+                location=Location(city=city, country=country, ipv4=ipv4, ipv6=ipv6)
+            )
+        ):
+            ip = ipv4 or ipv6 or "N/A"
+            return f"Disconnected: {city}, {country} [{ip}]"
+        case DisconnectedStatus():
+            return "Disconnected"
+        case DisconnectingStatus():
             return "Disconnecting..."
-        case "error" if isinstance(
-            status.details, ErrorDetails
-        ) and status.details.cause.reason == "is_offline":
+        case ErrorStatus(details=ErrorDetails(cause=ErrorCause(reason="is_offline"))):
             return "Offline"
         case _:
             return f"Unknown status: {status}"
