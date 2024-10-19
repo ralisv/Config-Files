@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-import json
 import subprocess
-from dataclasses import dataclass
 from math import ceil
 from pathlib import Path
 from time import sleep
+from typing import Dict, List
+
+from pydantic import BaseModel, TypeAdapter, field_validator, validator
 
 from utils import send_notification, update_eww
 
@@ -15,25 +16,29 @@ BLOCKS = ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
 LOG_PREFIX = "audio-monitor: "
 
 
-@dataclass
-class Volume:
+class Volume(BaseModel):
     value: int
     value_percent: str
     db: str
 
 
-@dataclass
-class AudioDevice:
+class AudioDevice(BaseModel):
     state: str
     name: str
     description: str
     channel_map: list[str]
     mute: bool
-    volume: dict[str, Volume]
+    volume: Dict[str, Volume]
+
+    @field_validator("channel_map", mode="before")
+    def split_channel_map(cls, value):
+        # Check if the value is a string and split it into a list
+        if isinstance(value, str):
+            return [element.strip() for element in value.split(",")]
+        return value
 
 
-@dataclass
-class AudioState:
+class AudioState(BaseModel):
     sink: AudioDevice
     source: AudioDevice
 
@@ -43,41 +48,18 @@ def log(message: str):
     print(f"{LOG_PREFIX}{message}")
 
 
-def get_audio_devices() -> list[AudioDevice]:
+def get_audio_devices() -> List[AudioDevice]:
     sources = subprocess.run(
         ["pactl", "--format=json", "list", "sources"],
         capture_output=True,
         text=True,
-    )
+    ).stdout
     sinks = subprocess.run(
         ["pactl", "--format=json", "list", "sinks"], capture_output=True, text=True
-    )
+    ).stdout
 
-    sources_json = json.loads(sources.stdout)
-    sinks_json = json.loads(sinks.stdout)
-
-    audio_devices = []
-
-    for device in sources_json + sinks_json:
-        volume_dict = {}
-        for channel, vol in device.get("volume", {}).items():
-            volume_dict[channel] = Volume(
-                value=vol.get("value", 0),
-                value_percent=vol.get("value_percent", "0%"),
-                db=vol.get("db", "0 dB"),
-            )
-
-        audio_device = AudioDevice(
-            state=device.get("state", ""),
-            name=device.get("name", ""),
-            description=device.get("description", ""),
-            channel_map=device.get("channel_map", []),
-            mute=device.get("mute", False),
-            volume=volume_dict,
-        )
-        audio_devices.append(audio_device)
-
-    return audio_devices
+    parse_devices = TypeAdapter(list[AudioDevice]).validate_json
+    return parse_devices(sources) + parse_devices(sinks)
 
 
 def get_default_device(device_type):
@@ -120,10 +102,12 @@ def get_sound_settings() -> AudioState:
     default_sink = get_default_device("sink")
 
     audio_devices = get_audio_devices()
+
     source = next(
         (device for device in audio_devices if device.name == default_source),
         None,
     )
+
     sink = next(
         (device for device in audio_devices if device.name == default_sink),
         None,
@@ -171,7 +155,8 @@ def audio_monitor():
                             "Audio source device changed",
                             new_audio.source.description,
                         )
-                        log(f"Audio source device changed")
+                        log(f"Audio source device changed {new_audio.source}")
+
                     if new_audio.sink.name != audio.sink.name:
                         send_notification(
                             "normal",
@@ -179,7 +164,7 @@ def audio_monitor():
                             "Audio sink device changed",
                             new_audio.sink.description,
                         )
-                        log(f"Audio sink device changed")
+                        log(f"Audio sink device changed {new_audio.sink}")
 
                     audio = new_audio
                     update_eww_variables(audio)
