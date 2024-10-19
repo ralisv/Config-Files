@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 
-import json
 import subprocess
-from dataclasses import dataclass
 from pathlib import Path
 from time import sleep
 from typing import List, Literal, Optional
 
+from pydantic import BaseModel, Field
+
 from utils import update_eww
 
 
-@dataclass
-class Endpoint:
+class Endpoint(BaseModel):
     address: str
     protocol: str
     tunnel_type: str
@@ -23,8 +22,7 @@ class Endpoint:
     daita: bool
 
 
-@dataclass
-class Location:
+class Location(BaseModel):
     ipv4: Optional[str]
     ipv6: Optional[str]
     country: str
@@ -38,36 +36,35 @@ class Location:
     obfuscator_hostname: Optional[str]
 
 
-@dataclass
-class ConnectedDetails:
+class ConnectedDetails(BaseModel):
     endpoint: Endpoint
     location: Location
     feature_indicators: List[str]
 
 
-@dataclass
-class DisconnectedDetails:
+class DisconnectedDetails(BaseModel):
     location: Optional[Location]
     locked_down: bool
 
 
-@dataclass
-class ErrorCause:
+class ErrorCause(BaseModel):
     reason: str
 
 
-@dataclass
-class ErrorDetails:
+class ErrorDetails(BaseModel):
     cause: ErrorCause
-    block_failure: str | None
+    block_failure: Optional[str]
 
 
-@dataclass
-class MullvadStatus:
+class MullvadStatus(BaseModel):
     state: str
-    details: Optional[
-        ConnectedDetails | DisconnectedDetails | Literal["nothing"] | ErrorDetails
-    ]
+    details: (
+        ConnectedDetails
+        | DisconnectedDetails
+        | Literal["nothing"]
+        | ErrorDetails
+        | Literal["reconnect"]
+    )
 
 
 EWW_CONFIG = Path("~/Config-Files/hyprland/eww").expanduser()
@@ -88,69 +85,41 @@ def get_mullvad_status_manual() -> MullvadStatus:
         bufsize=1,  # Line buffered
     )
 
-    return parse_mullvad_status(json.loads(process.stdout.readline().strip()))  # type: ignore
+    return parse_mullvad_status(process.stdout.readline().strip())  # type: ignore
 
 
-def parse_mullvad_status(json_data: dict) -> MullvadStatus:
-    state = json_data.get("state", "disconnected")
-    details = json_data.get("details", "nothing")
-
-    if state == "disconnected":
-        if isinstance(details, dict):
-            location = (
-                Location(**details["location"]) if details.get("location") else None
-            )
-            disconnected_details = DisconnectedDetails(
-                location=location, locked_down=details.get("locked_down", False)
-            )
-            return MullvadStatus(state=state, details=disconnected_details)
-        else:
-            return MullvadStatus(state=state, details=None)
-
-    if state in ["connected", "connecting"]:
-        endpoint = Endpoint(**details["endpoint"])
-        location = Location(**details["location"])
-        connected_details = ConnectedDetails(
-            endpoint=endpoint,
-            location=location,
-            feature_indicators=details.get("feature_indicators", []),
-        )
-        return MullvadStatus(state=state, details=connected_details)
-
-    elif state == "error":
-        return MullvadStatus(
-            state=state,
-            details=ErrorDetails(
-                cause=ErrorCause(**details["cause"]),
-                block_failure=details.get("block_failure"),
-            ),
-        )
-    else:
-        return MullvadStatus(state=state, details=details)
+def parse_mullvad_status(json_data: str) -> MullvadStatus:
+    return MullvadStatus.model_validate_json(json_data)
 
 
 def format_status_for_eww(status: MullvadStatus) -> str:
-    if status.state == "connected" and isinstance(status.details, ConnectedDetails):
-        ip = status.details.location.ipv4 or status.details.location.ipv6 or "N/A"
-        return f"Connected: {status.details.location.city}, {status.details.location.country} [{ip}]"
-    elif status.state == "connecting":
-        return "Connecting..."
-    elif status.state == "disconnected":
-        if isinstance(status.details, DisconnectedDetails) and status.details.location:
+    match status.state:
+        case "connected" if isinstance(status.details, ConnectedDetails):
             ip = status.details.location.ipv4 or status.details.location.ipv6 or "N/A"
-            return f"Disconnected: {status.details.location.city}, {status.details.location.country} [{ip}]"
-        else:
-            return "Disconnected"
-    elif status.state == "disconnecting":
-        return "Disconnecting..."
-    elif (
-        status.state == "error"
-        and isinstance(status.details, ErrorDetails)
-        and status.details.cause.reason == "is_offline"
-    ):
-        return "Offline"
-    else:
-        return f"Unknown status: {status}"
+            return f"Connected: {status.details.location.city}, {status.details.location.country} [{ip}]"
+        case "connecting":
+            return "Connecting..."
+        case "disconnected":
+            if (
+                isinstance(status.details, DisconnectedDetails)
+                and status.details.location
+            ):
+                ip = (
+                    status.details.location.ipv4
+                    or status.details.location.ipv6
+                    or "N/A"
+                )
+                return f"Disconnected: {status.details.location.city}, {status.details.location.country} [{ip}]"
+            else:
+                return "Disconnected"
+        case "disconnecting":
+            return "Disconnecting..."
+        case "error" if isinstance(
+            status.details, ErrorDetails
+        ) and status.details.cause.reason == "is_offline":
+            return "Offline"
+        case _:
+            return f"Unknown status: {status}"
 
 
 def vpn_monitor():
@@ -166,7 +135,7 @@ def vpn_monitor():
     try:
         for line in iter(process.stdout.readline, ""):  # type: ignore
             try:
-                status = parse_mullvad_status(json.loads(line.strip()))
+                status = parse_mullvad_status(line.strip())
                 log(f"Status: {status.state}")
                 update_eww({"vpn-status": format_status_for_eww(status)})
 
@@ -178,8 +147,8 @@ def vpn_monitor():
                     log(f"Status after retrying manually: {status.state}")
                     update_eww({"vpn-status": format_status_for_eww(status)})
 
-            except json.JSONDecodeError:
-                log("Error parsing JSON output")
+            except Exception as e:
+                log(f"Error parsing JSON output or updating status: {e}")
 
     except KeyboardInterrupt:
         log("Monitoring stopped.")
