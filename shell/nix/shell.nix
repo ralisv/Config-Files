@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs ? import <nixpkgs> { } }:
 
 let
   python-with-packages = pkgs.python312.withPackages (ps: with ps; [
