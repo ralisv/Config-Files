@@ -12,7 +12,7 @@ size = 9
 history = 10000
 multiplier = 1
 
-[shell]
+[terminal.shell]
 args = ["-c", "nix develop path:./Config-Files/shell/nix --quiet"]
 program = "bash"
 
