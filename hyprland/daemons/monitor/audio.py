@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 import subprocess
+from dataclasses import dataclass
 from math import ceil
 from pathlib import Path
 from time import sleep
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, TypeAdapter, field_validator, validator
-
 from utils import send_notification, update_eww
 
 EWW_CONFIG_PATH = Path("~/Config-Files/hyprland/eww").expanduser()
@@ -38,7 +38,8 @@ class AudioDevice(BaseModel):
         return value
 
 
-class AudioState(BaseModel):
+@dataclass
+class AudioState:
     sink: AudioDevice
     source: AudioDevice
 
@@ -77,7 +78,7 @@ def update_eww_variables(audio: AudioState):
     )
 
 
-def format_device_info(device: AudioDevice) -> str:
+def format_device_info(device: Optional[AudioDevice]) -> str:
     if device is None:
         return "N/A"
 
@@ -113,6 +114,9 @@ def get_sound_settings() -> AudioState:
         None,
     )
 
+    if source is None or sink is None:
+        raise ValueError("Could not find default audio devices.")
+
     return AudioState(sink=sink, source=source)  # type: ignore
 
 
@@ -126,10 +130,10 @@ def audio_monitor():
     )
 
     log("Monitoring for audio changes...")
-
-    audio = get_sound_settings()
-
-    if None in (audio.sink, audio.source):
+    try:
+        audio = get_sound_settings()
+    except Exception as e:
+        log(f"Error getting audio devices: {e}")
         sleep(2)
         audio = get_sound_settings()
 
