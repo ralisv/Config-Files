@@ -34,6 +34,7 @@
     btop
     htop
     stacer # System monitoring
+    lenovo-legion
 
     # Useful applications
     discord
@@ -41,7 +42,7 @@
     teams-for-linux
     caprine # Facebook Messenger client
     signal-desktop
-    signal-cli
+    thunderbird # Email client
 
     cheese # Webcam
 
@@ -51,7 +52,7 @@
     bat # Better cat
     tree
     micro
-    eza # Better ls
+    lsd # ls improved
     translate-shell # CLI translator
 
     # File managers
@@ -60,10 +61,7 @@
     nemo
 
     # Development
-    dotnet-sdk_6
     python312Full
-    libgccjit
-    cmake
     vscode-fhs
     nixpkgs-fmt
     man-pages
@@ -77,6 +75,7 @@
     python312Packages.wheel
     python312Packages.prompt-toolkit
     python312Packages.pygments
+    python312Packages.xonsh
 
     python311Packages.jupyter
     python311Packages.jupyter-core
@@ -95,11 +94,13 @@
     hypridle # Idle manager
     hyprpicker # Color picker
     wl-clipboard # Clipboard manager
+    hyprshade # Screen shader
 
     # Theming
-    libsForQt5.polkit-kde-agent # Auth for elevating permissions
     libsForQt5.qt5ct # Qt theme manager
     catppuccin-qt5ct # Qt theme
     nwg-look # GTK theme manager
+
+    home-manager
   ];
 }
