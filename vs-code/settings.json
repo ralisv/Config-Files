@@ -7,7 +7,14 @@
   },
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+  },
+  "notebook.formatOnSave.enabled": true,
+  "notebook.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -62,6 +69,7 @@
   "github.copilot.enable": {
     "*": true,
     "plaintext": false,
+    "markdown": false,
     "scminput": false
   },
   "isort.args": [
@@ -96,6 +104,7 @@
       }
     }
   },
+  "python.languageServer": "Pylance",
   "python.analysis.autoFormatStrings": true,
   "python.analysis.autoImportCompletions": true,
   "python.analysis.completeFunctionParens": true,
