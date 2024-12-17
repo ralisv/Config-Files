@@ -12,19 +12,8 @@
         sha256 = "1i6dwmddjh0cbrp6zgafdrji202alkz52rjisx0hs1bgjbrbwxdj";
       })
     )
-    <home-manager/nixos>
     ./packages.nix
   ];
-
-  networking.wireless.networks.eduroam = {
-    auth = ''
-      key_mgmt=WPA-EAP
-      eap=PEAP
-      phase2="auth=MSCHAPV2"
-      identity="524771@muni.cz"
-      password="disBos4buC"
-    '';
-  };
 
   programs = {
     light.enable = true;
@@ -37,6 +26,7 @@
     };
     npm.enable = true;
     steam.enable = true;
+    cfs-zen-tweaks.enable = true;
   };
 
   xdg.portal = {
@@ -130,7 +120,7 @@
   };
 
   hardware.nvidia = {
-    open = true;
+    open = false;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
     modesetting.enable = true;
     nvidiaSettings = true;
@@ -172,7 +162,6 @@
 
   networking.hostName = "nixos"; # Define your hostname.
 
-  # Enable networking
   networking.networkmanager.enable = true;
 
   environment.sessionVariables = {
@@ -236,13 +225,26 @@
   };
 
   nix.optimise.automatic = true;
-  nix.settings.auto-optimise-store = true;
+  nix.settings = {
+    auto-optimise-store = true;
+
+    substituters = [
+      "https://cache.nixos.org"
+      "https://cuda-maintainers.cachix.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+    ];
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   boot = {
     supportedFilesystems = [ "ntfs" ];
+
+    tmp.useTmpfs = true;
 
     loader = {
       # systemd-boot.enable = true;
@@ -267,6 +269,8 @@
     enable = true;
     setSocketVariable = true;
   };
+
+  boot.extraModulePackages = with config.boot.kernelPackages; [ lenovo-legion-module ];
 
   system.stateVersion = "24.05";
 
