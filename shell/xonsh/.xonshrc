@@ -11,9 +11,9 @@ sys.path.append(str(SCRIPT_DIRECTORY))
 
 from getpass import getuser
 
-from colors import LS_COLORS, Color, Rainbowizer, Style, colorize_filename
-from trash import ask_whether_to_dump, remove
-from utils import start_in_new_session, super_util
+from colors import LS_COLORS, LS_COLORS_PARSED, AnsiColorCode, Color, Rainbowizer, Style, colorize_filename
+from trash import remove
+from utils import start_in_new_session, super_git_status
 
 # To silence IDE for further complains about nonexistence of this variable
 __xonsh__ = __xonsh__
@@ -59,8 +59,16 @@ __xonsh__.env["XONSH_AUTOPAIR"] = True
 __xonsh__.env["XONSH_CACHE_DIR"] = "~"
 __xonsh__.env["XONSH_COLOR_STYLE"] = "paraiso-dark"
 __xonsh__.env["XONSH_HISTORY_MATCH_ANYWHERE"] = True
+__xonsh__.env["PROMPT_TOOLKIT_COLOR_DEPTH"] = "DEPTH_24_BIT"
 
 __xonsh__.env["BAT_STYLE"] = "grid,changes,header-filename,header-filesize,numbers"
+
+def _s(args):
+    git_status = super_git_status()
+    if git_status.strip():
+        print(git_status)
+        
+    subprocess.run(["/usr/bin/env", "lsd", *args], env={"LS_COLORS": LS_COLORS}, capture_output=False)
 
 my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
@@ -70,17 +78,15 @@ my_aliases = {
     "du": "du -h",
     "fc-list": "fc-list --format='%{family}'\n",
     "grep": "grep --color=auto",
-    "ls": "ls --color=auto",
+    "ls": "lsd --color=auto",
     "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' {os.path.expanduser('~')}/aisa",
     "pip": "python -m pip",
     "R": "R --no-save -q",
     "rm": lambda args: remove(args),
-    "s": f"{SCRIPT_DIRECTORY / 'nice-git.py'}; eza --icons=always",
+    "rmp": "/usr/bin/env rm",
+    "s": lambda args: _s(args),
     "sl": "sl -e",
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
-    "uaexpert": lambda args: start_in_new_session(
-        f"{os.path.expanduser('~')}/Executables/UaExpert/AppRun", args
-    ),
     "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
     
     # Setsid by default for some commands
@@ -88,6 +94,8 @@ my_aliases = {
     "vlc": "setsid vlc",
     "okular": "setsid okular",
     "evince": "setsid evince",
+    "nix-shell": "nix-shell --log-format bar-with-logs",
+    "sudo nixos-rebuild": "sudo nixos-rebuild --log-format bar-with-logs",
 }
 aliases.update(my_aliases)
 
@@ -99,54 +107,51 @@ def set_style() -> None:
     """
     from xonsh.tools import register_custom_style
 
-    mystyle = {
-        "Literal.String.Single": "#11ff11",
-        "Literal.String.Double": "#11ff11",
+    my_style = {
         "Token.Operator": "#fffd00",
         "Token.PTK.CompletionMenu": "#000000",
         "Token.Literal.Number.Integer": "#44ffff",
         "Token.Literal.Number.Float": "#44ffff",
         
         # Foreground colors
-        "Token.Color.BLACK": "#333333",
-        "Token.Color.RED": "#ff1111",
-        "Token.Color.GREEN": "#11ff11",
-        "Token.Color.YELLOW": "#ffff11",
-        "Token.Color.BLUE": "#1111ff",
-        "Token.Color.MAGENTA": "#ff11ff",
-        "Token.Color.CYAN": "#11ccff",
-        "Token.Color.WHITE": "#eeeeee",
-        "Token.Color.INTENSE_BLACK": "#222222",
-        "Token.Color.INTENSE_RED": "#ff0000",
-        "Token.Color.INTENSE_GREEN": "#00ff00",
-        "Token.Color.INTENSE_YELLOW": "#ffff00",
-        "Token.Color.INTENSE_BLUE": "#0000ff",
-        "Token.Color.INTENSE_MAGENTA": "#ff00ff",
-        "Token.Color.INTENSE_CYAN": "#00ddff",
-        "Token.Color.INTENSE_WHITE": "#ffffff",
+        "BLACK": "#333333",
+        "RED": "#ff1111",
+        "GREEN": "#11ff11",
+        "YELLOW": "#ffff11",
+        "BLUE": "#1111ff",
+        "MAGENTA": "#ff11ff",
+        "CYAN": "#11ccff",
+        "WHITE": "#eeeeee",
+        "INTENSE_BLACK": "#222222",
+        "INTENSE_RED": "#ff0000",
+        "INTENSE_GREEN": "#00ff00",
+        "INTENSE_YELLOW": "#ffff00",
+        "INTENSE_BLUE": "#0000ff",
+        "INTENSE_MAGENTA": "#ff00ff",
+        "INTENSE_CYAN": "#00ddff",
+        "INTENSE_WHITE": "#ffffff",
         
         # Background colors
-        "Token.Color.BACKGROUND_BLACK": "#111111",
-        "Token.Color.BACKGROUND_RED": "#ff1111",
-        "Token.Color.BACKGROUND_GREEN": "#11ff11",
-        "Token.Color.BACKGROUND_YELLOW": "#ffff11",
-        "Token.Color.BACKGROUND_BLUE": "#1111ff",
-        "Token.Color.BACKGROUND_MAGENTA": "#ff11ff",
-        "Token.Color.BACKGROUND_CYAN": "#11ccff",
-        "Token.Color.BACKGROUND_WHITE": "#eeeeee",
-        "Token.Color.BACKGROUND_INTENSE_BLACK": "#000000",
-        "Token.Color.BACKGROUND_INTENSE_RED": "#ff0000",
-        "Token.Color.BACKGROUND_INTENSE_GREEN": "#00ff00",
-        "Token.Color.BACKGROUND_INTENSE_YELLOW": "#ffff00",
-        "Token.Color.BACKGROUND_INTENSE_BLUE": "#0000ff",
-        "Token.Color.BACKGROUND_INTENSE_MAGENTA": "#ff00ff",
-        "Token.Color.BACKGROUND_INTENSE_CYAN": "#00ddff",
-        "Token.Color.BACKGROUND_INTENSE_WHITE": "#ffffff",
+        "BACKGROUND_BLACK": "#111111",
+        "BACKGROUND_RED": "#ff1111",
+        "BACKGROUND_GREEN": "#11ff11",
+        "BACKGROUND_YELLOW": "#ffff11",
+        "BACKGROUND_BLUE": "#1111ff",
+        "BACKGROUND_MAGENTA": "#ff11ff",
+        "BACKGROUND_CYAN": "#11ccff",
+        "BACKGROUND_WHITE": "#eeeeee",
+        "BACKGROUND_INTENSE_BLACK": "#000000",
+        "BACKGROUND_INTENSE_RED": "#ff0000",
+        "BACKGROUND_INTENSE_GREEN": "#00ff00",
+        "BACKGROUND_INTENSE_YELLOW": "#ffff00",
+        "BACKGROUND_INTENSE_BLUE": "#0000ff",
+        "BACKGROUND_INTENSE_MAGENTA": "#ff00ff",
+        "BACKGROUND_INTENSE_CYAN": "#00ddff",
+        "BACKGROUND_INTENSE_WHITE": "#ffffff",
     }
-
-    register_custom_style("mystyle", mystyle, base="paraiso-dark")
-    __xonsh__.env["XONSH_COLOR_STYLE"] = "mystyle"
-
+    
+    register_custom_style("my_style", my_style, base="paraiso-dark")
+    __xonsh__.env["XONSH_COLOR_STYLE"] = "my_style"
 
 set_style()
 
@@ -164,6 +169,7 @@ def customize_autocompleter() -> None:
 customize_autocompleter()
 
 __xonsh__.env["LS_COLORS"] = LS_COLORS
+__xonsh__.env["EZA_COLORS"] = LS_COLORS
 
 
 class XonshPrompt:
