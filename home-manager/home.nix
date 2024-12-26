@@ -3,6 +3,8 @@
 {
   imports = [
     ./hyprland/hyprland.nix
+    ./programs/lsd.nix
+    ./programs/alacritty.nix
   ];
 
   home.username = "ralis";
