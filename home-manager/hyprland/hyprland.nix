@@ -4,6 +4,7 @@
   imports = [
     ./hypridle.nix
     ./hyprlock.nix
+    ./eww/eww.nix
   ];
 
   wayland.windowManager.hyprland = {

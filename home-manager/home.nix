@@ -6,6 +6,8 @@
     ./programs/lsd.nix
     ./programs/alacritty.nix
     ./programs/bat.nix
+    ./programs/freetube.nix
+    ./programs/git.nix
   ];
 
   home.username = "ralis";
