@@ -1,12 +1,17 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ./hyprland/hyprland.nix
+  ];
+
   home.username = "ralis";
   home.homeDirectory = "/home/ralis";
 
-  home.stateVersion = "23.11"; # Don't modify
+  home.stateVersion = "24.05"; # Don't modify
 
-  home.packages = [ ];
+  home.packages = with pkgs; [
+  ];
 
   gtk.enable = true;
 
