@@ -9,7 +9,10 @@
     ./programs/freetube.nix
     ./programs/git.nix
     ./programs/micro.nix
+    ./programs/vscode.nix
   ];
+
+  nixpkgs.config.allowUnfree = true;
 
   home.username = "ralis";
   home.homeDirectory = "/home/ralis";

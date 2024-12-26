@@ -20,7 +20,6 @@
       pkgs = nixpkgs.legacyPackages.${system};
       pkgs-pinned-hypr = import nixpkgs-pinned-hyprland {
         inherit system;
-        config.allowUnfree = true;
       };
     in
     {
