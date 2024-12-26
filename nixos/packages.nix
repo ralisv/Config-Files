@@ -8,7 +8,6 @@
 
     # Mediaplayers
     vlc
-    freetube
 
     # PDF readers
     okular
@@ -47,8 +46,6 @@
     # Shell utilities
     zoxide # cd improved
     timer # CLI timer
-    tree
-    micro
     translate-shell # CLI translator
 
     # File managers

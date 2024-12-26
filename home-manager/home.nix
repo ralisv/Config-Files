@@ -8,6 +8,7 @@
     ./programs/bat.nix
     ./programs/freetube.nix
     ./programs/git.nix
+    ./programs/micro.nix
   ];
 
   home.username = "ralis";
