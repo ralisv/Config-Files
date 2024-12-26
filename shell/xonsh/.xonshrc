@@ -1,6 +1,5 @@
 # type: ignore
 import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -68,7 +67,14 @@ def _s(args):
     if git_status.strip():
         print(git_status)
         
-    subprocess.run(["/usr/bin/env", "lsd", "--color=always", *args], env={"LS_COLORS": LS_COLORS}, capture_output=False)
+    subprocess.run(
+        ["/usr/bin/env", "lsd", "--color=always", *args],
+        env={
+            "LS_COLORS": LS_COLORS,
+            "PATH": os.environ.get("PATH")
+        },
+        capture_output=False
+    )
 
 my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",

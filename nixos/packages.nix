@@ -1,98 +1,108 @@
 { pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
-    # Web browsers
-    brave
-    mullvad-browser
+  programs = {
+    xonsh = {
+      enable = true;
+      package = pkgs.xonsh.override {
+        extraPackages = ps: [
+          ps.tabulate
+          ps.types-tabulate
+          ps.wheel
+          ps.prompt-toolkit
+          ps.pygments
+        ];
+      };
+    };
+  };
 
-    # Mediaplayers
-    vlc
+  environment.systemPackages = with pkgs;
+    [
+      # Web browsers
+      brave
+      mullvad-browser
 
-    # PDF readers
-    okular
-    evince
+      # Mediaplayers
+      vlc
 
-    # Essential tools, utilities and applications
-    libreoffice
-    coreutils
-    unzip
-    zip
-    gparted # For imaging USB drives
-    brightnessctl
-    pavucontrol # Audio control
-    pulseaudio # CLI tools for audio
-    wayland-utils
-    bash-completion
-    xdg-utils
-    nethogs # For application network activity monitoring
-    ntfs3g # For NTFS support
-    networkmanagerapplet
-    acpi
-    btop
-    htop
-    stacer # System monitoring
-    lenovo-legion
+      # PDF readers
+      okular
+      evince
 
-    # Useful applications
-    discord
-    webcord-vencord # Discord frontend for Wayland
-    teams-for-linux
-    signal-desktop
-    thunderbird # Email client
+      # Essential tools, utilities and applications
+      libreoffice
+      coreutils
+      unzip
+      zip
+      gparted # For imaging USB drives
+      brightnessctl
+      pavucontrol # Audio control
+      pulseaudio # CLI tools for audio
+      wayland-utils
+      bash-completion
+      xdg-utils
+      nethogs # For application network activity monitoring
+      ntfs3g # For NTFS support
+      networkmanagerapplet
+      acpi
+      btop
+      htop
+      stacer # System monitoring
+      lenovo-legion
 
-    cheese # Webcam
+      # Useful applications
+      discord
+      webcord-vencord # Discord frontend for Wayland
+      teams-for-linux
+      signal-desktop
+      thunderbird # Email client
 
-    # Shell utilities
-    zoxide # cd improved
-    timer # CLI timer
-    translate-shell # CLI translator
+      cheese # Webcam
 
-    # File managers
-    dolphin
-    (nnn.override { withNerdIcons = true; })
-    nemo
+      # Shell utilities
+      zoxide # cd improved
+      timer # CLI timer
+      translate-shell # CLI translator
 
-    # Development
-    python312Full
-    vscode-fhs
-    nixpkgs-fmt
-    man-pages
-    ghc
-    docker
-    docker-compose
+      # File managers
+      dolphin
+      (nnn.override {
+        withNerdIcons = true;
+      })
+      nemo
 
-    # Python packages
-    python312Packages.tabulate
-    python312Packages.types-tabulate
-    python312Packages.wheel
-    python312Packages.prompt-toolkit
-    python312Packages.pygments
-    python312Packages.xonsh
+      # Development
+      python312Full
+      nixpkgs-fmt
+      man-pages
+      ghc
+      docker
+      docker-compose
 
-    python311Packages.jupyter
-    python311Packages.jupyter-core
-    python311Packages.scipy
-    python311Packages.numpy
+      # Useful python packages
+      python311Packages.jupyter
+      python311Packages.jupyter-core
+      python311Packages.scipy
+      python311Packages.numpy
 
-    # Useful things for Hyprland
-    swww # Wallpaper manager
-    hyprshot # Screenshot tool
-    hyprnotify # Bridge between hyprland notifications and libnotify
-    libnotify # Notifications interface
-    gimp # Image editing
-    wlogout # Logout menu
-    hyprlock # Lock screen
-    hypridle # Idle manager
-    hyprpicker # Color picker
-    wl-clipboard # Clipboard manager
-    hyprshade # Screen shader
-    hyprlandPlugins.hyprgrass # Touch gestures
-    wvkbd # Virtual keyboard
+      # Useful things for Hyprland
+      swww # Wallpaper manager
+      hyprshot # Screenshot tool
+      hyprnotify # Bridge between hyprland notifications and libnotify
+      libnotify # Notifications interface
+      gimp # Image editing
+      wlogout # Logout menu
+      hyprlock # Lock screen
+      hypridle # Idle manager
+      hyprpicker # Color picker
+      wl-clipboard # Clipboard manager
+      hyprshade # Screen shader
+      hyprlandPlugins.hyprgrass # Touch gestures
+      wvkbd # Virtual keyboard
 
-    # Theming
-    libsForQt5.qt5ct # Qt theme manager
-    catppuccin-qt5ct # Qt theme
-    nwg-look # GTK theme manager
-  ];
+      # Theming
+      libsForQt5.qt5ct # Qt theme manager
+      catppuccin-qt5ct # Qt theme
+      nwg-look # GTK theme manager
+    ];
 }

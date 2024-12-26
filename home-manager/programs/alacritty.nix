@@ -17,7 +17,7 @@
         multiplier = 1;
       };
       terminal.shell = {
-        args = [ "-c" "nix develop path:$HOME/Config-Files/shell/nix --quiet || bash" ];
+        args = [ "-c" "xonsh" ];
         program = "bash";
       };
       window = {
