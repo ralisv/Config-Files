@@ -5,6 +5,7 @@
     ./hyprland/hyprland.nix
     ./programs/lsd.nix
     ./programs/alacritty.nix
+    ./programs/bat.nix
   ];
 
   home.username = "ralis";

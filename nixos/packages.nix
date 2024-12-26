@@ -15,7 +15,6 @@
     evince
 
     # Essential tools, utilities and applications
-    alacritty # Terminal emulator
     libreoffice
     coreutils
     unzip
@@ -40,7 +39,6 @@
     discord
     webcord-vencord # Discord frontend for Wayland
     teams-for-linux
-    caprine # Facebook Messenger client
     signal-desktop
     thunderbird # Email client
 
@@ -49,10 +47,8 @@
     # Shell utilities
     zoxide # cd improved
     timer # CLI timer
-    bat # Better cat
     tree
     micro
-    lsd # ls improved
     translate-shell # CLI translator
 
     # File managers
@@ -88,19 +84,18 @@
     hyprnotify # Bridge between hyprland notifications and libnotify
     libnotify # Notifications interface
     gimp # Image editing
-    eww # Widgets
     wlogout # Logout menu
     hyprlock # Lock screen
     hypridle # Idle manager
     hyprpicker # Color picker
     wl-clipboard # Clipboard manager
     hyprshade # Screen shader
+    hyprlandPlugins.hyprgrass # Touch gestures
+    wvkbd # Virtual keyboard
 
     # Theming
     libsForQt5.qt5ct # Qt theme manager
     catppuccin-qt5ct # Qt theme
     nwg-look # GTK theme manager
-
-    home-manager
   ];
 }

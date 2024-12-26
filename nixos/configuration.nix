@@ -148,7 +148,7 @@
     enableDefaultPackages = true;
     packages = with pkgs; [
       ubuntu_font_family
-      (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+      nerd-fonts.fira-code
     ];
     fontconfig = {
       defaultFonts = {
