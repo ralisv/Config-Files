@@ -39,7 +39,7 @@
   :interval "30s"
   :initial "..."
   :halign "right"
-  "../scripts/get-battery-status.sh"
+  "scripts/get-battery-status.sh"
 )
 
 (defpoll storage-info

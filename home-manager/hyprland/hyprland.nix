@@ -170,13 +170,13 @@
       ];
 
       binde = [
-        ", XF86AudioRaiseVolume, exec, ~/Config-Files/hyprland/scripts/volume.sh up"
-        ", XF86AudioLowerVolume, exec, ~/Config-Files/hyprland/scripts/volume.sh down"
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ && wpctl set-mute @DEFAULT_AUDIO_SINK@ 0"
+        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
       ];
 
       bindr = [
-        ", XF86AudioMute, exec, ~/Config-Files/hyprland/scripts/volume.sh mute"
-        ", XF86AudioMicMute, exec, ~/Config-Files/hyprland/scripts/mic.sh toggle"
+        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
       ];
 
       plugin.touch_gestures = {
