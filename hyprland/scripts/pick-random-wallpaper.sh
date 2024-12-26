@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
 
-# If swww query fails,
+# Initialize swww if not running
 swww query 2>/dev/null || swww init
 
+# Directory containing wallpapers
 export WALLPAPER_DIR="$HOME/Pictures/Wallpapers/Favorite"
-export POSITIONS=("left" "right" "bottom" "top" "center" "top-left" "top-right" "bottom-left" "bottom-right")  # Add more transition types as needed
+export POSITIONS=("left" "right" "bottom" "top" "center" "top-left" "top-right" "bottom-left" "bottom-right")
 
-wallpaper=$(ls $WALLPAPER_DIR | shuf -n 1)
+# Get list of all monitors using hyprctl
+monitors=$(hyprctl monitors | grep Monitor | awk '{print $2}')
 
-position=${POSITIONS[$RANDOM % ${#POSITIONS[@]}]}
-
-swww img --transition-type "grow" --transition-pos $position $WALLPAPER_DIR/$wallpaper
+# For each monitor, set a random wallpaper
+for monitor in $monitors; do
+    # Get random wallpaper and position
+    wallpaper=$(ls $WALLPAPER_DIR | shuf -n 1)
+    position=${POSITIONS[$RANDOM % ${#POSITIONS[@]}]}
+    
+    # Set wallpaper for current monitor
+    swww img --outputs $monitor \
+             --transition-type "grow" \
+             --transition-pos $position \
+             "$WALLPAPER_DIR/$wallpaper"
+done
