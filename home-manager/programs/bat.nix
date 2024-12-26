@@ -4,7 +4,7 @@
   programs.bat = {
     enable = true;
     config = {
-      pager = "never";
+      pager = "less -FR";
       style = "header,changes";
       theme = "darkneon";
     };
