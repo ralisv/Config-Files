@@ -68,11 +68,11 @@ def _s(args):
     if git_status.strip():
         print(git_status)
         
-    subprocess.run(["/usr/bin/env", "lsd", *args], env={"LS_COLORS": LS_COLORS}, capture_output=False)
+    subprocess.run(["/usr/bin/env", "lsd", "--color=always", *args], env={"LS_COLORS": LS_COLORS}, capture_output=False)
 
 my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
-    "cat": "bat --pager=never --theme=DarkNeon --style=header,changes",
+    "cat": "bat",
     "cdi": "zi", # Interactive zoxide (fzf)
     "cd": "z", # Use zoxide instead of cd
     "du": "du -h",

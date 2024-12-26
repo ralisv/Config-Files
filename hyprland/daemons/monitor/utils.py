@@ -1,7 +1,4 @@
 import subprocess
-from pathlib import Path
-
-EWW_CONFIG = Path("~/Config-Files/hyprland/eww").expanduser()
 
 
 def send_notification(urgency: str, timeout: int, title: str, body: str) -> None:
@@ -25,8 +22,6 @@ def update_eww(toUpdate: dict[str, str]) -> None:
     subprocess.run(
         [
             "eww",
-            "--config",
-            EWW_CONFIG.as_posix(),
             "update",
             *(f"{key}={value}" for key, value in toUpdate.items()),
         ]
