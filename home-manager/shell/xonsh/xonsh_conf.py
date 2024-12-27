@@ -2,10 +2,12 @@
 import os
 import subprocess
 import sys
+import warnings
 from getpass import getuser
 from pathlib import Path
 
 sys.path.append((Path.home() / ".local" / "share" / "xonsh").as_posix())
+
 from xonsh_utils.colors import (  # pylint: disable=import-error
     LS_COLORS,
     Color,
@@ -16,52 +18,35 @@ from xonsh_utils.colors import (  # pylint: disable=import-error
 from xonsh_utils.trash import remove
 from xonsh_utils.utils import super_git_status
 
-# To silence IDE for further complains about nonexistence of this variable
-__xonsh__ = __xonsh__
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-__xonsh__.env["PATH"].append(str(Path.home() / ".local" / "bin"))
-__xonsh__.env["PATH"].append(str(Path.home() / ".dotnet" / "tools"))
-
-# Select between readline and prompt_toolkit
-__xonsh__.env["SHELL_TYPE"] = "prompt_toolkit"
-
-
-# Silence the deprecation warning caused by bug inside of prompt-toolkit library
-def filter_warnings() -> None:
-    """
-    Filters out the deprecation warnings
-    """
-    import warnings
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
-
-
-filter_warnings()
+env = __xonsh__.env # pylint: disable=undefined-variable
 
 # Configure xonsh behavior via environment variables
-__xonsh__.env["AUTO_CD"] = True
-__xonsh__.env["CASE_SENSITIVE_COMPLETIONS"] = False
-__xonsh__.env["COMPLETION_IN_THREAD"] = True
-__xonsh__.env["COMPLETION_MODE"] = "default"
-__xonsh__.env["COMPLETION_QUERY_LIMIT"] = 10
-__xonsh__.env["COMPLETIONS_CONFIRM"] = False
-__xonsh__.env["COMPLETIONS_MENU_ROWS"] = 2
-__xonsh__.env["DYNAMIC_CWD_WIDTH"] = "50%"
-__xonsh__.env["DYNAMIC_CWD_ELISION_CHAR"] = "..."
-__xonsh__.env["ENABLE_ASYNC_PROMPT"] = True
-__xonsh__.env["FOREIGN_ALIASES_SUPPRESS_SKIP_MESSAGE"] = 1
-__xonsh__.env["INDENT"] = "   "
-__xonsh__.env["MULTILINE_PROMPT"] = " "
-__xonsh__.env["SUBSEQUENCE_PATH_COMPLETION"] = True
-__xonsh__.env["SUGGEST_COMMANDS"] = True
-__xonsh__.env["SUGGEST_MAX_NUM"] = 20
-__xonsh__.env["TITLE"] = "Xonsh"
-__xonsh__.env["XONSH_AUTOPAIR"] = True
-__xonsh__.env["XONSH_CACHE_DIR"] = "~"
-__xonsh__.env["XONSH_COLOR_STYLE"] = "paraiso-dark"
-__xonsh__.env["XONSH_HISTORY_MATCH_ANYWHERE"] = True
-__xonsh__.env["PROMPT_TOOLKIT_COLOR_DEPTH"] = "DEPTH_24_BIT"
-
-__xonsh__.env["BAT_STYLE"] = "grid,changes,header-filename,header-filesize,numbers"
+env["SHELL_TYPE"] = "prompt_toolkit"
+env["AUTO_CD"] = True
+env["CASE_SENSITIVE_COMPLETIONS"] = False
+env["COMPLETION_IN_THREAD"] = True
+env["COMPLETION_MODE"] = "default"
+env["COMPLETION_QUERY_LIMIT"] = 10
+env["COMPLETIONS_CONFIRM"] = False
+env["COMPLETIONS_MENU_ROWS"] = 2
+env["DYNAMIC_CWD_WIDTH"] = "50%"
+env["DYNAMIC_CWD_ELISION_CHAR"] = "..."
+env["ENABLE_ASYNC_PROMPT"] = True
+env["FOREIGN_ALIASES_SUPPRESS_SKIP_MESSAGE"] = 1
+env["INDENT"] = "   "
+env["MULTILINE_PROMPT"] = " "
+env["SUBSEQUENCE_PATH_COMPLETION"] = True
+env["SUGGEST_COMMANDS"] = True
+env["SUGGEST_MAX_NUM"] = 20
+env["TITLE"] = "Xonsh"
+env["XONSH_AUTOPAIR"] = True
+env["XONSH_CACHE_DIR"] = "~"
+env["XONSH_COLOR_STYLE"] = "paraiso-dark"
+env["XONSH_HISTORY_MATCH_ANYWHERE"] = True
+env["PROMPT_TOOLKIT_COLOR_DEPTH"] = "DEPTH_24_BIT"
+env["LS_COLORS"] = LS_COLORS
 
 
 def _s(args):
@@ -83,23 +68,19 @@ my_aliases = {
     "man": "batman",
     "cdi": "zi",  # Interactive zoxide (fzf)
     "cd": "z",  # Use zoxide instead of cd
+    "ls": "lsd",
     "du": "du -h",
     "df": "df -h",
     "grep": "grep --color=auto",
-    "ls": "lsd --color=auto",
-    "pip": "python -m pip",
-    "R": "R --no-save -q",
     "rm": remove,
     "rmp": "/usr/bin/env rm",
     "s": _s,
     "sl": "sl -e",
-    "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
-    "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
     "vlc": "setsid vlc",
     "okular": "setsid okular",
     "nix-shell": "nix-shell --log-format bar-with-logs",
 }
-aliases.update(my_aliases)
+aliases.update(my_aliases) # pylint: disable=undefined-variable
 
 
 # Style the terminal
@@ -107,7 +88,7 @@ def set_style() -> None:
     """
     Sets the color style of the terminal
     """
-    from xonsh.tools import register_custom_style
+    from xonsh.tools import register_custom_style  # pylint: disable=import-error
 
     my_style = {
         "Token.Operator": "#fffd00",
@@ -151,7 +132,7 @@ def set_style() -> None:
     }
 
     register_custom_style("my_style", my_style, base="paraiso-dark")
-    __xonsh__.env["XONSH_COLOR_STYLE"] = "my_style"
+    env["XONSH_COLOR_STYLE"] = "my_style"
 
 
 set_style()
@@ -161,7 +142,7 @@ def customize_autocompleter() -> None:
     """
     Customize the autocompleter
     """
-    import prompt_toolkit.styles.defaults as defstyle
+    import prompt_toolkit.styles.defaults as defstyle  # pylint: disable=import-error
 
     defstyle.PROMPT_TOOLKIT_STYLE.append(("bottom-toolbar", "noreverse"))
     defstyle.PROMPT_TOOLKIT_STYLE.append(("completion-menu", "bg:#771977 #000000"))
@@ -169,8 +150,6 @@ def customize_autocompleter() -> None:
 
 customize_autocompleter()
 
-__xonsh__.env["LS_COLORS"] = LS_COLORS
-__xonsh__.env["EZA_COLORS"] = LS_COLORS
 
 
 class XonshPrompt:
@@ -202,7 +181,7 @@ class XonshPrompt:
     def git_info() -> str:
         try:
             return XonshPrompt.git_info_raw()
-        except Exception:
+        except subprocess.CalledProcessError:
             return ""
 
     @staticmethod
@@ -218,19 +197,26 @@ class XonshPrompt:
             ["git", "rev-parse", "--is-inside-work-tree"],
             capture_output=True,
             text=True,
+            check=False,
         )
         if git_rev_parse.returncode != 0:
             return ""
 
         # Get the name of the current branch
         git_branch = subprocess.run(
-            ["git", "branch", "--show-current"], capture_output=True, text=True
+            ["git", "branch", "--show-current"],
+            capture_output=True,
+            text=True,
+            check=False,
         )
         branch = git_branch.stdout.strip()
 
         # Check if the repository is dirty (has uncommitted changes)
         git_status = subprocess.run(
-            ["git", "status", "--porcelain"], capture_output=True, text=True
+            ["git", "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            check=False,
         )
         is_dirty = bool(git_status.stdout)
 
@@ -260,7 +246,7 @@ class XonshPrompt:
         Returns:
             str: The last exit code colored red if not zero or empty string if zero
         """
-        exit_code = __xonsh__.env["LAST_RETURN_CODE"]
+        exit_code = env["LAST_RETURN_CODE"]
         return (
             XonshPrompt.enclose_in_brackets(f"{Color.RED}{exit_code}")
             if exit_code != 0
@@ -280,30 +266,24 @@ class XonshPrompt:
         return Style.DEFAULT
 
 
-__xonsh__.env["PROMPT_FIELDS"]["git-info"] = XonshPrompt.git_info
-__xonsh__.env["PROMPT_FIELDS"]["last-exit-code-info"] = XonshPrompt.last_exit_code_info
-__xonsh__.env["PROMPT_FIELDS"]["path-info"] = XonshPrompt.path_info
-__xonsh__.env["PROMPT_FIELDS"]["reset"] = XonshPrompt.reset
-__xonsh__.env["PROMPT_FIELDS"]["rainbow-user"] = lambda: XonshPrompt.dye(getuser())
-__xonsh__.env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.dye("\n λ ")
-__xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.dye(".")
+env["PROMPT_FIELDS"]["git-info"] = XonshPrompt.git_info
+env["PROMPT_FIELDS"]["last-exit-code-info"] = XonshPrompt.last_exit_code_info
+env["PROMPT_FIELDS"]["path-info"] = XonshPrompt.path_info
+env["PROMPT_FIELDS"]["reset"] = XonshPrompt.reset
+env["PROMPT_FIELDS"]["rainbow-user"] = lambda: XonshPrompt.dye(getuser())
+env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.dye("\n λ ")
+env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.dye(".")
 
-__xonsh__.env["PROMPT"] = (
+env["PROMPT"] = (
     "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
 )
 
-# Option passed to man's formatter, removes undesiColor.RED characters from output
-__xonsh__.env["MANROFFOPT"] = "-c"
-
-# Ask about dumping trash
-# ask_whether_to_dump()
-
 # Setup zoxide
-execx(
+execx( # pylint: disable=undefined-variable
     subprocess.run(
         ["zoxide", "init", "xonsh"], capture_output=True, text=True, check=True
     ).stdout,
     "exec",
-    __xonsh__.ctx,
+    __xonsh__.ctx, # pylint: disable=undefined-variable
     filename="zoxide",
 )
