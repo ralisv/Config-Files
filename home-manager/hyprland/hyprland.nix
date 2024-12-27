@@ -6,13 +6,14 @@
     ./hyprlock.nix
     ./eww/eww.nix
   ];
+  home.file.".config/hypr/hyprshade.toml".source = ./hyprshade.toml;
+  home.file.".config/hypr/daemons".source = ./daemons;
 
   home.packages = with pkgs; [
     swww # Wallpaper manager
     hyprshot # Screenshot tool
     hyprnotify # Bridge between hyprland notifications and libnotify
     libnotify # Notifications interface
-    gimp # Image editing
     hyprpicker # Color picker
     wl-clipboard # Clipboard manager
     hyprshade # Screen shader
@@ -20,8 +21,6 @@
     xdg-desktop-portal-hyprland # Desktop portal
     hyprshade # Screen shader
   ];
-
-  home.file.".config/hypr/hyprshade.toml".source = ./hyprshade.toml;
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -50,10 +49,10 @@
       exec-once = [
         "dbus-update-activation-environment --systemd HYPRLAND_INSTANCE_SIGNATURE"
         "hypridle"
-        "~/Config-Files/hyprland/daemons/wallpaper-manager.sh"
+        "./daemons/wallpaper-manager.sh"
         "eww daemon"
         "sleep 1 && eww open info"
-        "nix-shell ~/Config-Files/hyprland/daemons/monitor/shell.nix &"
+        "nix-shell ./daemons/monitor/shell.nix"
         "while true; do hyprnotify --no-sound; done"
         "hyprctl setcursor LyraS-cursors 25"
         "systemctl --user start hyprpolkitagent"
