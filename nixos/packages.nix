@@ -1,21 +1,6 @@
 { pkgs, ... }:
 
 {
-  programs = {
-    xonsh = {
-      enable = true;
-      package = pkgs.xonsh.override {
-        extraPackages = ps: [
-          ps.tabulate
-          ps.types-tabulate
-          ps.wheel
-          ps.prompt-toolkit
-          ps.pygments
-        ];
-      };
-    };
-  };
-
   environment.systemPackages = with pkgs;
     [
       # Web browsers
@@ -39,16 +24,16 @@
       pavucontrol # Audio control
       pulseaudio # CLI tools for audio
       wayland-utils
-      bash-completion
       xdg-utils
-      nethogs # For application network activity monitoring
       ntfs3g # For NTFS support
       networkmanagerapplet
       acpi
-      btop
-      htop
-      stacer # System monitoring
       lenovo-legion
+
+      timer # CLI timer
+      translate-shell # CLI translator
+      btop
+      man-pages
 
       # Useful applications
       discord
@@ -60,9 +45,7 @@
       cheese # Webcam
 
       # Shell utilities
-      zoxide # cd improved
-      timer # CLI timer
-      translate-shell # CLI translator
+
 
       # File managers
       dolphin
@@ -74,7 +57,6 @@
       # Development
       python312Full
       nixpkgs-fmt
-      man-pages
       ghc
       docker
       docker-compose
@@ -86,19 +68,7 @@
       python311Packages.numpy
 
       # Useful things for Hyprland
-      swww # Wallpaper manager
-      hyprshot # Screenshot tool
-      hyprnotify # Bridge between hyprland notifications and libnotify
-      libnotify # Notifications interface
-      gimp # Image editing
-      wlogout # Logout menu
-      hyprlock # Lock screen
-      hypridle # Idle manager
-      hyprpicker # Color picker
-      wl-clipboard # Clipboard manager
-      hyprshade # Screen shader
-      hyprlandPlugins.hyprgrass # Touch gestures
-      wvkbd # Virtual keyboard
+
 
       # Theming
       libsForQt5.qt5ct # Qt theme manager

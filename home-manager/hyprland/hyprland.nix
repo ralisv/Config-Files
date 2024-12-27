@@ -7,6 +7,22 @@
     ./eww/eww.nix
   ];
 
+  home.packages = with pkgs; [
+    swww # Wallpaper manager
+    hyprshot # Screenshot tool
+    hyprnotify # Bridge between hyprland notifications and libnotify
+    libnotify # Notifications interface
+    gimp # Image editing
+    hyprpicker # Color picker
+    wl-clipboard # Clipboard manager
+    hyprshade # Screen shader
+    wvkbd # Virtual keyboard
+    xdg-desktop-portal-hyprland # Desktop portal
+    hyprshade # Screen shader
+  ];
+
+  home.file.".config/hypr/hyprshade.toml".source = ./hyprshade.toml;
+
   wayland.windowManager.hyprland = {
     enable = true;
     package = pkgs-pinned-hypr.hyprland;

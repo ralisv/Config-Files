@@ -18,14 +18,6 @@
   programs = {
     light.enable = true;
     git.enable = true;
-    xwayland.enable = true;
-    hyprland = {
-      enable = true;
-      xwayland.enable = true;
-      portalPackage = pkgs.xdg-desktop-portal-hyprland;
-    };
-    npm.enable = true;
-    steam.enable = true;
     cfs-zen-tweaks.enable = true;
   };
 
