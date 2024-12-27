@@ -32,7 +32,6 @@ def filter_warnings() -> None:
     Filters out the deprecation warnings
     """
     import warnings
-
     warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
@@ -81,10 +80,11 @@ def _s(args):
 my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
     "cat": "bat",
+    "man": "batman",
     "cdi": "zi",  # Interactive zoxide (fzf)
     "cd": "z",  # Use zoxide instead of cd
     "du": "du -h",
-    "fc-list": "fc-list --format='%{family}'\n",
+    "df": "df -h",
     "grep": "grep --color=auto",
     "ls": "lsd --color=auto",
     "pip": "python -m pip",
@@ -98,7 +98,6 @@ my_aliases = {
     "vlc": "setsid vlc",
     "okular": "setsid okular",
     "nix-shell": "nix-shell --log-format bar-with-logs",
-    "home-manager": "home-manager --log-level debug",
 }
 aliases.update(my_aliases)
 
@@ -292,19 +291,6 @@ __xonsh__.env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.dye(".")
 __xonsh__.env["PROMPT"] = (
     "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
 )
-
-
-# Colorful manpages if using less as MANPAGER
-__xonsh__.env["LESS_TERMCAP_mb"] = "\033[1;32m"
-__xonsh__.env["LESS_TERMCAP_md"] = "\033[38;2;255;180;50m"
-__xonsh__.env["LESS_TERMCAP_me"] = "\033[0m"
-__xonsh__.env["LESS_TERMCAP_se"] = "\033[0m"
-__xonsh__.env["LESS_TERMCAP_so"] = "\033[38;2;255;255;50m"
-__xonsh__.env["LESS_TERMCAP_ue"] = "\033[0m"
-__xonsh__.env["LESS_TERMCAP_us"] = "\033[38;2;255;100;50m"
-
-# Use bat as manpager
-__xonsh__.env["MANPAGER"] = "sh -c 'col -bx | bat -l man --plain'"
 
 # Option passed to man's formatter, removes undesiColor.RED characters from output
 __xonsh__.env["MANROFFOPT"] = "-c"

@@ -5,7 +5,7 @@
     enable = true;
     config = {
       pager = "less -FR";
-      style = "header,changes";
+      style = "header-filename,changes";
       theme = "darkneon";
     };
 
