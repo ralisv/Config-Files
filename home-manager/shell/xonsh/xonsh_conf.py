@@ -2,7 +2,6 @@
 import os
 import subprocess
 import sys
-import warnings
 from getpass import getuser
 from pathlib import Path
 
@@ -17,8 +16,6 @@ from xonsh_utils.colors import (  # pylint: disable=import-error
 )
 from xonsh_utils.trash import remove
 from xonsh_utils.utils import super_git_status
-
-warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 env = __xonsh__.env # pylint: disable=undefined-variable
 
@@ -95,7 +92,7 @@ def set_style() -> None:
         "Token.PTK.CompletionMenu": "#000000",
         "Token.Literal.Number.Integer": "#44ffff",
         "Token.Literal.Number.Float": "#44ffff",
-        # Foreground colors
+
         "BLACK": "#333333",
         "RED": "#ff1111",
         "GREEN": "#11ff11",
@@ -112,7 +109,7 @@ def set_style() -> None:
         "INTENSE_MAGENTA": "#ff00ff",
         "INTENSE_CYAN": "#00ddff",
         "INTENSE_WHITE": "#ffffff",
-        # Background colors
+
         "BACKGROUND_BLACK": "#111111",
         "BACKGROUND_RED": "#ff1111",
         "BACKGROUND_GREEN": "#11ff11",
