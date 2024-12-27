@@ -2,7 +2,7 @@ import os
 import subprocess
 from pathlib import Path
 
-from tabulate import tabulate  # pylint: disable=import-error
+from tabulate import tabulate  # type: ignore # pylint: disable=import-error
 from xonsh_utils.colors import (  # pylint: disable=import-error
     GIT_STATUS_COLORS,
     GIT_STATUS_COLORS_STAGED,

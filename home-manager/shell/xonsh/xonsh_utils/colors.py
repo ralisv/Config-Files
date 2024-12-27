@@ -278,6 +278,9 @@ class Rainbowizer:
 
         Args:
             resolution (int, optional): The number of colors in the rainbow. Defaults to DEFAULT_RAINBOW_RESOLUTION.
+            initial_index (int, optional): The index of the initial color in the rainbow. Defaults to 0.
+            lightness (float, optional): How light the colors should be. Defaults to 0.5.
+            saturation (float, optional): How saturated the colors should be. Defaults to 0.85.
         """
         self.rainbow_colors = Rainbowizer.generate_rainbow_colors(
             resolution, lightness, saturation
@@ -330,6 +333,6 @@ class Rainbowizer:
         return self
 
     def __next__(self) -> AnsiColorCode:
-        next = self.rainbow_colors[self.rainbow_index % len(self.rainbow_colors)]
+        next_color = self.rainbow_colors[self.rainbow_index % len(self.rainbow_colors)]
         self.rainbow_index += 1
-        return next
+        return next_color

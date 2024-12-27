@@ -61,7 +61,7 @@ def remove(args: list[str]) -> None:
                 shutil.move(str(file), str(trashed_file))
                 ok_messages.append(message)
 
-            except Exception as e:
+            except (shutil.Error, OSError) as e:
                 message = f"{Color.RED} ✘ {colorize_filename(file.name)}{Color.RED}: {e}{Style.DEFAULT}"
                 error_messages.append(message)
 
