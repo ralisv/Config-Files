@@ -4,7 +4,7 @@ from pathlib import Path
 from stat import S_IXUSR
 from typing import List
 
-LS_COLORS_DIRECTORY = Path(__file__).resolve().parent.parent
+LS_COLORS_DIRECTORY = Path.home() / ".config" / "ls-colors"
 LS_COLORS = (LS_COLORS_DIRECTORY / "ls-colors.txt").open().read()
 """ The contents of the LS_COLORS environment variable """
 

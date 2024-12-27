@@ -2,17 +2,19 @@
 import os
 import subprocess
 import sys
+from getpass import getuser
 from pathlib import Path
 
-# Include the directory where this file is located in the search path
-SCRIPT_DIRECTORY = Path(__file__).resolve().parent
-sys.path.append(str(SCRIPT_DIRECTORY))
-
-from getpass import getuser
-
-from colors import LS_COLORS, LS_COLORS_PARSED, AnsiColorCode, Color, Rainbowizer, Style, colorize_filename
-from trash import remove
-from utils import start_in_new_session, super_git_status
+sys.path.append((Path.home() / ".local" / "share" / "xonsh").as_posix())
+from xonsh_utils.colors import (  # pylint: disable=import-error
+    LS_COLORS,
+    Color,
+    Rainbowizer,
+    Style,
+    colorize_filename,
+)
+from xonsh_utils.trash import remove
+from xonsh_utils.utils import super_git_status
 
 # To silence IDE for further complains about nonexistence of this variable
 __xonsh__ = __xonsh__
@@ -62,46 +64,41 @@ __xonsh__.env["PROMPT_TOOLKIT_COLOR_DEPTH"] = "DEPTH_24_BIT"
 
 __xonsh__.env["BAT_STYLE"] = "grid,changes,header-filename,header-filesize,numbers"
 
+
 def _s(args):
     git_status = super_git_status()
     if git_status.strip():
         print(git_status)
-        
+
     subprocess.run(
         ["/usr/bin/env", "lsd", "--color=always", *args],
-        env={
-            "LS_COLORS": LS_COLORS,
-            "PATH": os.environ.get("PATH")
-        },
-        capture_output=False
+        env={"LS_COLORS": LS_COLORS, "PATH": os.environ.get("PATH")},
+        capture_output=False,
+        check=True,
     )
+
 
 my_aliases = {
     "battery-info": "upower -i /org/freedesktop/UPower/devices/battery_BAT0",
     "cat": "bat",
-    "cdi": "zi", # Interactive zoxide (fzf)
-    "cd": "z", # Use zoxide instead of cd
+    "cdi": "zi",  # Interactive zoxide (fzf)
+    "cd": "z",  # Use zoxide instead of cd
     "du": "du -h",
     "fc-list": "fc-list --format='%{family}'\n",
     "grep": "grep --color=auto",
     "ls": "lsd --color=auto",
-    "maisa": f"sshfs 'xralis@aisa.fi.muni.cz:/home/xralis' {os.path.expanduser('~')}/aisa",
     "pip": "python -m pip",
     "R": "R --no-save -q",
-    "rm": lambda args: remove(args),
+    "rm": remove,
     "rmp": "/usr/bin/env rm",
-    "s": lambda args: _s(args),
+    "s": _s,
     "sl": "sl -e",
     "stackusage": "colour-valgrind --tool=drd --show-stack-usage=yes",
     "valgrind": "colour-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes --track-fds=yes -s",
-    
-    # Setsid by default for some commands
-    "totem": "setsid totem",
     "vlc": "setsid vlc",
     "okular": "setsid okular",
-    "evince": "setsid evince",
     "nix-shell": "nix-shell --log-format bar-with-logs",
-    "sudo nixos-rebuild": "sudo nixos-rebuild --log-format bar-with-logs",
+    "home-manager": "home-manager --log-level debug",
 }
 aliases.update(my_aliases)
 
@@ -118,7 +115,6 @@ def set_style() -> None:
         "Token.PTK.CompletionMenu": "#000000",
         "Token.Literal.Number.Integer": "#44ffff",
         "Token.Literal.Number.Float": "#44ffff",
-        
         # Foreground colors
         "BLACK": "#333333",
         "RED": "#ff1111",
@@ -136,7 +132,6 @@ def set_style() -> None:
         "INTENSE_MAGENTA": "#ff00ff",
         "INTENSE_CYAN": "#00ddff",
         "INTENSE_WHITE": "#ffffff",
-        
         # Background colors
         "BACKGROUND_BLACK": "#111111",
         "BACKGROUND_RED": "#ff1111",
@@ -155,9 +150,10 @@ def set_style() -> None:
         "BACKGROUND_INTENSE_CYAN": "#00ddff",
         "BACKGROUND_INTENSE_WHITE": "#ffffff",
     }
-    
+
     register_custom_style("my_style", my_style, base="paraiso-dark")
     __xonsh__.env["XONSH_COLOR_STYLE"] = "my_style"
+
 
 set_style()
 
@@ -317,4 +313,11 @@ __xonsh__.env["MANROFFOPT"] = "-c"
 # ask_whether_to_dump()
 
 # Setup zoxide
-execx($(zoxide init xonsh), 'exec', __xonsh__.ctx, filename='zoxide')
+execx(
+    subprocess.run(
+        ["zoxide", "init", "xonsh"], capture_output=True, text=True, check=True
+    ).stdout,
+    "exec",
+    __xonsh__.ctx,
+    filename="zoxide",
+)

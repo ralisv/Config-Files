@@ -10,6 +10,7 @@
     ./programs/git.nix
     ./programs/micro.nix
     ./programs/vscode.nix
+    ./shell/shell.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
