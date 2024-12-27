@@ -11,6 +11,13 @@
     ./programs/micro.nix
     ./programs/vscode.nix
     ./shell/shell.nix
+    ./packages/development.nix
+    ./packages/drivers.nix
+    ./packages/media.nix
+    ./packages/tools.nix
+    ./packages/social.nix
+    ./packages/themes.nix
+    ./packages/others.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -19,9 +26,6 @@
   home.homeDirectory = "/home/ralis";
 
   home.stateVersion = "24.05"; # Don't modify
-
-  home.packages = with pkgs; [
-  ];
 
   gtk.enable = true;
 

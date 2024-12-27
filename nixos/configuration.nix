@@ -12,7 +12,6 @@
         sha256 = "1i6dwmddjh0cbrp6zgafdrji202alkz52rjisx0hs1bgjbrbwxdj";
       })
     )
-    ./packages.nix
   ];
 
   programs = {
