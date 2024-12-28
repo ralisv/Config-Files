@@ -38,7 +38,7 @@ def shift_to_now() -> None:
         if current < time_point:
             current_filter_i = i - 1 if i > 0 else len(SCHEDULE) - 1
             break
-    
+
     # Shift the schedule
     for _ in range(current_filter_i):
         next(cyclic_schedule)
