@@ -33,12 +33,12 @@ def shift_to_now() -> None:
     current = (now.hour, now.minute)
 
     # Advance cycle until we find the current position
-    current_filter_i = 0
+    current_filter_i = -1
     for i, time_point in enumerate(SCHEDULE):
         if current < time_point:
-            current_filter_i = i - 1
+            current_filter_i = i - 1 if i > 0 else len(SCHEDULE) - 1
             break
-
+    
     # Shift the schedule
     for _ in range(current_filter_i):
         next(cyclic_schedule)
@@ -73,7 +73,7 @@ def set_filter(temp: int | None) -> None:
     if temp is not None:
         print(f"Setting temperature to {temp}")
         set_temperature(temp)
-    
+
     else:
         print("No filter; killing all hyprsunset instances")
         kill_hyprsunset()
