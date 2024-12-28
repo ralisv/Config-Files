@@ -15,30 +15,15 @@
   ];
 
   programs = {
-    light.enable = true;
-    git.enable = true;
     cfs-zen-tweaks.enable = true;
   };
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  };
+  xdg.portal.enable = true;
 
   services = {
     illum.enable = true; # Map brightness keys
 
-    mullvad-vpn = {
-      enable = true;
-      package = pkgs.mullvad-vpn.overrideAttrs (finalAttrs: prevAttrs: rec {
-        version = "2024.5";
-        platform = "amd64";
-        src = pkgs.fetchurl {
-          url = "https://github.com/mullvad/mullvadvpn-app/releases/download/${version}/MullvadVPN-${version}_${platform}.deb";
-          hash = "sha256-2d4l5BIjXQaaKOUkK+pZYsECVnyK6zOx0NkuCy9jx5I=";
-        };
-      });
-    };
+    mullvad-vpn.enable = true;
 
     pipewire = {
       enable = true;
@@ -69,8 +54,6 @@
         };
       };
     };
-    power-profiles-daemon.enable = false;
-    upower.enable = true;
 
     tlp = {
       enable = true;
@@ -89,14 +72,6 @@
         START_CHARGE_THRESH_BAT0 = 70; # 70 and bellow it starts to charge
         STOP_CHARGE_THRESH_BAT0 = 85; # 80 and above it stops charging
       };
-    };
-
-
-
-    xserver = {
-      videoDrivers = [ "nvidia" ];
-      enable = false;
-      desktopManager.plasma5.enable = true;
     };
   };
 
@@ -156,24 +131,8 @@
   networking.networkmanager.enable = true;
 
   environment.sessionVariables = {
-    WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
-    QT_QPA_PLATFORMTHEME = "qt5ct";
-    QT_QPA_PLATFORM = "wayland";
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
-    ELECTRON_ENABLE_LOGGING = "true";
-    GDK_BACKEND = "wayland";
   };
-
-  nixpkgs.config.qt5 = {
-    enable = true;
-    platformTheme = "qt5ct";
-    style = {
-      package = pkgs.utterly-nord-plasma;
-      name = "Utterly Nord Plasma";
-    };
-  };
-
 
   # Set your time zone.
   time.timeZone = "Europe/Prague";

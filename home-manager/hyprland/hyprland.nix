@@ -22,6 +22,22 @@
     hyprshade # Screen shader
   ];
 
+  home.sessionVariables = {
+    QT_QPA_PLATFORM = "wayland";
+    QT_QPA_PLATFORMTHEME = "qt5ct";
+
+    GDK_BACKEND = "wayland";
+    GTK_THEME = "Sweet-Dark-v40";
+
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    WLR_NO_HARDWARE_CURSORS = "1";
+
+    HYPRCURSOR_SIZE = "25";
+    HYPRCURSOR_THEME = "LyraS-cursors";
+
+  };
+
+
   wayland.windowManager.hyprland = {
     enable = true;
     package = pkgs-pinned-hypr.hyprland;
@@ -36,27 +52,17 @@
         "eDP-1,2560x1600,2560x400,auto"
       ];
 
-      env = [
-        "XCURSOR_SIZE,35"
-        "WLR_NO_HARDWARE_CURSORS,1"
-        "GTK_THEME,Sweet-Dark-v40"
-        "XCURSOR_THEME,LyraS-cursors"
-        "XCURSOR_SIZE,26"
-        "HYPRCURSOR_THEME,LyraS-cursors"
-        "HYPRCURSOR_SIZE,25"
-      ];
-
       exec-once = [
         "dbus-update-activation-environment --systemd HYPRLAND_INSTANCE_SIGNATURE"
-        "hypridle"
-        "./daemons/wallpaper-manager.sh"
+        "~/.config/hypr/daemons/wallpaper-manager.sh"
+        "sleep 4 && nix-shell ~/.config/hypr/daemons/monitor/shell.nix"
         "eww daemon"
-        "sleep 1 && eww open info"
-        "nix-shell ./daemons/monitor/shell.nix"
+        "sleep 2 && eww open info"
         "while true; do hyprnotify --no-sound; done"
         "hyprctl setcursor LyraS-cursors 25"
         "systemctl --user start hyprpolkitagent"
         "wvkbd-mobintl --hidden"
+        "hypridle"
       ];
 
       exec = "hyprshade auto";
@@ -195,7 +201,7 @@
       ];
 
       plugin.touch_gestures = {
-        sensitivity = 10;
+        sensitivity = 20;
         hyprgrass-bind = [
           ", swipe:4:d, exec, kill -sUSR1 $(pidof wvkbd-mobintl)"
           ", swipe:4:u, exec, kill -sUSR2 $(pidof wvkbd-mobintl)"
