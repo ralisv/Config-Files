@@ -1,5 +1,12 @@
-# My most important configuration files
+# Configuration Files
+This repository is a collection of my configuration files for my personal linux machine.
 
-This repository contains my most important configuration files. I use them on my Linux machines. 
+# Home Manager
+I use [home-manager](https://github.com/nix-community/home-manager/) tool to manage
+my dotfiles, packages, desktop environment, and various scripts. Its configuration can
+be found in the "home-manager" top-level folder.
 
-In case you want to inspire yourself, feel free to do so. If you plan to copy them, please keep in mind that they are tailored to my needs and contain some hard coded paths.
+# Nixos
+The Linux distribution of my choice is Nixos, system configuration files related to it are
+under the "nixos" top-level folder. Parts of my it are tied to the particular
+hardware model I use.
