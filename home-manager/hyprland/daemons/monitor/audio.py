@@ -7,7 +7,7 @@ from pathlib import Path
 from time import sleep
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, TypeAdapter, field_validator, validator
+from pydantic import BaseModel, TypeAdapter, field_validator
 from utils import send_notification, update_eww
 
 EWW_CONFIG_PATH = Path("~/Config-Files/hyprland/eww").expanduser()
@@ -17,12 +17,16 @@ LOG_PREFIX = "audio-monitor: "
 
 
 class Volume(BaseModel):
+    """Volume information for an audio device."""
+
     value: int
     value_percent: str
     db: str
 
 
 class AudioDevice(BaseModel):
+    """Information about an audio device."""
+
     state: str
     name: str
     description: str
@@ -31,8 +35,8 @@ class AudioDevice(BaseModel):
     volume: Dict[str, Volume]
 
     @field_validator("channel_map", mode="before")
-    def split_channel_map(cls, value):
-        # Check if the value is a string and split it into a list
+    def split_channel_map(cls, value) -> list[str]:
+        """Split the channel map string into a list of channels."""
         if isinstance(value, str):
             return [element.strip() for element in value.split(",")]
         return value
@@ -40,6 +44,8 @@ class AudioDevice(BaseModel):
 
 @dataclass
 class AudioState:
+    """State of the audio devices."""
+
     sink: AudioDevice
     source: AudioDevice
 
@@ -50,35 +56,43 @@ def log(message: str):
 
 
 def get_audio_devices() -> List[AudioDevice]:
+    """Get the list of audio devices."""
     sources = subprocess.run(
         ["pactl", "--format=json", "list", "sources"],
         capture_output=True,
         text=True,
+        check=True,
     ).stdout
     sinks = subprocess.run(
-        ["pactl", "--format=json", "list", "sinks"], capture_output=True, text=True
+        ["pactl", "--format=json", "list", "sinks"],
+        capture_output=True,
+        text=True,
+        check=True,
     ).stdout
 
     parse_devices = TypeAdapter(list[AudioDevice]).validate_json
     return parse_devices(sources) + parse_devices(sinks)
 
 
-def get_default_device(device_type):
+def get_default_device(device_type) -> str:
+    """Get the default audio device of the specified type."""
     cmd = ["pactl", f"get-default-{device_type}"]
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
     return result.stdout.strip()
 
 
-def update_eww_variables(audio: AudioState):
+def update_eww_variables(audio: AudioState) -> None:
+    """Update the Eww variables with the audio device information."""
     update_eww(
         {
-            f"sink-settings": f"♫ {format_device_info(audio.sink)}",
-            f"source-settings": f"🎙 {format_device_info(audio.source)}",
+            "sink-settings": f"♫ {format_device_info(audio.sink)}",
+            "source-settings": f"🎙 {format_device_info(audio.source)}",
         }
     )
 
 
 def format_device_info(device: Optional[AudioDevice]) -> str:
+    """Format the audio device information for display."""
     if device is None:
         return "N/A"
 
@@ -99,6 +113,7 @@ def format_device_info(device: Optional[AudioDevice]) -> str:
 
 
 def get_sound_settings() -> AudioState:
+    """Get the current sound settings"""
     default_source = get_default_device("source")
     default_sink = get_default_device("sink")
 
@@ -120,7 +135,8 @@ def get_sound_settings() -> AudioState:
     return AudioState(sink=sink, source=source)  # type: ignore
 
 
-def audio_monitor():
+def audio_monitor() -> None:
+    """Monitor audio devices for changes."""
     process = subprocess.Popen(
         ["pactl", "subscribe"],
         stdout=subprocess.PIPE,
@@ -132,7 +148,7 @@ def audio_monitor():
     log("Monitoring for audio changes...")
     try:
         audio = get_sound_settings()
-    except Exception as e:
+    except (ValueError, subprocess.CalledProcessError) as e:
         log(f"Error getting audio devices: {e}")
         sleep(2)
         audio = get_sound_settings()
@@ -173,8 +189,8 @@ def audio_monitor():
                     audio = new_audio
                     update_eww_variables(audio)
 
-            except Exception as e:
-                log(f"Error updating audio devices: {e}")
+            except subprocess.CalledProcessError as e:
+                log(f"Error while updating audio devices: {e}")
 
     except KeyboardInterrupt:
         log("Monitoring stopped.")

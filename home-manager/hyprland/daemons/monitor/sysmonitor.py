@@ -6,7 +6,7 @@ import os
 import signal
 import sys
 import time
-from functools import partial
+from typing import Never
 
 from audio import audio_monitor
 from power import power_monitor
@@ -17,32 +17,35 @@ MAX_RETRIES = 3
 RETRY_DELAY = 3  # seconds
 
 
-def create_lock_file():
+def create_lock_file() -> None:
+    """Create a lock file to prevent multiple instances of the script."""
     if os.path.exists(LOCK_FILE):
         print("Another instance is already running.")
         sys.exit()
     print("Creating lock file.")
-    open(LOCK_FILE, "w").close()
+    open(LOCK_FILE, "w").close() # pylint: disable=unspecified-encoding
 
 
-def remove_lock_file():
+def remove_lock_file() -> None:
+    """Remove the lock file."""
     if os.path.exists(LOCK_FILE):
         print("Cleaning up lock file.")
         os.remove(LOCK_FILE)
 
 
-def signal_handler(signum, frame):
+def signal_handler(signum, frame) -> Never: # pylint: disable=unused-argument
     print(f"Signal {signum} received, cleaning up...")
     remove_lock_file()
     sys.exit(0)
 
 
 def monitor_wrapper(monitor_func, name):
+    """Wrapper for monitor functions that retries on failure."""
     retry_count = 0
     while True:
         try:
-            return monitor_func()
-        except Exception as e:
+            monitor_func()
+        except Exception as e: # pylint: disable=broad-except
             retry_count += 1
             if retry_count > MAX_RETRIES:
                 print(f"{name} failed after {MAX_RETRIES} retries: {e}")
@@ -53,7 +56,7 @@ def monitor_wrapper(monitor_func, name):
             time.sleep(RETRY_DELAY)
 
 
-def main():
+def main() -> Never:
     create_lock_file()
     atexit.register(remove_lock_file)
 
@@ -73,7 +76,7 @@ def main():
                 monitor_name = futures[future]
                 try:
                     future.result()
-                except Exception as e:
+                except Exception as e: # pylint: disable=broad-except
                     print(f"Monitor {monitor_name} failed permanently: {e}")
                     # Resubmit the failed monitor
                     new_future = executor.submit(

@@ -10,10 +10,12 @@ def send_notification(urgency: str, timeout: int, title: str, body: str) -> None
         title (str): title of the notification
         body (str): body of the notification
     """
-    subprocess.run(["notify-send", "-u", urgency, "-t", str(timeout), title, body])
+    subprocess.run(
+        ["notify-send", "-u", urgency, "-t", str(timeout), title, body], check=True
+    )
 
 
-def update_eww(toUpdate: dict[str, str]) -> None:
+def update_eww(to_update: dict[str, str]) -> None:
     """Update eww variables.
 
     Args:
@@ -23,6 +25,7 @@ def update_eww(toUpdate: dict[str, str]) -> None:
         [
             "eww",
             "update",
-            *(f"{key}={value}" for key, value in toUpdate.items()),
-        ]
+            *(f"{key}={value}" for key, value in to_update.items()),
+        ],
+        check=True,
     )

@@ -4,11 +4,10 @@ import json
 import subprocess
 from pathlib import Path
 from time import sleep
-from typing import Annotated, List, Literal, Optional, Union
+from typing import Annotated, Literal, Optional, Union
 
 from pydantic import BaseModel, Field, TypeAdapter
-
-from utils import update_eww
+from utils import send_notification, update_eww
 
 
 class Endpoint(BaseModel):
@@ -159,6 +158,7 @@ def vpn_monitor():
     )
 
     log("Monitoring Mullvad VPN status...")
+    prev_status: Optional[MullvadStatus] = None
 
     try:
         for line in iter(process.stdout.readline, ""):  # type: ignore
@@ -175,7 +175,14 @@ def vpn_monitor():
                     log(f"Status after retrying manually: {status.state}")
                     update_eww({"vpn-status": format_status_for_eww(status)})
 
-            except Exception as e:
+                if prev_status is not None and status.state != prev_status.state:
+                    send_notification(
+                        "normal", 5_000, "VPN status change", f"New state: {status.state}"
+                    )
+
+                prev_status = status
+
+            except subprocess.CalledProcessError as e:
                 log(f"Error parsing JSON output or updating status: {e}")
 
     except KeyboardInterrupt:
