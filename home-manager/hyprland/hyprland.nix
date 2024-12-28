@@ -55,7 +55,8 @@
       exec-once = [
         "dbus-update-activation-environment --systemd HYPRLAND_INSTANCE_SIGNATURE"
         "~/.config/hypr/daemons/wallpaper-manager.sh"
-        "sleep 4 && nix-shell ~/.config/hypr/daemons/monitor/shell.nix"
+        "~/.config/hypr/daemons/blue-light-filter.py"
+        "sleep 4 && ~/.config/hypr/daemons/monitor/default.nix"
         "eww daemon"
         "sleep 2 && eww open info"
         "while true; do hyprnotify --no-sound; done"
