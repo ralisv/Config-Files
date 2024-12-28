@@ -6,7 +6,6 @@
     ./hyprlock.nix
     ./eww/eww.nix
   ];
-  home.file.".config/hypr/hyprshade.toml".source = ./hyprshade.toml;
   home.file.".config/hypr/daemons".source = ./daemons;
 
   home.packages = with pkgs; [
@@ -19,7 +18,7 @@
     hyprshade # Screen shader
     wvkbd # Virtual keyboard
     xdg-desktop-portal-hyprland # Desktop portal
-    hyprshade # Screen shader
+    hyprsunset # Blue light filter
   ];
 
   home.sessionVariables = {
