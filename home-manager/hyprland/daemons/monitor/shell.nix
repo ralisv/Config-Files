@@ -7,8 +7,7 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
-    echo "Executing sysmonitor.py..."
-    python3.12 ~/.config/hypr/daemons/monitor/sysmonitor.py
+    python3.12 ~/.config/hypr/daemons/monitor/sysmonitor.py > ~/.local/share/sysmonitor.log.txt
     exit 0
   '';
 }
