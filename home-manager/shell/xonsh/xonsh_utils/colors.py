@@ -2,7 +2,6 @@ import colorsys
 from dataclasses import dataclass
 from pathlib import Path
 from stat import S_IXUSR
-from typing import List
 
 LS_COLORS_DIRECTORY = Path.home() / ".config" / "ls-colors"
 LS_COLORS = (LS_COLORS_DIRECTORY / "ls-colors.txt").open().read()
@@ -260,7 +259,7 @@ class Rainbowizer:
     DEFAULT_RAINBOW_RESOLUTION = 256
     """ The default number of colors in the rainbow """
 
-    rainbow_colors: List[AnsiColorCode]
+    rainbow_colors: list[AnsiColorCode]
     """ A list of colors in the rainbow """
 
     rainbow_index: int
@@ -297,7 +296,7 @@ class Rainbowizer:
         Returns:
             str: The colorized string
         """
-        result: List[str] = []
+        result: list[str] = []
         for char, color in zip(string, self):
             result.append(color.wrap(char))
 
@@ -308,7 +307,7 @@ class Rainbowizer:
         resolution: int,
         lightness: float,
         saturation: float,
-    ) -> List[AnsiColorCode]:
+    ) -> list[AnsiColorCode]:
         """
         Generates a list of colors in the rainbow
 
@@ -318,9 +317,9 @@ class Rainbowizer:
             saturation (float, optional): How saturated the colors should be. Defaults to 1.0.
 
         Returns:
-            List[str]: A list of colors in the rainbow
+            list[str]: A list of colors in the rainbow
         """
-        colors: List[AnsiColorCode] = []
+        colors: list[AnsiColorCode] = []
         for i in range(resolution):
             hue = i / resolution
 
