@@ -10,8 +10,4 @@
     zoxide
     bash-completion
   ];
-
-  home.sessionVariables = {
-    NIX_BUILD_SHELL = "xonsh";
-  };
 }

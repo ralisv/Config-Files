@@ -46,10 +46,12 @@ env["PROMPT_TOOLKIT_COLOR_DEPTH"] = "DEPTH_24_BIT"
 env["LS_COLORS"] = LS_COLORS
 
 
-def _s(args):
-    git_status = super_git_status()
-    if git_status.strip():
-        print(git_status)
+def _s(args: list[str]):
+    """ Wrapper around lsd to show git status """
+    if not args:
+        git_status = super_git_status()
+        if git_status.strip():
+            print(git_status)
 
     subprocess.run(
         ["/usr/bin/env", "lsd", "--color=always", *args],
@@ -275,12 +277,3 @@ env["PROMPT"] = (
     "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
 )
 
-# Setup zoxide
-execx( # pylint: disable=undefined-variable
-    subprocess.run(
-        ["zoxide", "init", "xonsh"], capture_output=True, text=True, check=True
-    ).stdout,
-    "exec",
-    __xonsh__.ctx, # pylint: disable=undefined-variable
-    filename="zoxide",
-)
