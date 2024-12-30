@@ -1,6 +1,5 @@
-#!/usr/bin/env python3
-
 import json
+import logging
 import subprocess
 from pathlib import Path
 from time import sleep
@@ -8,6 +7,8 @@ from typing import Annotated, Literal, Optional, Union
 
 from pydantic import BaseModel, Field, TypeAdapter
 from utils import send_notification, update_eww
+
+logger = logging.getLogger("vpn_monitor")
 
 
 class Endpoint(BaseModel):
@@ -90,34 +91,22 @@ MullvadStatus = Annotated[
     Field(discriminator="state"),
 ]
 
-
 EWW_CONFIG = Path("~/Config-Files/hyprland/eww").expanduser()
-
-LOG_PREFIX = "vpn-monitor: "
-
-
-def log(message: str):
-    """Log a message with a predefined prefix."""
-    print(f"{LOG_PREFIX}{message}")
 
 
 def get_mullvad_status_manual() -> MullvadStatus:
     process = subprocess.Popen(
-        ["mullvad", "status", "--json", "listen"],
+        ["mullvad", "status", "--json"],
         stdout=subprocess.PIPE,
         universal_newlines=True,
-        bufsize=1,  # Line buffered
+        bufsize=1,  # prevent buffering
     )
-
     return parse_mullvad_status(process.stdout.readline().strip())  # type: ignore
 
 
 def parse_mullvad_status(json_data: str) -> MullvadStatus:
-    # Parse the JSON string into a dictionary first
     data_dict = json.loads(json_data)
-
     parse_status = TypeAdapter(MullvadStatus).validate_python
-
     return parse_status(data_dict)
 
 
@@ -154,39 +143,42 @@ def vpn_monitor():
         ["mullvad", "status", "--json", "listen"],
         stdout=subprocess.PIPE,
         universal_newlines=True,
-        bufsize=1,  # Line buffered
+        bufsize=1,  # prevent buffering
     )
 
-    log("Monitoring Mullvad VPN status...")
+    logger.info("Monitoring Mullvad VPN status...")
     prev_status: Optional[MullvadStatus] = None
 
     try:
         for line in iter(process.stdout.readline, ""):  # type: ignore
             try:
                 status = parse_mullvad_status(line.strip())
-                log(f"Status: {status.state}")
+                logger.info("Status: %s", status.state)
                 update_eww({"vpn-status": format_status_for_eww(status)})
 
                 if status.state == "disconnected":
-                    log("VPN in disconnected state. Retry in 1 second.")
+                    logger.info("VPN in disconnected state. Retry in 1 second.")
                     sleep(1)
 
                     status = get_mullvad_status_manual()
-                    log(f"Status after retrying manually: {status.state}")
+                    logger.info("Status after retrying manually: %s", status.state)
                     update_eww({"vpn-status": format_status_for_eww(status)})
 
                 if prev_status is not None and status.state != prev_status.state:
                     send_notification(
-                        "normal", 5_000, "VPN status change", f"New state: {status.state}"
+                        "normal",
+                        5_000,
+                        "VPN status change",
+                        f"New state: {status.state}",
                     )
 
                 prev_status = status
 
             except subprocess.CalledProcessError as e:
-                log(f"Error parsing JSON output or updating status: {e}")
+                logger.error("Error parsing JSON output or updating status: %s", e)
 
     except KeyboardInterrupt:
-        log("Monitoring stopped.")
+        logger.info("Monitoring stopped.")
 
     finally:
         process.terminate()

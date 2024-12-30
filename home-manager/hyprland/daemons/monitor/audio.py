@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-
+import logging
 import subprocess
 from dataclasses import dataclass
 from math import ceil
@@ -10,10 +9,10 @@ from typing import Dict, List, Optional
 from pydantic import BaseModel, TypeAdapter, field_validator
 from utils import send_notification, update_eww
 
+logger = logging.getLogger("audio_monitor")
+
 EWW_CONFIG_PATH = Path("~/Config-Files/hyprland/eww").expanduser()
 BLOCKS = ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
-
-LOG_PREFIX = "audio-monitor: "
 
 
 class Volume(BaseModel):
@@ -35,7 +34,7 @@ class AudioDevice(BaseModel):
     volume: Dict[str, Volume]
 
     @field_validator("channel_map", mode="before")
-    def split_channel_map(cls, value) -> list[str]:
+    def split_channel_map(cls, value) -> list[str]:  # pylint: disable=no-self-argument
         """Split the channel map string into a list of channels."""
         if isinstance(value, str):
             return [element.strip() for element in value.split(",")]
@@ -48,11 +47,6 @@ class AudioState:
 
     sink: AudioDevice
     source: AudioDevice
-
-
-def log(message: str):
-    """Log a message with a predefined prefix."""
-    print(f"{LOG_PREFIX}{message}")
 
 
 def get_audio_devices() -> List[AudioDevice]:
@@ -145,11 +139,11 @@ def audio_monitor() -> None:
         bufsize=1,
     )
 
-    log("Monitoring for audio changes...")
+    logger.info("Monitoring for audio changes...")
     try:
         audio = get_sound_settings()
     except (ValueError, subprocess.CalledProcessError) as e:
-        log(f"Error getting audio devices: {e}")
+        logger.error("Error getting audio devices: %s", e)
         sleep(2)
         audio = get_sound_settings()
 
@@ -175,7 +169,7 @@ def audio_monitor() -> None:
                             "Audio source device changed",
                             new_audio.source.description,
                         )
-                        log(f"Audio source device changed {new_audio.source}")
+                        logger.info("Audio source device changed: %s", new_audio.source)
 
                     if new_audio.sink.name != audio.sink.name:
                         send_notification(
@@ -184,16 +178,16 @@ def audio_monitor() -> None:
                             "Audio sink device changed",
                             new_audio.sink.description,
                         )
-                        log(f"Audio sink device changed {new_audio.sink}")
+                        logger.info("Audio sink device changed: %s", new_audio.sink)
 
                     audio = new_audio
                     update_eww_variables(audio)
 
             except subprocess.CalledProcessError as e:
-                log(f"Error while updating audio devices: {e}")
+                logger.error("Error while updating audio devices: %s", e)
 
     except KeyboardInterrupt:
-        log("Monitoring stopped.")
+        logger.info("Monitoring stopped.")
 
     finally:
         process.terminate()

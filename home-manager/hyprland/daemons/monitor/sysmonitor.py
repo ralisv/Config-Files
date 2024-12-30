@@ -2,6 +2,7 @@
 
 import atexit
 import concurrent.futures
+import logging
 import os
 import signal
 import sys
@@ -17,24 +18,43 @@ MAX_RETRIES = 3
 RETRY_DELAY = 3  # seconds
 
 
+def setup_logging() -> None:
+    """Setup logger."""
+    root_logger = logging.getLogger()
+
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    root_logger.addHandler(stdout_handler)
+
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    stdout_handler.setFormatter(formatter)
+
+    root_logger.setLevel(logging.INFO)
+
+
+setup_logging()
+logger = logging.getLogger("sysmonitor")
+
+
 def create_lock_file() -> None:
     """Create a lock file to prevent multiple instances of the script."""
     if os.path.exists(LOCK_FILE):
-        print("Another instance is already running.")
+        logger.error("Another instance is already running.")
         sys.exit()
-    print("Creating lock file.")
-    open(LOCK_FILE, "w").close() # pylint: disable=unspecified-encoding
+    logger.info("Creating lock file.")
+    open(LOCK_FILE, "w").close()  # pylint: disable=unspecified-encoding
 
 
 def remove_lock_file() -> None:
     """Remove the lock file."""
     if os.path.exists(LOCK_FILE):
-        print("Cleaning up lock file.")
+        logger.info("Cleaning up lock file.")
         os.remove(LOCK_FILE)
 
 
-def signal_handler(signum, frame) -> Never: # pylint: disable=unused-argument
-    print(f"Signal {signum} received, cleaning up...")
+def signal_handler(signum, frame) -> Never:  # pylint: disable=unused-argument
+    logger.info("Signal %s received, cleaning up...", signum)
     remove_lock_file()
     sys.exit(0)
 
@@ -45,10 +65,12 @@ def monitor_wrapper(monitor_func, name):
     while True:
         try:
             monitor_func()
-        except Exception as e: # pylint: disable=broad-except
+        except KeyboardInterrupt:
+            break
+        except Exception as e:  # pylint: disable=broad-except
             retry_count += 1
             if retry_count > MAX_RETRIES:
-                print(f"{name} failed after {MAX_RETRIES} retries: {e}")
+                logger.warning("%s failed after %s retries: %s", name, MAX_RETRIES, e)
                 raise
             print(
                 f"{name} failed, retrying in {RETRY_DELAY} seconds... ({retry_count}/{MAX_RETRIES})"
@@ -76,8 +98,12 @@ def main() -> Never:
                 monitor_name = futures[future]
                 try:
                     future.result()
-                except Exception as e: # pylint: disable=broad-except
-                    print(f"Monitor {monitor_name} failed permanently: {e}")
+                except Exception as e:  # pylint: disable=broad-except
+                    logger.warning(
+                        "Monitor %s emitted exception: %s; restarting it now",
+                        monitor_name,
+                        e,
+                    )
                     # Resubmit the failed monitor
                     new_future = executor.submit(
                         monitor_wrapper, monitors[monitor_name], monitor_name

@@ -1,6 +1,4 @@
-#!/usr/bin/env python3
-
-import subprocess
+import logging
 import time
 from dataclasses import dataclass
 from enum import Enum
@@ -9,17 +7,16 @@ from typing import Optional, Tuple
 
 from utils import send_notification, update_eww
 
+logger = logging.getLogger("power_monitor")
+
 BAT_DIR = Path("/sys/class/power_supply/BAT0/")
 STATUS_FILE = BAT_DIR / "status"
 CAPACITY_FILE = BAT_DIR / "capacity"
 POWER_NOW_FILE = BAT_DIR / "power_now"
 ENERGY_NOW_FILE = BAT_DIR / "energy_now"
 ENERGY_FULL_FILE = BAT_DIR / "energy_full"
-
 SCRIPT_DIR = Path(__file__).parent.resolve()
 EWW_CONFIG = Path("~/Config-Files/hyprland/eww").expanduser()
-
-LOG_PREFIX = "power-monitor: "
 
 
 class BatteryState(Enum):
@@ -41,15 +38,10 @@ class BatteryStatus:
 
 class NotificationManager:
     def __init__(self):
-        # Previous state tracking
         self.prev_status: Optional[BatteryStatus] = None
-
-        # Notification state tracking
         self.full_battery_notified = False
         self.low_battery_notified = False
         self.critical_battery_notified = False
-
-        # Notification timing configuration
         self.notification_cooldown = 1
         self.last_notification_time = 0
 
@@ -67,7 +59,7 @@ class NotificationManager:
         if self.can_send_notification():
             send_notification(urgency, timeout, title, message)
             self.last_notification_time = time.time()
-            log(f"Notification sent: {title} - {message}")
+            logger.info("Notification sent: %s - %s", title, message)
 
     def handle_state_change(self, current_status: BatteryStatus) -> None:
         """Handle notifications for battery state changes"""
@@ -82,7 +74,6 @@ class NotificationManager:
                     "Battery is now charging",
                     f"Current capacity: {current_status.capacity}%",
                 )
-                # Reset battery warnings when charging starts
                 self.low_battery_notified = False
                 self.critical_battery_notified = False
 
@@ -99,7 +90,6 @@ class NotificationManager:
         if current_status.state != BatteryState.DISCHARGING:
             return
 
-        # Critical battery warning (<=10%)
         if current_status.capacity <= 10 and not self.critical_battery_notified:
             self.send_notification_with_cooldown(
                 "critical",
@@ -109,8 +99,6 @@ class NotificationManager:
             )
             self.critical_battery_notified = True
             self.low_battery_notified = True
-
-        # Low battery warning (<=20%)
         elif current_status.capacity <= 20 and not self.low_battery_notified:
             self.send_notification_with_cooldown(
                 "normal",
@@ -119,8 +107,6 @@ class NotificationManager:
                 f"Battery is at {current_status.capacity}%",
             )
             self.low_battery_notified = True
-
-        # Reset warnings if battery level increases
         elif current_status.capacity > 20:
             self.low_battery_notified = False
             self.critical_battery_notified = False
@@ -147,14 +133,7 @@ class NotificationManager:
         self.handle_state_change(current_status)
         self.handle_capacity_warnings(current_status)
         self.handle_full_battery(current_status)
-
-        # Update previous status
         self.prev_status = current_status
-
-
-def log(message: str):
-    """Log a message with a predefined prefix."""
-    print(f"{LOG_PREFIX}{message}")
 
 
 def read_file(file_path: Path) -> str:
@@ -212,25 +191,21 @@ def read_battery_status() -> BatteryStatus:
 
 
 def power_monitor() -> None:
-    log("Monitoring for power changes...")
+    logger.info("Monitoring for power changes...")
     notification_manager = NotificationManager()
 
     while True:
         try:
             current_status = read_battery_status()
             if current_status:
-                # Update notifications
                 notification_manager.update(current_status)
-
-                # Update system status
                 status_report = get_status_report(current_status)
                 update_eww({"battery-info": status_report})
-                log(f"Status report: {status_report}")
-
+                logger.info("Status report: %s", status_report)
             time.sleep(1)
-        except Exception as e:
-            log(f"Error in monitor loop: {e}")
-            time.sleep(5)  # Wait longer on error
+        except Exception as e:  # pylint: disable=broad-except
+            logger.error("Error in monitor loop: %s", e)
+            time.sleep(5)
 
 
 if __name__ == "__main__":
