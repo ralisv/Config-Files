@@ -8,5 +8,4 @@ be found in the "home-manager" top-level folder.
 
 # Nixos
 The Linux distribution of my choice is Nixos, system configuration files related to it are
-under the "nixos" top-level folder. Parts of my it are tied to the particular
-hardware model I use.
+under the "nixos" top-level folder. Parts of it are tied to the particular hardware model I use.
