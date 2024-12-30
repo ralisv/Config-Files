@@ -5,23 +5,36 @@ import time
 from datetime import datetime, timedelta
 from itertools import cycle
 
+# descent parameters
+DESCENT_HOUR_START = 16
+INITIAL_TEMP = 6000
+MINIMUM_TEMP = 1000
+
+TEMP_DECREASE_PER_STEP = 375
+STEP_INTERVAL_MINUTES = 30
+
+
+def calculate_temperature(hours: int, minutes: int) -> int:
+    """Calculate the temperature at the given time based on descent parameters."""
+    hours_since_start = hours - DESCENT_HOUR_START
+    if hours_since_start < 0:
+        return INITIAL_TEMP
+
+    steps = (hours_since_start * 60 + minutes) // STEP_INTERVAL_MINUTES
+
+    total_decrease = steps * TEMP_DECREASE_PER_STEP
+    return max(INITIAL_TEMP - total_decrease, MINIMUM_TEMP)
+
+
 SCHEDULE: dict[tuple[int, int], int | None] = {
     (5, 0): 5500,
     (6, 0): None,
-
-    (17, 0): 6000,
-    (18, 0): 5500,
-    (18, 30): 5000,
-    (19, 0): 4500,
-    (19, 30): 4250,
-    (20, 0): 4000,
-    (20, 30): 3750,
-    (21, 0): 3500,
-    (21, 30): 3250,
-    (22, 0): 3000,
-    (22, 30): 2800,
-    (23, 0): 2700,
-    (23, 30): 2600,
+    # linear temperature descent
+    **{
+        (h, m): calculate_temperature(h, m)
+        for h in range(16, 23)
+        for m in range(0, 60, STEP_INTERVAL_MINUTES)
+    },
 }
 
 cyclic_schedule = cycle(SCHEDULE.items())
@@ -86,8 +99,10 @@ def daemon_process():
 
     for time_point, temp in cyclic_schedule:
         # Calculate sleep time until next change
-        now = datetime.now()
-        target = now.replace(hour=time_point[0], minute=time_point[1], second=0)
+        now = datetime.now().replace(microsecond=0)
+        target = now.replace(
+            hour=time_point[0], minute=time_point[1], second=0, microsecond=0
+        )
         if target <= now:
             target += timedelta(days=1)
         to_wait = target - now
