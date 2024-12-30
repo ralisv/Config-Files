@@ -9,6 +9,7 @@
     lenovo-legion
     btop
     htop
+    amdgpu_top
     coreutils
     unzip
     zip
