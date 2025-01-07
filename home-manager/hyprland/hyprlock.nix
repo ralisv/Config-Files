@@ -6,14 +6,19 @@
     settings = {
       background = [
         {
-          color = "rgb(15, 15, 15)";
+          monitor = "";
+          path = "screenshot";
+          blur_passes = 3;
+          blur_size = 2;
+          ignore_empty_input = true;
+
         }
       ];
 
       input-field = {
         monitor = "";
         size = "200, 50";
-        outline_thickness = 10;
+        outline_thickness = 5;
         dots_size = 0.4;
         dots_spacing = 0.3;
 
@@ -23,7 +28,7 @@
         fail_transition = 500;
 
         outer_color = "rgb(160,140,137)";
-        inner_color = "rgb(19,15,15)";
+        inner_color = "rgba(19,15,15, 0.3)";
         font_color = "rgb(216,194,191)";
 
         position = "0, 0";

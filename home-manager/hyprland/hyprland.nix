@@ -32,16 +32,16 @@
     WLR_NO_HARDWARE_CURSORS = "1";
 
     HYPRCURSOR_SIZE = "25";
-    HYPRCURSOR_THEME = "LyraS-cursors";
+    HYPRCURSOR_THEME = "saturn";
 
   };
 
 
   wayland.windowManager.hyprland = {
     enable = true;
-    package = pkgs-pinned-hypr.hyprland;
+    package = pkgs.hyprland;
     plugins = [
-      pkgs-pinned-hypr.hyprlandPlugins.hyprgrass
+      # pkgs.hyprlandPlugins.hyprgrass
     ];
 
     settings = {
@@ -152,13 +152,13 @@
       bind = [
         "$launchMod, N, exec, nm-applet"
         "$launchMod, T, exec, alacritty"
-        "$launchMod, F, exec, freetube"
-        "$launchMod, D, exec, webcord"
-        "$launchMod, B, exec, brave --password-store=basic --enable-features=UseOzonePlatform --ozone-platform=wayland"
+        "$launchMod, F, exec, mullvad-exclude freetube"
+        "$launchMod, D, exec, mullvad-exclude webcord"
+        "$launchMod, B, exec, brave --password-store=basic"
         "$launchMod, R, exec, eww reload"
         "$launchMod, M, exec, mullvad-vpn"
         "$launchMod, S, exec, signal-desktop"
-        "$launchMod, C, exec, caprine"
+        "$launchMod, C, exec, mullvad-exclude caprine"
         "$mainMod, S, exec, hyprshot --mode=region --freeze --clipboard-only"
         "$mainMod+SHIFT, S, exec, hyprshot --mode=region --freeze"
         "$mainMod, L, exec, hyprlock"
