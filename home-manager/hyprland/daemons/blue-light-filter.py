@@ -10,8 +10,8 @@ DESCENT_HOUR_START = 16
 INITIAL_TEMP = 6000
 MINIMUM_TEMP = 1000
 
-TEMP_DECREASE_PER_STEP = 375
-STEP_INTERVAL_MINUTES = 30
+TEMP_DECREASE_PER_STEP = 0.9  # percentage
+STEP_INTERVAL = 30  # minutes
 
 
 def calculate_temperature(hours: int, minutes: int) -> int:
@@ -20,10 +20,9 @@ def calculate_temperature(hours: int, minutes: int) -> int:
     if hours_since_start < 0:
         return INITIAL_TEMP
 
-    steps = (hours_since_start * 60 + minutes) // STEP_INTERVAL_MINUTES
+    steps = (hours_since_start * 60 + minutes) // STEP_INTERVAL
 
-    total_decrease = steps * TEMP_DECREASE_PER_STEP
-    return max(INITIAL_TEMP - total_decrease, MINIMUM_TEMP)
+    return max(int(INITIAL_TEMP * TEMP_DECREASE_PER_STEP**steps), MINIMUM_TEMP)
 
 
 SCHEDULE: dict[tuple[int, int], int | None] = {
@@ -33,7 +32,7 @@ SCHEDULE: dict[tuple[int, int], int | None] = {
     **{
         (h, m): calculate_temperature(h, m)
         for h in range(16, 23)
-        for m in range(0, 60, STEP_INTERVAL_MINUTES)
+        for m in range(0, 60, STEP_INTERVAL)
     },
 }
 
