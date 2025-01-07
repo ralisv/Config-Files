@@ -17,7 +17,7 @@ from xonsh_utils.colors import (  # pylint: disable=import-error
 from xonsh_utils.trash import remove
 from xonsh_utils.utils import super_git_status
 
-env = __xonsh__.env # pylint: disable=undefined-variable
+env = __xonsh__.env  # pylint: disable=undefined-variable
 
 # Configure xonsh behavior via environment variables
 env["SHELL_TYPE"] = "prompt_toolkit"
@@ -47,7 +47,7 @@ env["LS_COLORS"] = LS_COLORS
 
 
 def _s(args: list[str]):
-    """ Wrapper around lsd to show git status """
+    """Wrapper around lsd to show git status"""
     if not args:
         git_status = super_git_status()
         if git_status.strip():
@@ -79,7 +79,7 @@ my_aliases = {
     "okular": "setsid okular",
     "nix-shell": "nix-shell --log-format bar-with-logs",
 }
-aliases.update(my_aliases) # pylint: disable=undefined-variable
+aliases.update(my_aliases)  # pylint: disable=undefined-variable
 
 
 # Style the terminal
@@ -94,7 +94,6 @@ def set_style() -> None:
         "Token.PTK.CompletionMenu": "#000000",
         "Token.Literal.Number.Integer": "#44ffff",
         "Token.Literal.Number.Float": "#44ffff",
-
         "BLACK": "#333333",
         "RED": "#ff1111",
         "GREEN": "#11ff11",
@@ -111,7 +110,6 @@ def set_style() -> None:
         "INTENSE_MAGENTA": "#ff00ff",
         "INTENSE_CYAN": "#00ddff",
         "INTENSE_WHITE": "#ffffff",
-
         "BACKGROUND_BLACK": "#111111",
         "BACKGROUND_RED": "#ff1111",
         "BACKGROUND_GREEN": "#11ff11",
@@ -150,7 +148,6 @@ def customize_autocompleter() -> None:
 customize_autocompleter()
 
 
-
 class XonshPrompt:
     """
     A class that encapsulates the logic for customizing the xonsh prompt
@@ -178,10 +175,15 @@ class XonshPrompt:
 
     @staticmethod
     def git_info() -> str:
-        try:
-            return XonshPrompt.git_info_raw()
-        except subprocess.CalledProcessError:
-            return ""
+        for _ in range(2):
+            try:
+                return XonshPrompt.git_info_raw()
+            except subprocess.CalledProcessError:
+                return ""
+            except (
+                IOError
+            ):  # Sometimes, bad file descriptor error is emitted, we want to try again
+                pass
 
     @staticmethod
     def git_info_raw() -> str:
@@ -208,6 +210,7 @@ class XonshPrompt:
             text=True,
             check=False,
         )
+
         branch = git_branch.stdout.strip()
 
         # Check if the repository is dirty (has uncommitted changes)
@@ -276,4 +279,3 @@ env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.dye(".")
 env["PROMPT"] = (
     "{rainbow-user}{separator}{path-info}{git-info}{last-exit-code-info}{end}{reset}"
 )
-
