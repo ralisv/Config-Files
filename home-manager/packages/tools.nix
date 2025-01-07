@@ -19,5 +19,6 @@
     man-pages
     timer # CLI timer
     translate-shell # CLI translator
+    mullvad-vpn
   ];
 }
