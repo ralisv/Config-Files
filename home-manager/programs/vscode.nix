@@ -11,6 +11,7 @@
       ms-python.debugpy
       ms-python.pylint
       ms-python.black-formatter
+      github.copilot
       github.copilot-chat
       jnoortheen.nix-ide
       mads-hartmann.bash-ide-vscode
