@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.append((Path.home() / ".local" / "share" / "xonsh").as_posix())
 
-from xonsh_utils.colors import (  # pylint: disable=import-error
+from xonsh_utils.colors import (  # pylint: disable=import-error,import-outside-toplevel
     LS_COLORS,
     Color,
     Rainbowizer,
@@ -87,7 +87,9 @@ def set_style() -> None:
     """
     Sets the color style of the terminal
     """
-    from xonsh.tools import register_custom_style  # pylint: disable=import-error
+    from xonsh.tools import (  # pylint: disable=import-error,import-outside-toplevel
+        register_custom_style,
+    )
 
     my_style = {
         "Token.Operator": "#fffd00",
@@ -139,7 +141,7 @@ def customize_autocompleter() -> None:
     """
     Customize the autocompleter
     """
-    import prompt_toolkit.styles.defaults as defstyle  # pylint: disable=import-error
+    import prompt_toolkit.styles.defaults as defstyle  # pylint: disable=import-error,import-outside-toplevel
 
     defstyle.PROMPT_TOOLKIT_STYLE.append(("bottom-toolbar", "noreverse"))
     defstyle.PROMPT_TOOLKIT_STYLE.append(("completion-menu", "bg:#771977 #000000"))
@@ -175,6 +177,7 @@ class XonshPrompt:
 
     @staticmethod
     def git_info() -> str:
+        """Returns the information about the current git repository branch in the current directory"""
         for _ in range(2):
             try:
                 return XonshPrompt.git_info_raw()
@@ -187,7 +190,7 @@ class XonshPrompt:
 
     @staticmethod
     def git_info_raw() -> str:
-        """s
+        """
         Returns the information about the git repository in the current directory
 
         Returns:
@@ -263,8 +266,6 @@ class XonshPrompt:
         Returns:
             str: The reset color
         """
-        # If the deprecation warnings about event loop appear ever again, uncomment the following line
-        # warnings.filterwarnings("ignore", category=DeprecationWarning)
         return Style.DEFAULT
 
 
