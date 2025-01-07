@@ -6,6 +6,7 @@
 
   imports = [
     ./hardware-configuration.nix
+    <nixos-hardware/lenovo/legion/16ach6h>
     (
       let rev = "main"; in import (builtins.fetchTarball {
         url = "https://gitlab.com/VandalByte/darkmatter-grub-theme/-/archive/${rev}/darkmatter-grub-theme-${rev}.tar.gz";
@@ -18,7 +19,7 @@
     cfs-zen-tweaks.enable = true;
   };
 
-  xdg.portal.enable = true;
+
 
   services = {
     illum.enable = true; # Map brightness keys
@@ -85,20 +86,6 @@
     enable32Bit = true;
   };
 
-  hardware.nvidia = {
-    open = false;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-    modesetting.enable = true;
-    nvidiaSettings = true;
-    prime = {
-      amdgpuBusId = "PCI:5:0:0";
-      nvidiaBusId = "PCI:1:0:0";
-      offload = {
-        enable = true;
-        enableOffloadCmd = true;
-      };
-    };
-  };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
