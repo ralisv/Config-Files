@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     # File explorers
-    dolphin
     (nnn.override {
       withNerdIcons = true;
     })
@@ -15,7 +14,6 @@
 
     # PDF readers
     okular
-    evince
 
     # Mediaplayers
     vlc
@@ -24,6 +22,5 @@
     libreoffice
     gimp # Image editing
     cheese # Webcam
-
   ];
 }
