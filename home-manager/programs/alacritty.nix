@@ -11,6 +11,12 @@
       };
       font = {
         size = 9;
+        normal.family = "FiraCode Nerd Font Ret";
+        normal.style = "Retina";
+        bold.family = "FiraCode Nerd Font";
+        bold.style = "Bold";
+        italic.family = "FiraCode Nerd Font";
+        italic.style = "Italic";
       };
       scrolling = {
         history = 10000;
@@ -21,13 +27,11 @@
         program = "bash";
       };
       window = {
-        dynamic_title = true;
         opacity = 0.7;
+
         title = "Alacritty";
-        class = {
-          general = "Alacritty";
-          instance = "Alacritty";
-        };
+        dynamic_title = true;
+
         padding = {
           x = 8;
           y = 8;
