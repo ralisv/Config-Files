@@ -20,5 +20,6 @@
     timer # CLI timer
     translate-shell # CLI translator
     mullvad-vpn
+    keepassxc # Password manager
   ];
 }
