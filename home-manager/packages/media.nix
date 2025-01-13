@@ -11,6 +11,7 @@
     # Browsers
     brave
     mullvad-browser
+    librewolf
 
     # PDF readers
     okular
