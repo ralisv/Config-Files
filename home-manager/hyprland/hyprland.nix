@@ -18,6 +18,7 @@
     hyprshade # Screen shader
     wvkbd # Virtual keyboard
     xdg-desktop-portal-hyprland # Desktop portal
+    hyprpolkitagent # Privilege escalation agent
     hyprsunset # Blue light filter
   ];
 
@@ -55,11 +56,11 @@
         "dbus-update-activation-environment --systemd HYPRLAND_INSTANCE_SIGNATURE"
         "~/.config/hypr/daemons/wallpaper-manager.sh"
         "~/.config/hypr/daemons/blue-light-filter.py"
-        "sleep 2 && cd ~/.config/hypr/daemons/monitor/ && nix-shell"
+        "sleep 1 && cd ~/.config/hypr/daemons/monitor/ && nix-shell"
         "sleep 2 && eww open info"
         "eww daemon"
         "while true; do hyprnotify --no-sound; done"
-        "hyprctl setcursor LyraS-cursors 25"
+        "hyprctl setcursor saturn 25"
         "systemctl --user start hyprpolkitagent"
         "wvkbd-mobintl --hidden"
         "hypridle"
@@ -108,9 +109,9 @@
       decoration = {
         rounding = 0;
         blur = {
-          enabled = false;
-          size = 8;
-          passes = 1;
+          enabled = true;
+          size = 3;
+          passes = 3;
         };
         dim_inactive = true;
         dim_strength = 0.15;
@@ -133,6 +134,7 @@
       };
 
       master = {
+        mfact = 0.5;
         allow_small_split = true;
         new_status = "slave";
         orientation = "right";
@@ -152,37 +154,37 @@
       bind = [
         "$launchMod, N, exec, nm-applet"
         "$launchMod, T, exec, alacritty"
-        "$launchMod, F, exec, mullvad-exclude freetube"
+        "$launchMod, F, exec, freetube"
         "$launchMod, D, exec, mullvad-exclude webcord"
         "$launchMod, B, exec, brave --password-store=basic"
         "$launchMod, R, exec, eww reload"
         "$launchMod, M, exec, mullvad-vpn"
         "$launchMod, S, exec, signal-desktop"
         "$launchMod, C, exec, mullvad-exclude caprine"
+        "$launchMod, P, exec, mullvad-exclude librewolf --new-window www.perplexity.ai"
         "$mainMod, S, exec, hyprshot --mode=region --freeze --clipboard-only"
         "$mainMod+SHIFT, S, exec, hyprshot --mode=region --freeze"
         "$mainMod, L, exec, hyprlock"
         "$mainMod, C, exec, hyprpicker -a"
         "$mainMod, Q, killactive,"
         "$mainMod+SHIFT, Q, exit,"
-        "$mainMod, V, togglefloating,"
         "$mainMod, P, pin"
         "$mainMod, A, layoutmsg, addmaster"
         "$mainMod, W, layoutmsg, removemaster"
         "$mainMod, R, exec, hyprctl reload"
         "$mainMod, F, fullscreen, 1"
-        "$mainMod+SHIFT, left, movefocus, l"
-        "$mainMod+SHIFT, right, movefocus, r"
-        "$mainMod+SHIFT, up, movefocus, u"
-        "$mainMod+SHIFT, down, movefocus, d"
-        "ALT, TAB, cyclenext"
+        "$mainMod+ALT, up, togglefloating"
+        "$mainMod+ALT, right, movetoworkspace, +1"
+        "$mainMod+ALT, left, movetoworkspace, -1"
         "$mainMod, left, movewindow, l"
         "$mainMod, right, movewindow, r"
         "$mainMod, up, movewindow, u"
         "$mainMod, down, movewindow, d"
-        "$mainMod+ALT, right, movetoworkspace, +1"
-        "$mainMod+ALT, left, movetoworkspace, -1"
-        "$mainMod+ALT, up, togglefloating"
+        "$mainMod+SHIFT, left, movefocus, l"
+        "$mainMod+SHIFT, right, movefocus, r"
+        "$mainMod+SHIFT, up, movefocus, u"
+        "$mainMod+SHIFT, down, movefocus, d"
+        "ALT, TAB, layoutmsg, rollnext"
       ];
 
       bindm = [
