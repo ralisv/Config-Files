@@ -10,7 +10,6 @@
     ./programs/git.nix
     ./programs/micro.nix
     ./programs/vscode.nix
-    ./programs/pass.nix
     ./shell/shell.nix
     ./packages/development.nix
     ./packages/drivers.nix
