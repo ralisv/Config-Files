@@ -42,13 +42,13 @@
               "bluez5.a2dp.default.buffer-size" = 1024;
 
               "bluez5.codecs" = [ "sbc_xq" "aac" "ldac" "aptx" "aptx_hd" ];
-              "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" ];
+              "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" "a2dp_sink" "a2dp_source" ];
 
               "bluez5.enable-hw-volume" = true;
             };
             "11-bluetooth-policy" = {
               "wireplumber.settings" = {
-                "bluetooth.autoswitch-to-headset-profile" = true;
+                "bluetooth.autoswitch-to-headset-profile" = false;
               };
             };
           };
@@ -212,12 +212,12 @@
   system.stateVersion = "24.05";
 
   xdg.mime.defaultApplications = {
-    "text/plain" = "micro.desktop";
+    "text/plain" = "code.desktop";
     "application/pdf" = "org.kde.okular.desktop";
     "text/html" = "brave-browser.desktop";
     "application/x-shellscript" = "code.desktop";
     "image/png" = "org.kde.okular.desktop";
     "audio/mpeg" = "org.kde.okular.desktop";
-    "application/octet-stream" = "micro";
+    "application/octet-stream" = "code.desktop";
   };
 }
