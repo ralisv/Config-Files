@@ -177,7 +177,13 @@ class XonshPrompt:
 
     @staticmethod
     def git_info() -> str:
-        """Returns the information about the current git repository branch in the current directory"""
+        """
+        Returns @git_info_raw, tries twice in case of IOError
+
+        Returns:
+            str: Branch name colored according to the state of the repository or empty
+            string if not in git repository
+        """
         for _ in range(2):
             try:
                 return XonshPrompt.git_info_raw()
@@ -194,7 +200,8 @@ class XonshPrompt:
         Returns the information about the git repository in the current directory
 
         Returns:
-            str: Branch name colored according to the state of the repository or empty string if not in git repository
+            str: Branch name colored according to the state of the repository or empty
+            string if not in git repository
         """
         # Check if the current directory is a git repository
         git_rev_parse = subprocess.run(
