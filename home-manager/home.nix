@@ -27,9 +27,16 @@
 
   home.stateVersion = "24.05"; # Don't modify
 
-  gtk.enable = true;
-
-  gtk.theme.name = "Sweet-Dark-v40";
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Sweet-Dark-v40";
+    };
+    cursorTheme = {
+      name = "Saturn";
+      size = 25;
+    };
+  };
 
   home.file = { };
 
