@@ -1,10 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-pinned-hypr, ... }:
 
 {
   imports = [
     ./hypridle.nix
     ./hyprlock.nix
-    ./hyprpanel.nix
     ./eww/eww.nix
   ];
   home.file.".config/hypr/daemons".source = ./daemons;
@@ -163,7 +162,6 @@
         "$launchMod, S, exec, signal-desktop"
         "$launchMod, C, exec, mullvad-exclude caprine"
         "$launchMod, P, exec, mullvad-exclude librewolf --new-window www.perplexity.ai"
-        "$launchMod, K, exec, keepassxc"
         "$mainMod, S, exec, hyprshot --mode=region --freeze --clipboard-only"
         "$mainMod+SHIFT, S, exec, hyprshot --mode=region --freeze"
         "$mainMod, L, exec, hyprlock"
