@@ -4,7 +4,6 @@
   imports = [
     ./hypridle.nix
     ./hyprlock.nix
-    ./hyprpanel.nix
     ./eww/eww.nix
   ];
   home.file.".config/hypr/daemons".source = ./daemons;
@@ -50,6 +49,7 @@
       monitor = [
         "DP-1,2560x1440,0x0,auto"
         "DP-2,2560x1440,4160x800,auto"
+        "HDMI-A-1, 1920x1080, 2560x0, auto"
         "eDP-1,2560x1600,2560x400,auto"
       ];
 
@@ -153,7 +153,6 @@
       "$mainMod" = "SUPER";
 
       bind = [
-        "$launchMod, N, exec, nm-applet"
         "$launchMod, T, exec, alacritty"
         "$launchMod, F, exec, freetube"
         "$launchMod, D, exec, mullvad-exclude webcord"
@@ -164,6 +163,8 @@
         "$launchMod, C, exec, mullvad-exclude caprine"
         "$launchMod, P, exec, mullvad-exclude librewolf --new-window www.perplexity.ai"
         "$launchMod, K, exec, keepassxc"
+        "$launchMod, E, exec, mullvad-exclude thunderbird"
+
         "$mainMod, S, exec, hyprshot --mode=region --freeze --clipboard-only"
         "$mainMod+SHIFT, S, exec, hyprshot --mode=region --freeze"
         "$mainMod, L, exec, hyprlock"
