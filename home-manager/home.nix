@@ -28,6 +28,7 @@
 
   home.stateVersion = "24.05"; # Don't modify
 
+  home.packages = [ pkgs.dconf ];
   gtk = {
     enable = true;
     theme = {
@@ -47,4 +48,7 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  xdg.mime.enable = true;
+  xdg.mimeApps.enable = true;
 }
