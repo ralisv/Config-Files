@@ -2,7 +2,8 @@
 
 {
   home.packages = with pkgs; [
-    nixpkgs-fmt
+    nixfmt-rfc-style
+
     ghc
     python312Full
     python312Packages.jupyter
