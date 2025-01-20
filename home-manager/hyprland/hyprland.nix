@@ -37,7 +37,6 @@
 
   };
 
-
   wayland.windowManager.hyprland = {
     enable = true;
     package = pkgs.hyprland;
@@ -153,7 +152,7 @@
       "$mainMod" = "SUPER";
 
       bind = [
-        "$launchMod, T, exec, alacritty"
+        "$launchMod, T, exec, ghostty"
         "$launchMod, F, exec, freetube"
         "$launchMod, D, exec, mullvad-exclude webcord"
         "$launchMod, B, exec, brave --password-store=basic"

@@ -3,6 +3,7 @@
 {
   imports = [
     ./hyprland/hyprland.nix
+    ./programs/ghostty.nix
     ./programs/lsd.nix
     ./programs/alacritty.nix
     ./programs/bat.nix
