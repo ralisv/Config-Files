@@ -7,3 +7,10 @@ command = "ghostty --class=com.mitchellh.ghostty.scratchpad"
 class = "com.mitchellh.ghostty.scratchpad"
 size = "70% 60%"
 position = "15% 20%"
+
+[scratchpads.pomodoro]
+animation = "fromTop"
+command = "pomodoro"
+class = "io.gitlab.idevecore.Pomodoro"
+size = "20% 20%"
+position = "40% 40%" 

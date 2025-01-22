@@ -74,6 +74,7 @@
         "bordercolor rgb(aa00aa) rgb(550022), floating:1"
         "rounding 20, floating:1"
         "float, class:^(com.mitchellh.ghostty.scratchpad)$"
+        "float, class:^(io.gitlab.idevecore.Pomodoro)$"
       ];
 
       input = {
@@ -173,6 +174,7 @@
         "$mainMod+SHIFT, Q, exit,"
 
         "$mainMod, SPACE, exec, pypr toggle term"
+        "$mainMod, D, exec, pypr toggle pomodoro"
 
         "$mainMod, P, pin"
         "$mainMod, A, layoutmsg, addmaster"
