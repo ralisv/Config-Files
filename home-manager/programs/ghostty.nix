@@ -18,6 +18,8 @@
       window-padding-x = 8;
       window-padding-y = 8;
 
+      resize-overlay = "never";
+
       scrollback-limit = 10000;
     };
   };
