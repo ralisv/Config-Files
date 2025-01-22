@@ -32,7 +32,7 @@
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
     WLR_NO_HARDWARE_CURSORS = "1";
 
-    HYPRCURSOR_SIZE = "25";
+    HYPRCURSOR_SIZE = "24";
     HYPRCURSOR_THEME = "saturn";
 
   };
@@ -167,7 +167,6 @@
         "$mainMod, S, exec, hyprshot --mode=region --freeze --clipboard-only"
         "$mainMod+SHIFT, S, exec, hyprshot --mode=region --freeze"
         "$mainMod, C, exec, hyprpicker -a"
-
         "$mainMod, L, exec, hyprlock"
 
         "$mainMod, Q, killactive,"
