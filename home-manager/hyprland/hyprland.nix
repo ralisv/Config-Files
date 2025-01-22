@@ -16,8 +16,6 @@
     libnotify # Notifications interface
     hyprpicker # Color picker
     wl-clipboard # Clipboard manager
-    hyprshade # Screen shader
-    wvkbd # Virtual keyboard
     xdg-desktop-portal-hyprland # Desktop portal
     hyprpolkitagent # Privilege escalation agent
     hyprsunset # Blue light filter
@@ -68,8 +66,6 @@
         "hypridle"
         "pypr"
       ];
-
-      exec = "hyprshade auto";
 
       windowrulev2 = [
         "idleinhibit focus, class:(FreeTube)|(vlc)"

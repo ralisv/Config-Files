@@ -21,5 +21,6 @@
     translate-shell # CLI translator
     mullvad-vpn
     keepassxc # Password manager
+    wvkbd # Virtual keyboard
   ];
 }
