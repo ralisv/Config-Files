@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   security.sudo.wheelNeedsPassword = false;
@@ -8,18 +13,21 @@
     ./hardware-configuration.nix
     <nixos-hardware/lenovo/legion/16ach6h>
     (
-      let rev = "main"; in import (builtins.fetchTarball {
-        url = "https://gitlab.com/VandalByte/darkmatter-grub-theme/-/archive/${rev}/darkmatter-grub-theme-${rev}.tar.gz";
-        sha256 = "1i6dwmddjh0cbrp6zgafdrji202alkz52rjisx0hs1bgjbrbwxdj";
-      })
+      let
+        rev = "main";
+      in
+      import (
+        builtins.fetchTarball {
+          url = "https://gitlab.com/VandalByte/darkmatter-grub-theme/-/archive/${rev}/darkmatter-grub-theme-${rev}.tar.gz";
+          sha256 = "1i6dwmddjh0cbrp6zgafdrji202alkz52rjisx0hs1bgjbrbwxdj";
+        }
+      )
     )
   ];
 
   programs = {
     cfs-zen-tweaks.enable = true;
   };
-
-
 
   services = {
     illum.enable = true; # Map brightness keys
@@ -38,18 +46,26 @@
           "10-bluez" = {
             "monitor.bluez.properties" = {
               "bluez5.default-profile" = "a2dp-sink";
+              "bluez5.enable-sbc-xq" = true;
+
               "bluez5.a2dp.default.audio-info" = "format=S16LE rate=48000 channels=2";
-              "bluez5.a2dp.default.buffer-size" = 1024;
+              "bluez5.a2dp.default.buffer-size" = 4096;
 
-              "bluez5.codecs" = [ "sbc_xq" "aac" "ldac" "aptx" "aptx_hd" ];
-              "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" "a2dp_sink" "a2dp_source" ];
+              "bluez5.codecs" = [
+                "sbc_xq"
+                "aac"
+              ];
 
-              "bluez5.enable-hw-volume" = true;
+              "bluez5.roles" = [ "a2dp_sink" ];
+
+              "bluez5.enable-hw-volume" = false;
             };
-            "11-bluetooth-policy" = {
-              "wireplumber.settings" = {
-                "bluetooth.autoswitch-to-headset-profile" = false;
-              };
+          };
+
+          "11-bluetooth-policy" = {
+            "wireplumber.settings" = {
+              "bluetooth.autoswitch-to-headset-profile" = false;
+              "bluetooth.reconnect-timeout" = 5;
             };
           };
         };
@@ -86,8 +102,10 @@
     enable32Bit = true;
   };
 
-
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   documentation = {
     enable = true;
@@ -152,7 +170,17 @@
   users.users.ralis = {
     isNormalUser = true;
     description = "Vojtech Ralis";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" "jackaudio" "dialout" "bluetooth" "lp" "docker" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "video"
+      "audio"
+      "jackaudio"
+      "dialout"
+      "bluetooth"
+      "lp"
+      "docker"
+    ];
   };
 
   nix.gc = {
@@ -210,14 +238,4 @@
   boot.extraModulePackages = with config.boot.kernelPackages; [ lenovo-legion-module ];
 
   system.stateVersion = "24.05";
-
-  xdg.mime.defaultApplications = {
-    "text/plain" = "code.desktop";
-    "application/pdf" = "org.kde.okular.desktop";
-    "text/html" = "brave-browser.desktop";
-    "application/x-shellscript" = "code.desktop";
-    "image/png" = "org.kde.okular.desktop";
-    "audio/mpeg" = "org.kde.okular.desktop";
-    "application/octet-stream" = "code.desktop";
-  };
 }
