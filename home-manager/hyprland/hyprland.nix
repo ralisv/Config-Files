@@ -7,6 +7,7 @@
     ./eww/eww.nix
   ];
   home.file.".config/hypr/daemons".source = ./daemons;
+  home.file.".config/hypr/pyprland.toml".source = ./pyprland.toml;
 
   home.packages = with pkgs; [
     swww # Wallpaper manager
@@ -20,6 +21,7 @@
     xdg-desktop-portal-hyprland # Desktop portal
     hyprpolkitagent # Privilege escalation agent
     hyprsunset # Blue light filter
+    pyprland # Plugins
   ];
 
   home.sessionVariables = {
@@ -64,6 +66,7 @@
         "systemctl --user start hyprpolkitagent"
         "wvkbd-mobintl --hidden"
         "hypridle"
+        "pypr"
       ];
 
       exec = "hyprshade auto";
@@ -74,6 +77,7 @@
         "noborder, fullscreen:1"
         "bordercolor rgb(aa00aa) rgb(550022), floating:1"
         "rounding 20, floating:1"
+        "float, class:^(com.mitchellh.ghostty.scratchpad)$"
       ];
 
       input = {
@@ -166,15 +170,21 @@
 
         "$mainMod, S, exec, hyprshot --mode=region --freeze --clipboard-only"
         "$mainMod+SHIFT, S, exec, hyprshot --mode=region --freeze"
-        "$mainMod, L, exec, hyprlock"
         "$mainMod, C, exec, hyprpicker -a"
+
+        "$mainMod, L, exec, hyprlock"
+
         "$mainMod, Q, killactive,"
         "$mainMod+SHIFT, Q, exit,"
+
+        "$mainMod, SPACE, exec, pypr toggle term"
+
         "$mainMod, P, pin"
         "$mainMod, A, layoutmsg, addmaster"
         "$mainMod, W, layoutmsg, removemaster"
-        "$mainMod, R, exec, hyprctl reload"
         "$mainMod, F, fullscreen, 1"
+
+        "$mainMod, R, exec, hyprctl reload"
         "$mainMod+ALT, up, togglefloating"
         "$mainMod+ALT, right, movetoworkspace, +1"
         "$mainMod+ALT, left, movetoworkspace, -1"

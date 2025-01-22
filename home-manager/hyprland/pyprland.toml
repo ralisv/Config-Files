@@ -1,0 +1,9 @@
+[pyprland]
+plugins = ["scratchpads"]
+
+[scratchpads.term]
+animation = "fromTop"
+command = "ghostty --class=com.mitchellh.ghostty.scratchpad"
+class = "com.mitchellh.ghostty.scratchpad"
+size = "70% 60%"
+position = "15% 20%"
