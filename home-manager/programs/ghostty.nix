@@ -16,7 +16,7 @@
 
       window-decoration = false;
       window-padding-x = 8;
-      window-padding-y = 8;
+      window-padding-y = 6;
 
       resize-overlay = "never";
 
