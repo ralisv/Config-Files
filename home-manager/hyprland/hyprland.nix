@@ -20,6 +20,7 @@
     hyprpolkitagent # Privilege escalation agent
     hyprsunset # Blue light filter
     pyprland # Plugins
+    hyprcursor # Cursor theme utility
   ];
 
   home.sessionVariables = {
