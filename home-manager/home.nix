@@ -36,7 +36,7 @@
     };
     cursorTheme = {
       name = "Saturn";
-      size = 25;
+      size = 24;
     };
   };
 
