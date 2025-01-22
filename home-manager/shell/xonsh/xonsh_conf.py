@@ -78,6 +78,7 @@ my_aliases = {
     "vlc": "setsid vlc",
     "okular": "setsid okular",
     "nix-shell": "nix-shell --log-format bar-with-logs",
+    "code": "mullvad-exclude code",
 }
 aliases.update(my_aliases)  # pylint: disable=undefined-variable
 
@@ -178,64 +179,27 @@ class XonshPrompt:
     @staticmethod
     def git_info() -> str:
         """
-        Returns @git_info_raw, tries twice in case of IOError
-
-        Returns:
-            str: Branch name colored according to the state of the repository or empty
-            string if not in git repository
-        """
-        for _ in range(2):
-            try:
-                return XonshPrompt.git_info_raw()
-            except subprocess.CalledProcessError:
-                return ""
-            except (
-                IOError
-            ):  # Sometimes, bad file descriptor error is emitted, we want to try again
-                pass
-
-    @staticmethod
-    def git_info_raw() -> str:
-        """
         Returns the information about the git repository in the current directory
 
         Returns:
             str: Branch name colored according to the state of the repository or empty
             string if not in git repository
         """
-        # Check if the current directory is a git repository
-        git_rev_parse = subprocess.run(
-            ["git", "rev-parse", "--is-inside-work-tree"],
+        git_status = subprocess.run(
+            ["git", "status", "--porcelain", "--branch"],
             capture_output=True,
             text=True,
             check=False,
         )
-        if git_rev_parse.returncode != 0:
+
+        if git_status.returncode != 0:
             return ""
 
-        # Get the name of the current branch
-        git_branch = subprocess.run(
-            ["git", "branch", "--show-current"],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        # First line contains branch info in format "## main...origin/main [ahead 1]"
+        branch_line, *status_lines = git_status.stdout.splitlines()
+        branch = branch_line[3:].split("...")[0]
 
-        branch = git_branch.stdout.strip()
-
-        # Check if the repository is dirty (has uncommitted changes)
-        git_status = subprocess.run(
-            ["git", "status", "--porcelain"],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        is_dirty = bool(git_status.stdout)
-
-        # Determine the color based on the state of the repository
-        color = Color.SALMON if is_dirty else Color.LIME_GREEN
-
-        # Assuming XonshPrompt.enclose_in_brackets and Color are defined elsewhere
+        color = Color.SALMON if status_lines else Color.LIME_GREEN
         return XonshPrompt.enclose_in_brackets(f"{color}{branch}")
 
     @staticmethod
