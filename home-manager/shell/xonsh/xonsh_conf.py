@@ -185,12 +185,19 @@ class XonshPrompt:
             str: Branch name colored according to the state of the repository or empty
             string if not in git repository
         """
-        git_status = subprocess.run(
-            ["git", "status", "--porcelain", "--branch"],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+
+        def get_git_status():
+            return subprocess.run(
+                ["git", "status", "--porcelain", "--branch"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+        try:
+            git_status = get_git_status()
+        except OSError:  # Occasional error, try again
+            git_status = get_git_status()
 
         if git_status.returncode != 0:
             return ""
