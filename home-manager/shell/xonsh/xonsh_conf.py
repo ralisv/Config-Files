@@ -252,7 +252,7 @@ env["PROMPT_FIELDS"]["last-exit-code-info"] = XonshPrompt.last_exit_code_info
 env["PROMPT_FIELDS"]["path-info"] = XonshPrompt.path_info
 env["PROMPT_FIELDS"]["reset"] = XonshPrompt.reset
 env["PROMPT_FIELDS"]["rainbow-user"] = lambda: XonshPrompt.dye(getuser())
-env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.dye("\n λ ")
+env["PROMPT_FIELDS"]["end"] = lambda: XonshPrompt.dye(" λ ")
 env["PROMPT_FIELDS"]["separator"] = lambda: XonshPrompt.dye(".")
 
 env["PROMPT"] = (
