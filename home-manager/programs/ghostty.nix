@@ -21,6 +21,8 @@
       resize-overlay = "never";
 
       scrollback-limit = 10000;
+
+      confirm-close-surface = false;
     };
   };
 }
