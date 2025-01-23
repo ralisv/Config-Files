@@ -36,6 +36,7 @@
     HYPRCURSOR_SIZE = "24";
     HYPRCURSOR_THEME = "saturn";
 
+    XCURSOR_SIZE = "24";
   };
 
   wayland.windowManager.hyprland = {
@@ -55,7 +56,6 @@
 
       exec-once = [
         "dbus-update-activation-environment --systemd HYPRLAND_INSTANCE_SIGNATURE"
-        "~/.config/hypr/daemons/wallpaper-manager.sh"
         "~/.config/hypr/daemons/blue-light-filter.py"
         "sleep 1 && cd ~/.config/hypr/daemons/monitor/ && nix-shell"
         "sleep 2 && eww open info"

@@ -54,20 +54,6 @@
 
 (defvar vpn-status "...")
 
-(defwidget wallpaper-updater []
-  (overlay :orientation "horizontal"
-    :halign "center"
-    (image
-      :image-width "23"
-      :image-height "23"
-    :path "icons/picture.svg")
-    (button
-      :width "23"
-      :height "23"
-    :onclick "scripts/pick-random-wallpaper.sh")
-  )
-)
-
 (defwindow info
   :monitor 0
   :geometry (geometry

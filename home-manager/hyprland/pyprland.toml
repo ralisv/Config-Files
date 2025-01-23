@@ -1,5 +1,5 @@
 [pyprland]
-plugins = ["scratchpads"]
+plugins = [ "scratchpads", "wallpapers" ]
 
 [scratchpads.term]
 animation = "fromTop"
@@ -13,4 +13,12 @@ animation = "fromTop"
 command = "pomodoro"
 class = "io.gitlab.idevecore.Pomodoro"
 size = "20% 20%"
-position = "40% 40%" 
+position = "40% 40%"
+
+[wallpapers]
+unique = true # unique for each monitor
+path = "~/Pictures/Wallpapers/Favorite"
+interval = 30 # minutes
+extensions = ["jpg", "jpeg", "png"]
+command = 'swww img --transition-type grow "[file]"'
+clear_command = "swww clear"
