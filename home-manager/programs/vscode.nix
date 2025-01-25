@@ -15,6 +15,7 @@
       github.copilot-chat
       jnoortheen.nix-ide
       mads-hartmann.bash-ide-vscode
+      tamasfe.even-better-toml
     ];
 
     keybindings = [
