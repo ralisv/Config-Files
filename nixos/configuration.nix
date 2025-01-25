@@ -40,36 +40,7 @@
       alsa.support32Bit = true;
       audio.enable = true;
       pulse.enable = true;
-      wireplumber = {
-        enable = true;
-        extraConfig = {
-          "10-bluez" = {
-            "monitor.bluez.properties" = {
-              "bluez5.default-profile" = "a2dp-sink";
-              "bluez5.enable-sbc-xq" = true;
-
-              "bluez5.a2dp.default.audio-info" = "format=S16LE rate=48000 channels=2";
-              "bluez5.a2dp.default.buffer-size" = 4096;
-
-              "bluez5.codecs" = [
-                "sbc_xq"
-                "aac"
-              ];
-
-              "bluez5.roles" = [ "a2dp_sink" ];
-
-              "bluez5.enable-hw-volume" = false;
-            };
-          };
-
-          "11-bluetooth-policy" = {
-            "wireplumber.settings" = {
-              "bluetooth.autoswitch-to-headset-profile" = false;
-              "bluetooth.reconnect-timeout" = 5;
-            };
-          };
-        };
-      };
+      wireplumber.enable = true;
     };
 
     tlp = {
@@ -85,9 +56,6 @@
         CPU_MAX_PERF_ON_AC = 100;
         CPU_MIN_PERF_ON_BAT = 0;
         CPU_MAX_PERF_ON_BAT = 40;
-
-        START_CHARGE_THRESH_BAT0 = 70; # 70 and bellow it starts to charge
-        STOP_CHARGE_THRESH_BAT0 = 85; # 80 and above it stops charging
       };
     };
   };
