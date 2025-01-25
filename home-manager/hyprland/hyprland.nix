@@ -55,17 +55,18 @@
       ];
 
       exec-once = [
+        "swww-daemon"
+        "eww daemon"
+        "sleep 1 && eww open info"
+        "sleep 0.5 && pypr"
         "dbus-update-activation-environment --systemd HYPRLAND_INSTANCE_SIGNATURE"
         "~/.config/hypr/daemons/blue-light-filter.py"
         "sleep 1 && cd ~/.config/hypr/daemons/monitor/ && nix-shell"
-        "sleep 2 && eww open info"
-        "eww daemon"
         "while true; do hyprnotify --no-sound; done"
-        "hyprctl setcursor saturn 25"
+        "hyprctl setcursor saturn 24"
         "systemctl --user start hyprpolkitagent"
         "wvkbd-mobintl --hidden"
         "hypridle"
-        "pypr"
       ];
 
       windowrulev2 = [
@@ -159,11 +160,9 @@
         "$launchMod, D, exec, mullvad-exclude webcord"
         "$launchMod, B, exec, brave --password-store=basic"
         "$launchMod, R, exec, eww reload"
-        "$launchMod, M, exec, mullvad-vpn"
         "$launchMod, S, exec, signal-desktop"
         "$launchMod, C, exec, mullvad-exclude caprine"
-        "$launchMod, P, exec, mullvad-exclude librewolf --new-window www.perplexity.ai"
-        "$launchMod, K, exec, keepassxc"
+        "$launchMod, L, exec, mullvad-exclude librewolf --new-window www.messenger.com"
         "$launchMod, E, exec, mullvad-exclude thunderbird"
 
         "$mainMod, S, exec, hyprshot --mode=region --freeze --clipboard-only"
@@ -174,6 +173,8 @@
         "$mainMod, Q, killactive,"
         "$mainMod+SHIFT, Q, exit,"
 
+        "$mainMod, K, exec, pypr toggle keepassxc"
+        "$mainMod, M, exec, pypr toggle mullvad-vpn"
         "$mainMod, SPACE, exec, pypr toggle term"
         "$mainMod, D, exec, pypr toggle pomodoro"
 
