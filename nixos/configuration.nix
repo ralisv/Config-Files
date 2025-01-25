@@ -125,8 +125,6 @@
     LC_TIME = "cs_CZ.UTF-8";
   };
 
-  # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
   hardware.i2c.enable = true;
