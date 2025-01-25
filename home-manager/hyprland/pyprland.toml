@@ -15,6 +15,18 @@ class = "io.gitlab.idevecore.Pomodoro"
 size = "20% 20%"
 position = "40% 40%"
 
+[scratchpads.keepassxc]
+animation = "fromTop"
+command = "keepassxc"
+class = "org.keepassxc.KeePassXC"
+size = "80% 70%"
+position = "10% 15%"
+
+[scratchpads.mullvad-vpn]
+animation = "fromTop"
+command = "mullvad-vpn"
+class = "Mullvad VPN"
+
 [wallpapers]
 unique = true # unique for each monitor
 path = "~/Pictures/Wallpapers/Favorite"
