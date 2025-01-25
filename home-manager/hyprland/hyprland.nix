@@ -16,7 +16,6 @@
     libnotify # Notifications interface
     hyprpicker # Color picker
     wl-clipboard # Clipboard manager
-    xdg-desktop-portal-hyprland # Desktop portal
     hyprpolkitagent # Privilege escalation agent
     hyprsunset # Blue light filter
     pyprland # Plugins
@@ -37,6 +36,22 @@
     HYPRCURSOR_THEME = "saturn";
 
     XCURSOR_SIZE = "24";
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-hyprland
+      xdg-desktop-portal-gtk
+    ];
+    config = {
+      common = {
+        default = [ "hyprland" "gtk" ];
+        # Explicitly use GTK for file chooser since XDPH doesn't implement it
+        "org.freedesktop.impl.portal.FileChooser" = "gtk";
+      };
+    };
+    xdgOpenUsePortal = true;
   };
 
   wayland.windowManager.hyprland = {
@@ -170,13 +185,13 @@
         "$mainMod, C, exec, hyprpicker -a"
         "$mainMod, L, exec, hyprlock"
 
-        "$mainMod, Q, killactive,"
-        "$mainMod+SHIFT, Q, exit,"
-
         "$mainMod, K, exec, pypr toggle keepassxc"
         "$mainMod, M, exec, pypr toggle mullvad-vpn"
         "$mainMod, SPACE, exec, pypr toggle term"
         "$mainMod, D, exec, pypr toggle pomodoro"
+
+        "$mainMod, Q, killactive,"
+        "$mainMod+SHIFT, Q, exit,"
 
         "$mainMod, P, pin"
         "$mainMod, A, layoutmsg, addmaster"
