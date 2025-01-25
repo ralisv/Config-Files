@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./styling/gtk.nix
     ./hyprland/hyprland.nix
     ./programs/ghostty.nix
     ./programs/lsd.nix
@@ -29,16 +30,6 @@
   home.stateVersion = "24.05"; # Don't modify
 
   home.packages = [ pkgs.dconf ];
-  gtk = {
-    enable = true;
-    theme = {
-      name = "Sweet-Dark-v40";
-    };
-    cursorTheme = {
-      name = "Saturn";
-      size = 24;
-    };
-  };
 
   home.file = { };
 
