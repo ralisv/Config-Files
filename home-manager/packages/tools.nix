@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    pavucontrol # Audio control
+    pwvucontrol # Audio control
     pulseaudio # CLI tools for audio
     brightnessctl
     gparted # For imaging USB drives
