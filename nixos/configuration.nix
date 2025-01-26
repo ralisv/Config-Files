@@ -6,8 +6,6 @@
 }:
 
 {
-  security.sudo.wheelNeedsPassword = false;
-  security.polkit.enable = true;
 
   imports = [
     ./hardware-configuration.nix
@@ -60,20 +58,20 @@
     };
   };
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
+  hardware = {
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+    };
 
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+    i2c.enable = true;
+    acpilight.enable = true;
+  };
 
   documentation = {
     enable = true;
@@ -125,14 +123,6 @@
     LC_TIME = "cs_CZ.UTF-8";
   };
 
-  security.rtkit.enable = true;
-
-  hardware.i2c.enable = true;
-  hardware.acpilight.enable = true;
-
-  # Necessary to make swaylock work
-  security.pam.services.swaylock = { };
-
   users.users.ralis = {
     isNormalUser = true;
     description = "Vojtech Ralis";
@@ -149,32 +139,36 @@
     ];
   };
 
-  nix.gc = {
-    automatic = true;
-    dates = "quarterly";
-    options = "--delete-older-than 30d";
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "quarterly";
+      options = "--delete-older-than 30d";
+    };
+    optimise.automatic = true;
+
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+
+      substituters = [
+        "https://cache.nixos.org"
+        "https://cuda-maintainers.cachix.org"
+      ];
+      trusted-public-keys = [
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+        "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+      ];
+    };
   };
-
-  nix.optimise.automatic = true;
-  nix.settings = {
-    auto-optimise-store = true;
-
-    substituters = [
-      "https://cache.nixos.org"
-      "https://cuda-maintainers.cachix.org"
-    ];
-    trusted-public-keys = [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-    ];
-  };
-
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   boot = {
     supportedFilesystems = [ "ntfs" ];
-
+    extraModulePackages = with config.boot.kernelPackages; [ lenovo-legion-module ];
     tmp.useTmpfs = true;
 
     loader = {
@@ -183,7 +177,6 @@
       grub = {
         enable = true;
         device = "nodev";
-        useOSProber = true;
         darkmatter-theme = {
           enable = true;
           style = "nixos";
@@ -191,17 +184,27 @@
           resolution = "1440p";
         };
         efiSupport = true;
+        useOSProber = true;
       };
     };
   };
 
-  virtualisation.docker.enable = true;
-  virtualisation.docker.rootless = {
+  virtualisation.docker = {
     enable = true;
-    setSocketVariable = true;
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
   };
 
-  boot.extraModulePackages = with config.boot.kernelPackages; [ lenovo-legion-module ];
-
   system.stateVersion = "24.05";
+
+  security = {
+    sudo.wheelNeedsPassword = false;
+    polkit.enable = true;
+    rtkit.enable = true;
+
+    # Enable lock screen authentication
+    pam.services.hyprlock = { };
+  };
 }
