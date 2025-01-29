@@ -4,6 +4,7 @@
   imports = [
     ./styling/gtk.nix
     ./hyprland/hyprland.nix
+    ./programs/newsboat.nix
     ./programs/ghostty.nix
     ./programs/lsd.nix
     ./programs/alacritty.nix
