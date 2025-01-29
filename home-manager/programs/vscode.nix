@@ -14,6 +14,7 @@
       github.copilot
       github.copilot-chat
       jnoortheen.nix-ide
+      brettm12345.nixfmt-vscode
       mads-hartmann.bash-ide-vscode
       tamasfe.even-better-toml
     ];
@@ -72,6 +73,7 @@
       "text/x-c++" = [ "code.desktop" ];
       "text/x-c++src" = [ "code.desktop" ];
       "text/x-csrc" = [ "code.desktop" ];
+      "text/css" = [ "code.desktop" ];
       "text/javascript" = [ "code.desktop" ];
       "application/javascript" = [ "code.desktop" ];
       "application/x-javascript" = [ "code.desktop" ];
