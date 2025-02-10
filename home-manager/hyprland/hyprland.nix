@@ -46,7 +46,10 @@
     ];
     config = {
       common = {
-        default = [ "hyprland" "gtk" ];
+        default = [
+          "hyprland"
+          "gtk"
+        ];
         # Explicitly use GTK for file chooser since XDPH doesn't implement it
         "org.freedesktop.impl.portal.FileChooser" = "gtk";
       };
@@ -114,8 +117,8 @@
       };
 
       general = {
-        gaps_in = 0;
-        gaps_out = 0;
+        gaps_in = 2;
+        gaps_out = 4;
         gaps_workspaces = 300;
         border_size = 1;
         "col.active_border" = "rgba(bb0099aa) rgba(aa0077aa) 45deg";
