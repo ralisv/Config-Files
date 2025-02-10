@@ -23,6 +23,8 @@
       scrollback-limit = 10000;
 
       confirm-close-surface = false;
+
+      shell-integration-features = "sudo";
     };
   };
 }
